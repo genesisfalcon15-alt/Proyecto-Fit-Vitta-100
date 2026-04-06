@@ -1,0 +1,65 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Abril+Fatface&display=swap");
+
+:root {
+  /* Paleta de Colores VITTA */
+  --vitta-green: #6e8a4f;
+  --vitta-green-rgba: rgba(110, 138, 79, 1);
+
+  /* Marrón Camel con la opacidad indicada (76%) */
+  --vitta-camel: rgba(139, 87, 42, 0.76);
+  --vitta-camel-hex: #8b572a;
+
+  /* Fondo Blanco Roto para fatiga visual */
+  --vitta-off-white: #f9f9f7;
+
+  /* Tipografías */
+  --font-main: "Poppins", sans-serif;
+  --font-accent: "Abril Fatface", cursive;
+}
+
+/* cuerpo y titulos */
+
+body {
+  background-color: var(--vitta-off-white);
+  font-family: var(--font-main);
+  color: #333;
+}
+
+h1,
+h2,
+.vitta-logo-text {
+  font-family: var(--font-accent);
+  color: var(--vitta-green);
+}
+
+/* Botones de Bienvenida */
+
+.btn-vitta-welcome {
+  background-color: var(--vitta-camel);
+  color: white;
+  font-family: var(--font-main);
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  transition: all 0.3s ease;
+}
+
+.btn-vitta-welcome:hover {
+  background-color: var(
+    --vitta-camel-hex
+  ); /*cuando ponemos el raton con esto se puede poner mas tipo solido*/
+  transform: translateY(-2px);
+}
+
+/* Botones de Acción */
+/* Por ejemplo IMC*/
+
+.btn-vitta-action {
+  background-color: var(--vitta-green);
+  color: white;
+  font-family: var(--font-main);
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 4px 6px rgba(110, 138, 79, 0.2);
+}
