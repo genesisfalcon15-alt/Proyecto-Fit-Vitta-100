@@ -34,7 +34,6 @@ En esencia, Vitta conecta el cuidado personal con un consumo inteligente.
 </ul>
 
 
-⸻
 
 <h3>Tecnologías</h3>
 <ul>
@@ -47,8 +46,6 @@ En esencia, Vitta conecta el cuidado personal con un consumo inteligente.
 (Pendiente de completar)
 
 
-⸻
-
 <h3>Objetivo del proyecto</h3>
 
 <h4>Facilitar una vida más saludable y eficiente mediante herramientas que permitan a los usuarios:</h4>
@@ -57,7 +54,6 @@ En esencia, Vitta conecta el cuidado personal con un consumo inteligente.
     <li>Ahorrar dinero</li>
     <li>Tomar decisiones de consumo más conscientes</li>
 </ul>
-⸻
 
 Estado del proyecto
 
