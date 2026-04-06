@@ -1,81 +1,64 @@
-# Plantilla de WebApp con React JS y Flask API
 
-Construye aplicaciones web usando React.js para el front end y python/flask para tu API backend.
+<h1>Vitta</h1>
 
-- La documentación se puede encontrar aquí: https://4geeks.com/docs/start/react-flask-template
-- Aquí hay un video sobre [cómo usar esta plantilla](https://www.youtube.com/watch?v=qBz6Ddd2m38)
-- Integrado con Pipenv para la gestión de paquetes.
-- Despliegue rápido a Render [en solo unos pocos pasos aquí](https://4geeks.com/es/docs/start/despliega-con-render-com).
-- Uso del archivo .env.
-- Integración de SQLAlchemy para la abstracción de bases de datos.
+Descripción
 
-### 1) Instalación:
+Vitta es una plataforma diseñada en torno a dos pilares fundamentales: el cuidado personal y la optimización de la compra en supermercados.
 
-> Si usas Github Codespaces (recomendado) o Gitpod, esta plantilla ya vendrá con Python, Node y la base de datos Posgres instalados. Si estás trabajando localmente, asegúrate de instalar Python 3.10, Node.
+No es simplemente una aplicación que calcule el IMC o sugiera dietas genéricas. Vitta actúa como un asistente integral que comprende las necesidades del usuario y lo acompaña en su día a día.
 
-Se recomienda instalar el backend primero, asegúrate de tener Python 3.10, Pipenv y un motor de base de datos (se recomienda Posgres).
+La plataforma no solo propone planes de alimentación adaptados a los objetivos y perfil de cada persona, sino que también optimiza el proceso de compra, indicando dónde adquirir cada producto al mejor precio. Para ello, compara supermercados en función de la ubicación y las preferencias del usuario, priorizando el ahorro sin comprometer la calidad ni el bienestar.
 
-1. Instala los paquetes de python: `$ pipenv install`
-2. Crea un archivo .env basado en el .env.example: `$ cp .env.example .env`
-3. Instala tu motor de base de datos y crea tu base de datos, dependiendo de tu base de datos, debes crear una variable DATABASE_URL con uno de los valores posibles, asegúrate de reemplazar los valores con la información de tu base de datos:
+En esencia, Vitta conecta el cuidado personal con un consumo inteligente.
 
-| Motor     | DATABASE_URL                                        |
-| --------- | --------------------------------------------------- |
-| SQLite    | sqlite:////test.db                                  |
-| MySQL     | mysql://username:password@localhost:port/example    |
-| Postgres  | postgres://username:password@localhost:5432/example |
+⸻
 
-4. Migra las migraciones: `$ pipenv run migrate` (omite si no has hecho cambios en los modelos en `./src/api/models.py`)
-5. Ejecuta las migraciones: `$ pipenv run upgrade`
-6. Ejecuta la aplicación: `$ pipenv run start`
+<h2>Funcionalidades principales:</h2>
+<ul>
+    <li>Planes de alimentación personalizados</li>
+	<li>Generación automática de listas de compra</li>
+	<li>Comparador de precios entre supermercados</li>
+	<li>Recomendaciones basadas en la ubicación</li>
+	<li>Seguimiento de objetivos y progreso</li>
+	<li>Sistema de favoritos</li>
+</ul>
+⸻
 
-> Nota: Los usuarios de Codespaces pueden conectarse a psql escribiendo: `psql -h localhost -U gitpod example`
+<h3>Estructura de la aplicación</h3>
+<ul>
+    <li>Home: resumen del plan diario y accesos rápidos</li>
+	<li>Objetivos: gestión de metas personales</li>
+	<li>Compras: lista inteligente de productos</li>
+	<li>Comparador: visualización de los mejores precios</li>
+	<li>Perfil: configuración y preferencias del usuario</li>
+</ul>
 
-### Deshacer una migración
 
-También puedes deshacer una migración ejecutando
+⸻
 
-```sh
-$ pipenv run downgrade
-```
+<h3>Tecnologías</h3>
+<ul>
+    <li>Geolocalización</li>
+	<li>Front-end</li>
+    <li>Back-end</li>
+    <li>Base de Datos</li>
+    <li>API</li>
+</ul>
+(Pendiente de completar)
 
-### Población de la tabla de usuarios en el backend
 
-Para insertar usuarios de prueba en la base de datos, ejecuta el siguiente comando:
+⸻
 
-```sh
-$ flask insert-test-users 5
-```
+<h3>Objetivo del proyecto</h3>
 
-Y verás el siguiente mensaje:
+<h4>Facilitar una vida más saludable y eficiente mediante herramientas que permitan a los usuarios:</h4>
+<ul>
+	<li>Comer mejor</li>
+    <li>Ahorrar dinero</li>
+    <li>Tomar decisiones de consumo más conscientes</li>
+</ul>
+⸻
 
-```
-    Creating test users
-    test_user1@test.com created.
-    test_user2@test.com created.
-    test_user3@test.com created.
-    test_user4@test.com created.
-    test_user5@test.com created.
-    Users created successfully!
-```
+Estado del proyecto
 
-### **Nota importante para la base de datos y los datos dentro de ella**
-
-Cada entorno de Github Codespace tendrá **su propia base de datos**, por lo que si estás trabajando con más personas, cada uno tendrá una base de datos diferente y diferentes registros dentro de ella. Estos datos **se perderán**, así que no pases demasiado tiempo creando registros manualmente para pruebas, en su lugar, puedes automatizar la adición de registros a tu base de datos editando el archivo ```commands.py``` dentro de la carpeta ```/src/api```. Edita la línea 32 de la función ```insert_test_data``` para insertar los datos según tu modelo (usa la función ```insert_test_users``` anterior como ejemplo). Luego, todo lo que necesitas hacer es ejecutar ```pipenv run insert-test-data```.
-
-### Instalación manual del Front-End:
-
--   Asegúrate de estar usando la versión 20 de node y de que ya hayas instalado y ejecutado correctamente el backend.
-
-1. Instala los paquetes: `$ npm install`
-2. ¡Empieza a codificar! inicia el servidor de desarrollo de webpack `$ npm run start`
-
-## ¡Publica tu sitio web!
-
-Esta plantilla está 100% lista para desplegarse con Render.com y Heroku en cuestión de minutos. Por favor, lee la [documentación oficial al respecto](https://4geeks.com/docs/start/deploy-to-render-com).
-
-### Contribuyentes
-
-Esta plantilla fue construida como parte del [Coding Bootcamp](https://4geeksacademy.com/us/coding-bootcamp) de 4Geeks Academy por [Alejandro Sanchez](https://twitter.com/alesanchezr) y muchos otros contribuyentes. Descubre más sobre nuestro [Curso de Desarrollador Full Stack](https://4geeksacademy.com/us/coding-bootcamps/part-time-full-stack-developer) y [Bootcamp de Ciencia de Datos](https://4geeksacademy.com/us/coding-bootcamps/datascience-machine-learning).
-
-Puedes encontrar otras plantillas y recursos como este en la [página de github de la escuela](https://github.com/4geeksacademy/).
+🚧 En desarrollo
