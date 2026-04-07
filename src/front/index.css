@@ -1,65 +1,57 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Abril+Fatface&display=swap");
 
 :root {
-  /* Paleta de Colores VITTA */
+  /* Aquí defino los colores como variables para reutilizarlos */
   --vitta-green: #6e8a4f;
-  --vitta-green-rgba: rgba(110, 138, 79, 1);
-
-  /* Marrón Camel con la opacidad indicada (76%) */
   --vitta-camel: rgba(139, 87, 42, 0.76);
-  --vitta-camel-hex: #8b572a;
-
-  /* Fondo Blanco Roto para fatiga visual */
+  --vitta-camel-solid: #8b572a;
   --vitta-off-white: #f9f9f7;
-
-  /* Tipografías */
+  
   --font-main: "Poppins", sans-serif;
   --font-accent: "Abril Fatface", cursive;
 }
 
-/* cuerpo y titulos */
-
+/* esta sería la configuración global*/
 body {
   background-color: var(--vitta-off-white);
   font-family: var(--font-main);
   color: #333;
 }
 
-h1,
-h2,
-.vitta-logo-text {
-  font-family: var(--font-accent);
-  color: var(--vitta-green);
+/* Títulos personalizados */
+h1, h2, h3, .vitta-title {
+  font-family: var(--font-accent) !important;
+  color: var(--vitta-green) !important;
 }
 
-/* Botones de Bienvenida */
 
-.btn-vitta-welcome {
-  background-color: var(--vitta-camel);
-  color: white;
-  font-family: var(--font-main);
+/* BOOTSTRAP PRIMARY  el verde que hemos escogido como principal */
+
+/* Ahora, cualquier componente que utilicemos  “primary” en Bootstrap será verde VITTA */
+
+.btn-primary, .bg-primary, .text-primary {
+  background-color: var(--vitta-green) !important;
+  border-color: var(--vitta-green) !important;
+  color: white !important;
+}
+
+.btn-primary:hover {
+  background-color: #5a733f !important; /* Un verde un poco más oscuro para el hover */
+  border-color: #5a733f !important;
+}
+
+/* esta es la clase personalizada para el camel, perteneciente a el  inició de sesión de nuestra pagina de bienvenida. */
+
+.btn-vitta-camel {
+  background-color: var(--vitta-camel) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 12px !important;
   font-weight: 600;
-  border: none;
-  border-radius: 12px;
-  padding: 12px 24px;
   transition: all 0.3s ease;
 }
 
-.btn-vitta-welcome:hover {
-  background-color: var(
-    --vitta-camel-hex
-  ); /*cuando ponemos el raton con esto se puede poner mas tipo solido*/
+.btn-vitta-camel:hover {
+  background-color: var(--vitta-camel-solid) !important;
   transform: translateY(-2px);
-}
-
-/* Botones de Acción */
-/* Por ejemplo IMC*/
-
-.btn-vitta-action {
-  background-color: var(--vitta-green);
-  color: white;
-  font-family: var(--font-main);
-  border-radius: 10px;
-  border: none;
-  box-shadow: 0 4px 6px rgba(110, 138, 79, 0.2);
 }
