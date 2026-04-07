@@ -40,7 +40,7 @@ const Login = () => {
       
       localStorage.setItem("token", data.token);
 
-      alert("Login exitoso 🚀");
+      alert("Login exitoso");
 
     } catch (err) {
       setError(err.message);
