@@ -11,7 +11,7 @@
   --font-accent: "Abril Fatface", cursive;
 }
 
-/* esta sería la configuración global*/
+/* esta sería la configuración global  --- */
 body {
   background-color: var(--vitta-off-white);
   font-family: var(--font-main);
