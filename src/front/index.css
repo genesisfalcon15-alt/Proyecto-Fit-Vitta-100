@@ -11,7 +11,11 @@
   --font-accent: "Abril Fatface", cursive;
 }
 
+<<<<<<< Updated upstream
 /* esta sería la configuración global  --- */
+=======
+/* esta sería la configuración global*/
+>>>>>>> Stashed changes
 body {
   background-color: var(--vitta-off-white);
   font-family: var(--font-main);
