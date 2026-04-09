@@ -8,7 +8,10 @@ const Signup = () => {
     email: "",
     confirmEmail: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
+    altura: "",
+    peso: "",
+    genero: ""
   });
 
   const handleChange = (e) => {
@@ -23,8 +26,7 @@ const Signup = () => {
       className="vh-100 d-flex justify-content-center align-items-center"
       style={{ backgroundColor: "#6e8a4f" }}
     >
-      <div className="card shadow p-4" style={{ width: "400px", borderRadius: "15px" }}>
-        
+      <div className="card shadow p-4" style={{ width: "420px", borderRadius: "15px" }}>
         <h2 className="text-center mb-4">Sign Up</h2>
 
         <form>
@@ -70,6 +72,7 @@ const Signup = () => {
             />
           </div>
 
+          {/* 🔐 Passwords (encima de datos físicos) */}
           <div className="mb-3">
             <input
               type="password"
@@ -88,6 +91,43 @@ const Signup = () => {
               name="confirmPassword"
               onChange={handleChange}
             />
+          </div>
+
+          {/* 📏 Altura y Peso */}
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <input
+                type="number"
+                className="form-control"
+                placeholder="Altura (cm)"
+                name="altura"
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="col-md-6 mb-3">
+              <input
+                type="number"
+                className="form-control"
+                placeholder="Peso (Kg)"
+                name="peso"
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+
+          {/* 🚻 Género */}
+          <div className="mb-3">
+            <select
+              className="form-select"
+              name="genero"
+              onChange={handleChange}
+              defaultValue=""
+            >
+              <option value="" disabled>Selecciona género</option>
+              <option value="hombre">Hombre</option>
+              <option value="mujer">Mujer</option>
+            </select>
           </div>
 
           <button
