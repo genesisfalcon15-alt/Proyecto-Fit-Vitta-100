@@ -23,14 +23,17 @@ const Layout = () => {
                 <Navbar />
                 <div
                     style={{
-                        flex: 1,
+                        flex: "1 0 auto",
                         overflowY: "auto",
+                        overflowX: "hidden",
                         paddingBottom: "80px",
-                        display: "flex",
-                        flexDirection: "column",
+                        display: "block",
+                        position: "relative",
+                        width: "100%",
                     }}>
 
                     <AppRoutes />
+                    <div style={{ height: "100px" }}></div>
                 </div>
                 <Footer />
             </BrowserRouter>
