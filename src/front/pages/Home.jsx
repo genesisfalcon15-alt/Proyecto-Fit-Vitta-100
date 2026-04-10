@@ -1,58 +1,10 @@
-<<<<<<< HEAD
-import React, { useEffect } from "react"
-import rigoImageUrl from "../assets/img/rigo-baby.jpg";
-import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
-=======
 import React from "react"
 import { Link } from "react-router-dom";
->>>>>>> e9cebee (cambios en el diseño y nuevos componentes)
 
 export const Home = () => {
-
-	const { store, dispatch } = useGlobalReducer()
-
-	const loadMessage = async () => {
-		try {
-			const backendUrl = import.meta.env.VITE_BACKEND_URL
-
-			if (!backendUrl) throw new Error("VITE_BACKEND_URL is not defined in .env file")
-
-			const response = await fetch(backendUrl + "/api/hello")
-			const data = await response.json()
-
-			if (response.ok) dispatch({ type: "set_hello", payload: data.message })
-
-			return data
-
-		} catch (error) {
-			if (error.message) throw new Error(
-				`Could not fetch the message from the backend.
-				Please check if the backend is running and the backend port is public.`
-			);
-		}
-
-	}
-
-	useEffect(() => {
-		loadMessage()
-	}, [])
+	const colorVerdeVitta = "#6e8a4f";
 
 	return (
-<<<<<<< HEAD
-		<div className="text-center mt-5">
-			<h1 className="display-4">Hello Rigo!!</h1>
-			<p className="lead">
-				<img src={rigoImageUrl} className="img-fluid rounded-circle mb-3" alt="Rigo Baby" />
-			</p>
-			<div className="alert alert-info">
-				{store.message ? (
-					<span>{store.message}</span>
-				) : (
-					<span className="text-danger">
-						Loading message from the backend (make sure your python 🐍 backend is running)...
-					</span>
-				)}
-=======
 		<div className="container-fluid p-0 d-flex flex-column" style={{ minHeight: "100vh" }}>
 
 			<div className="mt-4 mb-2 text-center">
@@ -144,7 +96,7 @@ export const Home = () => {
 							fontWeight: "700",
 							margin: "0",
 							fontFamily: "Georgia, serif"
-						}}>Evolución del IMC</h3>
+						}}>Evolución del IMC </h3>
 
 
 						<Link to="/evolucion" style={{
@@ -153,12 +105,6 @@ export const Home = () => {
 							textDecoration: "none",
 							fontWeight: "bold"
 						}}>
-							<p style={{
-								color: "rgba(255,255,255,0.9)",
-								fontSize: "13px",
-								marginBottom: "15px"
-							}}>Últimos registros</p>
-
 
 							Ver todo <i className="fas fa-arrow-right ms-1"></i>
 
@@ -200,8 +146,8 @@ export const Home = () => {
 					</button>
 
 				</div>
->>>>>>> e9cebee (cambios en el diseño y nuevos componentes)
 			</div>
 		</div>
 	);
-}; 
+};
+
