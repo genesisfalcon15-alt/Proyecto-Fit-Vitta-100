@@ -24,7 +24,7 @@ const Signup = () => {
       style={{ backgroundColor: "#6e8a4f" }}
     >
       <div className="card shadow p-4" style={{ width: "400px", borderRadius: "15px" }}>
-        
+
         <h2 className="text-center mb-4">Sign Up</h2>
 
         <form>

@@ -5,7 +5,7 @@ export const Home = () => {
 	const colorVerdeVitta = "#6e8a4f";
 
 	return (
-		<div className="container-fluid p-0 d-flex flex-column" style={{ minHeight: "100vh" }}>
+		<div className="container-fluid p-0 d-flex flex-column" style={{ minHeight: "min-content" }}>
 
 			<div className="mt-4 mb-2 text-center">
 
@@ -43,7 +43,7 @@ export const Home = () => {
 								height: "100px",
 								border: "2px solid rgba(255,255,255,0.2)"
 							}}>
-							<i className=" fas fa-search-location text-white" style={{ fontSize: "40px" }}></i>
+							<i className="fa-solid fa-map-location-dot" style={{ color: "white", fontSize: "40px" }}></i>
 						</div>
 						<span className="fw-bold d-block text-white" style={{ fontSize: "15px", letterSpacing: "1px" }}> Compra Inteligente</span>
 					</Link>
@@ -58,7 +58,7 @@ export const Home = () => {
 								height: "80px",
 								border: "1px solid rgba(255,255,255,0.2)"
 							}}>
-							<i className="fas fa-weight-hanging text-white" style={{ fontSize: "30px" }}></i>
+							<i className="fa-solid fa-weight-scale" style={{ color: "white", fontSize: "30px" }}></i>
 						</div>
 						<span className="fw-bold d-block text-white" style={{ fontSize: "12px" }}> MI IMC</span>
 					</Link>
@@ -71,7 +71,7 @@ export const Home = () => {
 								height: "80px",
 								border: "1px solid rgba(255,255,255,0.2)"
 							}}>
-							<i className="fas fa-clipboard-list text-white" style={{ fontSize: "30px" }}></i>
+							<i className="fa-solid fa-list-check" style={{ color: "white", fontSize: "30px" }}></i>
 						</div>
 						<span className="fw-bold d-block text-white" style={{ fontSize: "13px" }}>Lista</span>
 					</Link>
