@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'  // Global styles for your application
@@ -5,6 +6,14 @@ import { RouterProvider } from "react-router-dom";  // Import RouterProvider to 
 import { router } from "./routes";  // Import the router configuration
 import { StoreProvider } from './hooks/useGlobalReducer';  // Import the StoreProvider for global state management
 import { BackendURL } from './components/BackendURL';
+=======
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import { AppRoutes } from "./routes";
+import Layout from "./pages/Layout";
+import "./index.css";
+>>>>>>> e9cebee (cambios en el diseño y nuevos componentes)
 
 const Main = () => {
     
