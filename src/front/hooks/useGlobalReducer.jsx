@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // Import necessary hooks and functions from React.
 import { useContext, useReducer, createContext } from "react";
 import storeReducer, { initialStore } from "../store"  // Import the reducer and the initial state.
@@ -22,3 +23,5 @@ export default function useGlobalReducer() {
     const { dispatch, store } = useContext(StoreContext)
     return { dispatch, store };
 }
+=======
+>>>>>>> e9cebee (cambios en el diseño y nuevos componentes)

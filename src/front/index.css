@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Abril+Fatface&display=swap");
 
 :root {
+<<<<<<< HEAD
   /* Aquí defino los colores como variables para reutilizarlos */
   --vitta-green: #6e8a4f;
   --vitta-camel: rgba(139, 87, 42, 0.76);
@@ -9,6 +10,25 @@
   
   --font-main: "Poppins", sans-serif;
   --font-accent: "Abril Fatface", cursive;
+=======
+--vitta-oliva: #717967; 
+--vitta-green: #6e8a4f;
+--vitta-text-light: #ffffff;
+--vitta-text-dark: #333;
+--font-main: "Poppins", sans-serif;
+--font-accent: "Abril Fatface", cursive;
+--radius: 16px;
+--radius-lg: 30px;
+}
+
+
+html, body {
+margin: 0;
+padding: 0;
+min-height: 100vh;
+font-family: var(--font-main);
+background-color: #f1f1f1; 
+>>>>>>> e9cebee (cambios en el diseño y nuevos componentes)
 }
 
 <<<<<<< Updated upstream
@@ -22,13 +42,29 @@ body {
   color: #333;
 }
 
+<<<<<<< HEAD
 /* Títulos personalizados */
+=======
+#app-container {
+width: 100%;
+max-width: 450px;
+margin: 0 auto;
+min-height: 100vh;
+background-color: var(--vitta-oliva) !important;
+display: flex;
+flex-direction: column;
+ overflow-x: hidden;
+}
+
+
+>>>>>>> e9cebee (cambios en el diseño y nuevos componentes)
 h1, h2, h3, .vitta-title {
   font-family: var(--font-accent) !important;
   color: var(--vitta-green) !important;
 }
 
 
+<<<<<<< HEAD
 /* BOOTSTRAP PRIMARY  el verde que hemos escogido como principal */
 
 /* Ahora, cualquier componente que utilicemos  “primary” en Bootstrap será verde VITTA */
@@ -42,10 +78,15 @@ h1, h2, h3, .vitta-title {
 .btn-primary:hover {
   background-color: #5a733f !important; /* Un verde un poco más oscuro para el hover */
   border-color: #5a733f !important;
+=======
+p, span, label, i {
+color: rgba(255, 255, 255, 0.9);
+>>>>>>> e9cebee (cambios en el diseño y nuevos componentes)
 }
 
 /* esta es la clase personalizada para el camel, perteneciente a el  inició de sesión de nuestra pagina de bienvenida. */
 
+<<<<<<< HEAD
 .btn-vitta-camel {
   background-color: var(--vitta-camel) !important;
   color: white !important;
@@ -58,4 +99,43 @@ h1, h2, h3, .vitta-title {
 .btn-vitta-camel:hover {
   background-color: var(--vitta-camel-solid) !important;
   transform: translateY(-2px);
+=======
+.rounded-circle {
+border-radius: 50% !important; 
+overflow: hidden; 
+display: flex !important;
+align-items: center !important;
+justify-content: center !important;
+margin: 0 auto; 
+}
+
+.vitta-card-resumen, 
+.rounded-circle  {
+border: 5px solid #000000 !important;  
+transition: all 0.2s ease;
+}
+
+.vitta-card-resumen:hover,
+.btn-negro-transparente:hover,
+.rounded-circle:hover {
+transform: translateY(-3px);
+box-shadow: 0 0 0 5px #000000, 
+0 10px 20px rgba(0,0,0,0.4) !important;
+}
+
+.text-decoration-none:hover {
+    opacity: 0.9;
+}
+
+/*botones inferiores */
+.btn-negro-transparente {
+background-color: rgba(0, 0, 0, 0.2) !important; 
+border-radius: 15px !important; 
+backdrop-filter: blur(5px);
+padding: 10px;
+}
+
+.container-fluid, .container {
+background-color: transparent !important;
+>>>>>>> e9cebee (cambios en el diseño y nuevos componentes)
 }
