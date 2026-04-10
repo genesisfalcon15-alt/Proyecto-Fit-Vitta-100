@@ -99,6 +99,7 @@ const Signup = () => {
           </button>
         </form>
       </div>
+      Hola me llamo pepito
     </div>
   );
 };
