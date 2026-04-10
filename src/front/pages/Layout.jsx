@@ -1,20 +1,13 @@
-import { Outlet } from "react-router-dom/dist"
-import ScrollToTop from "../components/ScrollToTop"
-import { Navbar } from "../components/Navbar"
-import { Footer } from "../components/Footer"
+import React from "react";
+import { BrowserRouter } from "react-router-dom";
+import { AppRoutes } from "../routes.jsx";
+import { Navbar } from "../components/Navbar.jsx";
+import { Footer } from "../components/Footer.jsx";
 
-// Base component that maintains the navbar and footer throughout the page and the scroll to top functionality.
-export const Layout = () => {
+
+
+const Layout = () => {
     return (
-<<<<<<< HEAD
-        <ScrollToTop>
-            <Navbar />
-                <Outlet />
-            <Footer />
-        </ScrollToTop>
-    )
-}
-=======
         <div id="app-container" style={{
             maxWidth: "450px",
             margin: "0 auto",
@@ -30,24 +23,23 @@ export const Layout = () => {
                 <Navbar />
                 <div
                     style={{
-                        flex: 1,
+                        flex: "1 0 auto",
                         overflowY: "auto",
+                        overflowX: "hidden",
                         paddingBottom: "80px",
-                        display: "flex",
-                        flexDirection: "column",
+                        display: "block",
+                        position: "relative",
+                        width: "100%",
                     }}>
 
                     <AppRoutes />
+                    <div style={{ height: "100px" }}></div>
                 </div>
                 <Footer />
             </BrowserRouter>
         </div>
     );
-}
+};
 export default Layout;
 
 
-
-
-
->>>>>>> e9cebee (cambios en el diseño y nuevos componentes)
