@@ -3,6 +3,10 @@ import { BrowserRouter } from "react-router-dom";
 import { AppRoutes } from "../routes.jsx";
 import { Navbar } from "../components/Navbar.jsx";
 import { Footer } from "../components/Footer.jsx";
+import { Imc } from "./Imc.jsx";
+import Signup from "./Signup.jsx";
+import Signin from "./Signin.jsx";
+
 
 
 
@@ -13,27 +17,29 @@ const Layout = () => {
             margin: "0 auto",
             height: "100vh",
             position: "relative",
-            backgroundColor: "rgba(113, 121, 103, 1 )",
+            background: "linear-gradient(180deg, #8ba175 0%, #3a4132 100%)",
             display: "flex",
             flexDirection: "column",
-            overflow: "hidden",
-            boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)"
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
+            overflow: "hidden"
         }}>
             <BrowserRouter>
                 <Navbar />
-                <div
+                <div id="scroll-container"
                     style={{
-                        flex: "1 0 auto",
+                        flex: "1",
+                        meinHeight: "0",
                         overflowY: "auto",
                         overflowX: "hidden",
-                        paddingBottom: "80px",
+                        WebkitOverflowScrolling: "touch",
                         display: "block",
                         position: "relative",
+                        zIndex: 1,
                         width: "100%",
                     }}>
 
                     <AppRoutes />
-                    <div style={{ height: "100px" }}></div>
+                    <div style={{ height: "100px", width: "100%" }}></div>
                 </div>
                 <Footer />
             </BrowserRouter>

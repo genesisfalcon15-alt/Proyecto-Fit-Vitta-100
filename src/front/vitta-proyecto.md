@@ -12,8 +12,6 @@ Tras un estudio de todo el concepto inicial, hemos migrado de una estética pura
  La palabra **VITTA** en mayúsculas transmite solidez, mientras que el color verde evoca frescura y salud.
 
 * **Paleta de Colores:** * ”Verde HEX 6E8A4F RGBA 110, 138,79, 100”: Color principal para algunos botones, letras y estados activos.
-*”Marron Camel”: Botones de la pantalla de Bienvenida  /Inicio se Sesión y Registro  HEX 8B572A RGBA 139,87,42,76 *
-    * `Blanco Roto`: Fondo para reducir la fatiga visual.
 * **Tipografía:** Uso de fuentes ** Poppins* *AbrilFace* con terminaciones suaves para mejorar la legibilidad en dispositivos móviles.
 
 
