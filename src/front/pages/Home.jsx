@@ -3,151 +3,204 @@ import { Link } from "react-router-dom";
 
 export const Home = () => {
 	const colorVerdeVitta = "#6e8a4f";
+	const cardGlassStyle = {
+		background: "rgba(255, 255, 255, 0.82)",
+		backdropFilter: "blur(15px)",
+		WebkitBackdropFilter: "blur(15px)",
+		borderRadius: "30px",
+		border: "1px solid rgba(255,255,255,0.4)",
+		padding: "25px",
+		boxShadow: "0 15px 35px rgba(0,0,0,0.1)",
+	};
 
 	return (
-		<div className="container-fluid p-0 d-flex flex-column" style={{ minHeight: "min-content" }}>
+		<div className="container-fluid p-0 d-flex flex-column"
+			style={{
+				minHeight: "100vh",
+				paddingBottom: "100px"
+			}}>
 
-			<div className="mt-4 mb-2 text-center">
-
+			<div className="px-4 mt-5 mb-4">
+				<span className="text-white-50 text-uppercase fw-bold"
+					style={{
+						fontSize: "12px",
+						letterSpacing: "2px"
+					}}>
+					Bienvenido
+				</span>
 				<h2 style={{
-					fontSize: "18px",
 					color: "white",
-					fontWeight: "300",
-					letterSpacing: "2px",
-					textTransform: "uppercase",
-					fontFamily: "Trebuchet MS', sans-serif",
-					marginBottom: "5px",
+					fontSize: "38px",
+					fontWeight: "800",
+					letterSpacing: "-1.5px",
+					marginTop: "5px",
+					lineHeight: "1"
 				}}>
-					Bienvenido a <span style={{ fontWeight: "800" }}>Vitta</span>
+					VITTA 🌱
 				</h2>
-
-				<p className="mb-0" style={{
-					fontSize: "13px",
+				<p style={{
 					color: "rgba(255,255,255,0.7)",
-					fontStyle: "italic",
-					letterSpacing: "0.5px",
+					fontSize: "15px",
+					marginTop: "10px",
+					fontWeight: "400"
 				}}>
 					"Vive sano, compra sabio"
 				</p>
 			</div>
 
-			{/*botones en formato triangulo*/}
+			{/*ACCESO RAPIDO PREMIUM*/}
 
-			<div className="px-3 mb-5 mt-3 d-flex flex-column align-items-center">
-				<div className="mb-4">
-					<Link to="/buscador" className="text-decoration-none text-center d-flex flex-column align-items-center">
-						<div className="rounded-circle d-flex align-items-center justify-content-center shadow-lg"
-							style={{
-								backgroundColor: colorVerdeVitta,
-								width: "100px",
-								height: "100px",
-								border: "2px solid rgba(255,255,255,0.2)"
-							}}>
-							<i className="fa-solid fa-map-location-dot" style={{ color: "white", fontSize: "40px" }}></i>
+			<div className="px-3 vitta-fade-in">
+				<Link to="/buscador" className="text-decoration-none">
+					<div style={{
+						...cardGlassStyle,
+						background: `linear-gradient(135deg, ${colorVerdeVitta}dd, #4a5240ee)`,
+						padding: "30px",
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "space-between",
+						border: "1px solid rgba(255,255,255,0.2)",
+						marginBottom: "20px"
+					}}>
+						<div>
+							<h3 style={{
+								color: "white",
+								fontSize: "22px",
+								fontWeight: "800",
+								margin: 0
+							}}>Compra Inteligente</h3>
+							<p style={{
+								color: "rgba(255,255,255,0.8)",
+								fontSize: "12px",
+								margin: 0
+							}}>Busca Tu Ahorro mas cercano</p>
 						</div>
-						<span className="fw-bold d-block text-white" style={{ fontSize: "15px", letterSpacing: "1px" }}> Compra Inteligente</span>
-					</Link>
-				</div>
-
-				<div className="d-flex justify-content-center gap-5 w-100">
-					<Link to="/imc" className="text-decoration-none text-center d-flex flex-column align-items-center">
-						<div className="rounded-circle d-flex align-items-center justify-content-center shadow"
-							style={{
-								backgroundColor: colorVerdeVitta,
-								width: "80px",
-								height: "80px",
-								border: "1px solid rgba(255,255,255,0.2)"
-							}}>
-							<i className="fa-solid fa-weight-scale" style={{ color: "white", fontSize: "30px" }}></i>
-						</div>
-						<span className="fw-bold d-block text-white" style={{ fontSize: "12px" }}> MI IMC</span>
-					</Link>
-
-					<Link to="/lista" className="text-decoration-none text-center d-flex flex-column align-items-center">
-						<div className="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-2 shadow"
-							style={{
-								backgroundColor: colorVerdeVitta,
-								width: "80px",
-								height: "80px",
-								border: "1px solid rgba(255,255,255,0.2)"
-							}}>
-							<i className="fa-solid fa-list-check" style={{ color: "white", fontSize: "30px" }}></i>
-						</div>
-						<span className="fw-bold d-block text-white" style={{ fontSize: "13px" }}>Lista</span>
-					</Link>
-				</div>
+						<i className="fa-solid fa-map-location-dot" style={{ color: "white", fontSize: "35px" }}></i>
+					</div>
+				</Link>
 			</div>
 
-			<div className="px-3 mb-4">
-				<div style={{
-					backgroundColor: "rgba(255, 255, 255, 0.25)",
-					borderRadius: "20px",
-					padding: "20px",
-					backdropFilter: "blur(10px)",
-					border: "1px solid rgba(255, 255, 255, 0.3)",
-					boxShadow: "0 4px 15px rgba(0,0,0,0.1)"
-				}}>
 
-					{/*cabecera de carta*/}
-					<div className="d-flex justify-content-between align-items-center mb-2">
-						<h3 style={{
-							color: "white",
-							fontSize: "18px",
-							fontWeight: "700",
-							margin: "0",
-							fontFamily: "Georgia, serif"
-						}}>Evolución del IMC </h3>
-
-
-						<Link to="/evolucion" style={{
-							color: "rgba(255,255,255,0.8)",
-							fontSize: "12px",
-							textDecoration: "none",
-							fontWeight: "bold"
+			<div className="d-flex gap-3 mb-4 px-3">
+				<Link to="/imc" className="flex-grow-1 text-decoration-none">
+					<div
+						style={{
+							...cardGlassStyle,
+							padding: "20px",
+							textAlign: "center"
 						}}>
+						<i className="fa-solid fa-weight-scale mb-2"
+							style={{
+								color: colorVerdeVitta,
+								fontSize: "20px"
+							}}></i>
+						<span className="d-block fw-bold"
+							style={{
+								color: "#222",
+								fontSize: "14px"
+							}}>Mi IMC</span>
+					</div>
+				</Link>
 
-							Ver todo <i className="fas fa-arrow-right ms-1"></i>
+				<Link to="/lista" className="flex-grow-1 text-decoration-none">
+					<div style={{
+						...cardGlassStyle,
+						padding: "20px",
+						textAlign: "center"
+					}}>
+						<i className="fas fa-list-ul mb-2"
+							style={{
+								color: colorVerdeVitta,
+								fontSize: "20px"
+							}}></i>
+						<span className="d-block fw-bold"
+							style={{
+								color: "#222",
+								fontSize: "14px"
+							}}>Mi Lista</span>
+					</div>
+				</Link>
+			</div>
 
-						</Link>
+
+			{/*apartado de evolución*/}
+			<div className="px-3 mb-5">
+				<div style={cardGlassStyle}>
+					<div className="d-flex justify-content-between align-items-center mb-3">
+						<h4 style={{
+							color: "#222",
+							fontSize: "16px",
+							fontWeight: "800",
+							marginBottom: "5px"
+						}}></h4>
+						<p style={{
+							color: "#666",
+							fontSize: "12px",
+							margin: 0
+						}}>
+							Analiza si tu compra es Vitta en segundos.</p>
+					</div>
+
+					<div style={{
+						width: "50px",
+						height: "50px",
+						borderRadius: "15px",
+						backgroundColor: colorVerdeVitta,
+						color: "white",
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center"
+					}}>
 					</div>
 				</div>
-
-
-
-
-				<div className="text-center py-3" style={{
-					borderTop: "1px solid rgba(255,255,255,0.2)",
-					marginTop: "10px"
-				}}>
-					<p style={{
-						color: "rgba(255,255,255,0.7)",
-						fontSize: "12px",
-						fontStyle: "italic",
-						margin: 0
-					}}>Sin registros aún. ¡Empieza a registrar tu IMC!</p>
-				</div>
-
 			</div>
 
-			<div className="w-100 px-4 mt-auto mb-5">
+
+			<div className="w-100 px-4 mt-auto">
 				<div className="d-flex justify-content-center gap-3">
-					<button className="btn btn-negro-transparente flex-grow-1"
+					<button className="btn flex-grow-1 py-3 shadow-sm"
 						style={{
+							backgroundColor: "rgba(0,0,0,0.2)",
+							color: "white",
 							borderRadius: "15px",
-							padding: "18px 10px",
+							border: "1px solid rgba(255,255,255,0.1)",
+							fontWeight: "800",
+							fontSize: "14px"
 						}}>
 						<i className="fas fa-users me-2"></i>
 						Conócenos
 					</button>
 
-					<button className="btn btn-negro-transparente flex-grow-1 py-2" style={{ borderRadius: "12px" }}>
+					<button className="btn flex-grow-1 py-3 shadow-sm"
+						style={{
+							backgroundColor: "rgba(0,0,0,0.2)",
+							color: "white",
+							borderRadius: "20px",
+							border: "1px solid rgba(255,255,255,0.1)",
+							fontWeight: "800",
+							fontSize: "14px"
+						}}>
 						<i className="fas fa-users me-2"></i>
 						Comparte
 					</button>
-
 				</div>
 			</div>
-		</div>
+		</div >
 	);
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
