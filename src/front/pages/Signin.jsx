@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Login.css";
+
 
 const Login = () => {
   const [correo, setCorreo] = useState("");
@@ -11,7 +11,7 @@ const Login = () => {
     e.preventDefault();
     setError("");
 
-    
+
     if (!correo || !password) {
       setError("Todos los campos son obligatorios");
       return;
@@ -37,7 +37,7 @@ const Login = () => {
         throw new Error(data.message || "Error al iniciar sesión");
       }
 
-      
+
       localStorage.setItem("token", data.token);
 
       alert("Login exitoso");
