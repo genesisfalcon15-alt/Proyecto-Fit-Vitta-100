@@ -157,7 +157,7 @@ export const Imc = () => {
 
             <div className="px-3">
                 <div style={cardGlassStyle}>
-                    <p className="text-center fw-bold mb-3" style={{ color: "#222", fontSize: "16px" }}>¿Cómo te sientes hoy?</p>
+                    <p className="text-center fw-bold mb-3" style={{ color: "#222", fontSize: "16px" }}>¿Cómo te sientes hoy?.</p>
 
                     {/*espacio de iconos con iteracción*/}
                     <div className="d-flex justify-content-between px-1 mb-4">
