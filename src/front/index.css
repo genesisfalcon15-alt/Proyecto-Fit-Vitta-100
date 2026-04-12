@@ -20,6 +20,8 @@ html, body {
     height: 100%;
     font-family: var(--font-main);
     background-color: #f1f1f1; 
+    display: flex;
+    justify-content: center;
     
 }
 
@@ -104,7 +106,7 @@ p, span, label {
 
 
 .container-fluid, .container {
-    background-color: transparent;
+    background-color: transparent !important;
 }
 
 nav.navbar {
