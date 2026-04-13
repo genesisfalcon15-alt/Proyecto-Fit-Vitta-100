@@ -1,83 +1,80 @@
 import React, { useState } from "react";
 
-
 const Login = () => {
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
-
 
     if (!correo || !password) {
       setError("Todos los campos son obligatorios");
       return;
     }
 
-    try {
-      setLoading(true);
-
-      const response = await fetch("http://localhost:3001/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: correo,
-          password: password,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Error al iniciar sesión");
-      }
-
-
-      localStorage.setItem("token", data.token);
-
-      alert("Login exitoso");
-
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+    alert("Formulario enviado ✅");
   };
 
   return (
-    <div className="container">
-      <div className="card">
-        <h2>Sign In</h2>
+    <div
+      className="d-flex justify-content-center align-items-center vh-100"
+      style={{ backgroundColor: "#6e8b4f" }}
+    >
+      <div
+        className="card p-4 shadow"
+        style={{
+          width: "350px",
+          borderRadius: "15px",
+          backgroundColor: "#f2f2f2",
+        }}
+      >
+        <h2 className="text-center mb-4 text-dark">Sign In</h2>
 
         <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder="Correo"
-            value={correo}
-            onChange={(e) => setCorreo(e.target.value)}
-          />
+          <div className="mb-3">
+            <input
+              type="email"
+              className="form-control"
+              placeholder="Correo"
+              value={correo}
+              onChange={(e) => setCorreo(e.target.value)}
+            />
+          </div>
 
-          <input
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="mb-3">
+            <input
+              type="password"
+              className="form-control"
+              placeholder="Contraseña"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
 
-          {error && <p className="error">{error}</p>}
+          {error && (
+            <p className="text-danger small">{error}</p>
+          )}
 
-          <button type="submit" disabled={loading}>
-            {loading ? "Cargando..." : "Iniciar sesión"}
+          <button
+            type="submit"
+            className="btn w-100"
+            style={{
+              backgroundColor: "#6e8b4f",
+              color: "white",
+              borderRadius: "8px",
+            }}
+          >
+            Iniciar sesión
           </button>
         </form>
 
-        <p className="extra">
-          ¿No tienes cuenta? <a href="#">Regístrate</a>
+        <p className="text-center mt-3 text-dark">
+          ¿No tienes cuenta?{" "}
+          <a href="#" style={{ color: "#6e8b4f", fontWeight: "bold" }}>
+            Regístrate
+          </a>
         </p>
       </div>
     </div>
