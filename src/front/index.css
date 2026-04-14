@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Abril+Fatface&display=swap");
 
-
 :root {
   --vitta-oliva: rgba(113, 121, 103, 1);
   --vitta-green: #6e8a4f;
@@ -12,51 +11,45 @@
   --radius-lg: 30px;
 }
 
-
 html, body {
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
-    font-family: var(--font-main);
-    background-color: #f1f1f1; 
-    display: flex;
-    justify-content: center;
-    
+    background-color: #f1f1f1;
+    display: block;
 }
-
 
 #app-container {
     width: 100%;
     max-width: 450px;
-    margin: 0 auto;
-    min-height: 100vh;
-    height: auto;
-    background-color: var(--vitta-oliva) !important; 
-    box-shadow: 0 0 25px rgba(0,0,0,0.2);
+    margin: 20px auto;
+    height: 90vh;
+    background-color: var(--vitta-oliva) !important;
     position: relative;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
 }
+
 
 
 h1, h2, h3, .vitta-title {
   font-family: var(--font-accent);
-  color: white; 
+  color: white;
 }
 
 .vitta-title {
-    color: var(--vitta-green); 
+    color: var(--vitta-green);
 }
 
 p, span, label {
-    color: rgba(255, 255, 255, 0.9); 
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .text-muted {
     color: rgba(255, 255, 255, 0.6) !important;
 }
+
 
 .vitta-btn-animation {
     transition: transform 0.2s ease;
@@ -67,7 +60,7 @@ p, span, label {
 }
 
 .rounded-circle {
-    border: 2.5px solid #000000 !important; 
+    border: 2.5px solid #000000 !important;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
@@ -85,32 +78,51 @@ p, span, label {
 }
 
 .btn-negro-transparente {
-    background-color: rgba(0, 0, 0, 0.25) !important; 
+    background-color: rgba(0, 0, 0, 0.25) !important;
     color: white !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: 15px;
     padding: 12px;
     font-weight: 600;
-    backdrop-filter: blur(5px); 
+    backdrop-filter: blur(5px);
     transition: background 0.3s ease;
 }
 
-.btn-negro-transparente:hover {
-    background-color: rgba(0, 0, 0, 0.45) !important;
-}
 
-
-.italic {
-    font-style: italic;
-}
-
+.italic { font-style: italic; }
 
 .container-fluid, .container {
     background-color: transparent !important;
 }
 
-nav.navbar {
-    background-color: rgba(255, 255, 255, 0.1) !important;
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+@keyframes slideUpVitta {
+  from { 
+    transform: translateY(100px); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateY(0); 
+    opacity: 1; 
+  }
+}
+
+.vitta-route-card {
+  animation: slideUpVitta 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+}
+
+
+.vitta-route-card h6, 
+.vitta-route-card span, 
+.vitta-route-card div {
+    color: var(--vitta-text-dark) !important;
+}
+
+
+.vitta-route-card i {
+    margin-bottom: 4px;
 }
