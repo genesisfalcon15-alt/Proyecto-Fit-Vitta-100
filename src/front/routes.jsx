@@ -17,6 +17,7 @@ export const AppRoutes = () => {
       <Route path="/signin" element={<Signin />} />
       <Route path="/Imc" element={<Imc />} />
       <Route element={<h1>Not found!</h1>} path="*" />
+      <Route path="/shoppinglist" element={<ShoppingList />} />
     </Routes>
   );
 };
