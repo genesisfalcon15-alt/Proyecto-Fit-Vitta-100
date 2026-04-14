@@ -3,7 +3,13 @@ import React from "react";
 export const Navbar = () => {
     return (
 
-        <nav className="navbar navbar-light px-3" style={{ backgroundColor: "transparent", paddingTop: "20px" }}>
+        <nav className="navbar navbar-light px-3" style={{
+            backgroundColor: "transparent",
+            paddingTop: "20px",
+            position: "relative",
+            zIndex: 99999,
+            width: "100%"
+        }}>
             <div className="container-fluid d-flex justify-content-between align-items-center">
 
                 <div className="d-flex flex-column align-items-center">

@@ -5,10 +5,11 @@ import { Buscador } from "./pages/Buscador.jsx";
 import { Imc } from "./pages/Imc.jsx";
 import Signup from "./pages/Signup.jsx";
 import Signin from "./pages/Signin.jsx";
+import Conocenos from "./pages/Conocenos.jsx";
 
 
 
-export const AppRoutes = () => {
+export const AppRoutes = ({ cardGlassStyle, colorVerdeVitta }) => {
   return (
     <Routes>
       <Route element={<Home />} path="/" />
@@ -16,6 +17,9 @@ export const AppRoutes = () => {
       <Route path="/signup" element={<Signup />} />
       <Route path="/signin" element={<Signin />} />
       <Route path="/Imc" element={<Imc />} />
+      <Route path="/conocenos" element={<Conocenos cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />}
+      />
+
       <Route element={<h1>Not found!</h1>} path="*" />
     </Routes>
   );
