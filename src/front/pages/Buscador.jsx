@@ -1,11 +1,54 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Mapa } from "./Mapa.jsx";
+import Mapa from "./Mapa.jsx";
+import TarjetaDestino from "./TarjetaDestino.jsx";
 
 export const Buscador = () => {
     const [query, setQuery] = useState("");
     const [sugerencias, setSugerencias] = useState([]);
+    const [buscando, setBuscando] = useState(false);
+    const [destino, setDestino] = useState(null);
+    const [tiendas, setTiendas] = useState([]);
     const mapRef = useRef();
 
+    const colorVerdeVitta = "#6e8a4f";
+
+    const categorias = [
+        { id: "super", label: "Supermercado", icon: "fa-shopping-cart" },
+        { id: "bio", label: "Tienda Bio", icon: "fa-leaf" },
+        { id: "fruit", label: "Frutería", icon: "fa-apple-alt" },
+        { id: "market", label: "Mercados", icon: "fa-store" },
+    ];
+
+    // tiendas en el mapa (Overpass API)
+    const buscarTiendasCercanas = async (lat, lon) => {
+        setBuscando(true);
+        try {
+            const queryOverpass = `[out:json];node["shop"="supermarket"](around:1500,${lat},${lon});out;`;
+            const response = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(queryOverpass)}`);
+            const data = await response.json();
+
+            const tiendasMapeadas = data.elements.map(item => ({
+                id: item.id,
+                nombre: item.tags.name || "Supermercado",
+                lat: item.lat,
+                lon: item.lon
+            }));
+
+            setTiendas(tiendasMapeadas);
+        } catch (error) {
+            console.error("Error buscando tiendas", error);
+        } finally {
+            setBuscando(false);
+        }
+    };
+
+    const manejarClickCategoria = (catId, label) => {
+        if (catId === "super" && destino) {
+            buscarTiendasCercanas(destino.lat, destino.lon);
+        } else {
+            setQuery(label);
+        }
+    };
 
     {/* Este useEffect se encarga de obtener las sugerencias de búsqueda cada vez que el query cambia */ }
     useEffect(() => {
@@ -14,146 +57,155 @@ export const Buscador = () => {
                 setSugerencias([]);
                 return;
             }
-
-
+            setBuscando(true);
             try {
-                const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=5`);
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`
+                );
                 const data = await response.json();
                 setSugerencias(data);
             } catch (error) {
-                console.error("Error en autocompletado:", error);
+                console.error("Error en autocompletado", error);
+            } finally {
+                setBuscando(false);
             }
         };
-
 
         const timeout = setTimeout(fetchSugerencias, 300); // aqui se Espera el error 300! después de que el usuario deje de escribir
         return () => clearTimeout(timeout); // con este limpio el timeout si el usuario sigue escribiendo antes de los 300.
     }, [query]);
 
-
-
     const seleccionarDireccion = (item) => {
+        const lat = parseFloat(item.lat);
+        const lon = parseFloat(item.lon);
+
+        setTiendas([]);
+        setDestino({ nombre: item.display_name.split(',')[0], lat, lon });
         setQuery(item.display_name);
         setSugerencias([]);
+
         // aqui declaro las coordenadas del item seleccionado y muevo el mapa a esa ubicación
         if (mapRef.current) {
-            mapRef.current.moverA(parseFloat(item.lat), parseFloat(item.lon));
+            mapRef.current.moverA(lat, lon);
+        }
+    };
+
+    const obtenerUbicacionActual = () => {
+        if (navigator.geolocation) {
+            setBuscando(true);
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const { latitude, longitude } = pos.coords;
+
+                    setTiendas([]);
+
+                    if (mapRef.current) {
+                        mapRef.current.moverA(latitude, longitude);
+                    }
+
+                    setQuery("Mi ubicación actual");
+                    setDestino({ nombre: "Tu ubicación", lat: latitude, lon: longitude });
+                    setBuscando(false);
+                },
+                () => setBuscando(false)
+            );
         }
     };
 
     return (
-        <div className="container-fluid p-0 d-flex flex-column" style={{ minHeight: "auto" }}>
-            <div className="mt-4 mb-4 px-3">
-                <h2>Buscador VITTA</h2>
-            </div>
+        <div className="container-fluid p-3" style={{ minHeight: "100vh", fontFamily: "'Poppins', sans-serif" }}>
+            <h2 className="fw-bold mb-4" style={{ color: "white", letterSpacing: "-1px" }}>Buscador VITTA</h2>
 
             {/* personalización del input */}
-            <div className="position-relative px-3 mb-4">
-                <div className="d-flex align-items-center bg-white p-3 shadow-sm" style={{ borderRadius: "15px" }}>
-                    <i className="fas fa-search me-3 text-success"></i>
+            <div className="d-flex gap-2 mb-3">
+                <div className="d-flex align-items-center bg-white p-3 shadow-sm flex-grow-1" style={{ borderRadius: "18px" }}>
+                    <i className={`fas ${buscando ? "fa-circle-notch fa-spin" : "fa-search"} me-3`} style={{ color: colorVerdeVitta }}></i>
                     <input
                         type="text"
                         className="form-control border-0 p-0"
-                        placeholder="Busca una dirección..."
+                        placeholder="¿A dónde vamos?"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        style={{ boxShadow: "none" }}
+                        style={{ boxShadow: "none", fontWeight: "500", background: "transparent" }}
                     />
                 </div>
 
-                {/* el bloque encargado de mostrar las sugerecias*/}
-
-                {sugerencias.length > 0 && (
-                    <ul className="list-group position-absolute w-100 shadow-lg" style={{ zIndex: 1050, borderRadius: "15px", marginTop: "5px" }}>
-                        {sugerencias.map((item, index) => (
-                            <li
-                                key={index}
-                                className="list-group-item list-group-item-action border-0"
-                                onClick={() => seleccionarDireccion(item)}
-                                style={{ cursor: "pointer", fontSize: "14px" }}>
-                                <i className="fas fa-map-marker-alt me-2 text-muted"></i>
-                                {item.display_name}
-                            </li>
-                        ))}
-                    </ul>
-                )}
+                <button
+                    onClick={obtenerUbicacionActual}
+                    style={{
+                        width: "55px",
+                        height: "55px",
+                        borderRadius: "18px",
+                        border: "none",
+                        backgroundColor: "white",
+                        color: colorVerdeVitta,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+                        cursor: "pointer"
+                    }}
+                >
+                    <i className="fas fa-location-arrow"></i>
+                </button>
             </div>
 
-            <Mapa ref={mapRef} />
-
-            {/* esta es la sección que he creado para Tiendas Favoritas / Frecuentes */}
-            <div className="px-3 mt-4">
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                    <p className="mb-0" style={{
-                        color: "rgba(255,255,255,0.8)",
-                        fontSize: "14px",
-                        fontWeight: "bold",
-                        letterSpacing: "1px",
-                        textTransform: "uppercase"
-                    }}>
-                        Tiendas Frecuentes
-                    </p>
-                    <i className="fas fa-star text-warning" style={{ fontSize: "12px" }}></i>
-                </div>
-
-                {/* Contenedor de scroll horizontal para las tiendas */}
-                <div className="d-flex gap-3 pb-2" style={{ overflowX: "auto", scrollbarWidth: "none" }}>
-
-                    {/* Tienda 1 */}
-                    <div style={{
-                        minWidth: "160px",
-                        backgroundColor: "rgba(255, 255, 255, 0.15)",
-                        borderRadius: "15px",
-                        padding: "12px",
-                        border: "1px solid rgba(255, 255, 255, 0.2)",
-                        backdropFilter: "blur(5px)"
-                    }}>
-                        <div className="d-flex justify-content-between align-items-start mb-2">
-                            <div className="bg-white rounded-circle d-flex align-items-center justify-content-center" style={{ width: "35px", height: "35px" }}>
-                                <i className="fas fa-store text-success" style={{ fontSize: "18px" }}></i>
-                            </div>
-                            <span className="badge rounded-pill bg-success" style={{ fontSize: "9px" }}>Sano</span>
-                        </div>
-                        <p className="mb-0 text-white fw-bold" style={{ fontSize: "13px" }}>EcoMarket Sol</p>
-                        <p className="mb-0" style={{ color: "rgba(255,255,255,0.6)", fontSize: "11px" }}>A 300m de ti</p>
-                    </div>
-
-                    {/* Tienda 2 */}
-                    <div style={{
-                        minWidth: "160px",
-                        backgroundColor: "rgba(255, 255, 255, 0.15)",
-                        borderRadius: "15px",
-                        padding: "12px",
-                        border: "1px solid rgba(255, 255, 255, 0.2)",
-                        backdropFilter: "blur(5px)"
-                    }}>
-                        <div className="d-flex justify-content-between align-items-start mb-2">
-                            <div className="bg-white rounded-circle d-flex align-items-center justify-content-center" style={{ width: "35px", height: "35px" }}>
-                                <i className="fas fa-apple-alt text-danger" style={{ fontSize: "18px" }}></i>
-                            </div>
-                            <span className="badge rounded-pill bg-warning text-dark" style={{ fontSize: "9px" }}>Oferta</span>
-                        </div>
-                        <p className="mb-0 text-white fw-bold" style={{ fontSize: "13px" }}>Frutas Doña Ana</p>
-                        <p className="mb-0" style={{ color: "rgba(255,255,255,0.6)", fontSize: "11px" }}>A 1.2km de ti</p>
-                    </div>
-
-                    {/* Card para añadir más */}
-                    <div className="d-flex align-items-center justify-content-center" style={{
-                        minWidth: "60px",
-                        backgroundColor: "rgba(255, 255, 255, 0.05)",
-                        borderRadius: "15px",
-                        border: "1px dashed rgba(255, 255, 255, 0.3)"
-                    }}>
-                        <i className="fas fa-plus text-white-50"></i>
-                    </div>
-                </div>
+            <div className="mb-4" style={{ display: "flex", gap: "10px", overflowX: "auto", paddingBottom: "10px", scrollbarWidth: "none" }}>
+                {categorias.map(cat => (
+                    <button
+                        key={cat.id}
+                        onClick={() => manejarClickCategoria(cat.id, cat.label)}
+                        style={{
+                            whiteSpace: "nowrap",
+                            padding: "8px 16px",
+                            borderRadius: "20px",
+                            border: "none",
+                            backgroundColor: "rgba(255,255,255,0.2)",
+                            color: "white",
+                            fontSize: "13px",
+                            fontWeight: "600",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "8px",
+                            cursor: "pointer",
+                            backdropFilter: "blur(5px)"
+                        }}
+                    >
+                        <i className={`fas ${cat.icon}`}></i>
+                        {cat.label}
+                    </button>
+                ))}
             </div>
 
-            <div style={{ height: "40px" }}></div>
+            {/* este es el  bloque encargado de mostrar las sugerecias*/}
+            {sugerencias.length > 0 && (
+                <ul className="list-group shadow-lg mb-3" style={{ borderRadius: "18px", overflow: "hidden", border: "none", position: "relative", zIndex: 1000 }}>
+                    {sugerencias.map((item, index) => (
+                        <li
+                            key={index}
+                            className="list-group-item list-group-item-action py-3"
+                            onClick={() => seleccionarDireccion(item)}
+                            style={{ cursor: "pointer", fontSize: "13px" }}
+                        >
+                            <i className="fas fa-map-marker-alt me-2 text-muted"></i>
+                            {item.display_name}
+                        </li>
+                    ))}
+                </ul>
+            )}
 
+            {/* referencia del mapa */}
+            <Mapa ref={mapRef} tiendas={tiendas} />
 
+            {/* componente tarjeta destino */}
+            <TarjetaDestino
+                destino={destino}
+                alCerrar={() => { setDestino(null); setTiendas([]); }}
+                colorVerdeVitta={colorVerdeVitta}
+            />
+
+            <div style={{ height: "80px" }}></div>
         </div>
-
-
     );
 };
