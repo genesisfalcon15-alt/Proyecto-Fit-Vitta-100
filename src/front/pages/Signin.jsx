@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const [correo, setCorreo] = useState("");
@@ -72,9 +73,9 @@ const Login = () => {
 
         <p className="text-center mt-3 text-dark">
           ¿No tienes cuenta?{" "}
-          <a href="#" style={{ color: "#6e8b4f", fontWeight: "bold" }}>
+          <Link to="/signup" style={{ color: "#6e8b4f", fontWeight: "bold" }}>
             Regístrate
-          </a>
+          </Link>
         </p>
       </div>
     </div>
