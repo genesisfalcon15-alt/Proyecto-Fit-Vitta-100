@@ -6,7 +6,7 @@ import { Footer } from "../components/Footer.jsx";
 import { Imc } from "./Imc.jsx";
 import Signup from "./Signup.jsx";
 import Signin from "./Signin.jsx";
-
+import Private from "./Private.jsx";
 
 
 
