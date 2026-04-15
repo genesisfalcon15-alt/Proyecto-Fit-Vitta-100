@@ -8,7 +8,10 @@ const Signup = () => {
     email: "",
     confirmEmail: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
+    altura: "",
+    peso: "",
+    genero: ""
   });
 
   const [imageUrl, setImageUrl] = useState("");
@@ -25,21 +28,39 @@ const Signup = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const response = await fetch("http://localhost:3000/api/signup", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      ...form,
-      image: imageUrl
-    })
-  });
+    try {
+      const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          nombre: form.nombre,
+          apellidos: form.apellidos,
+          email: form.email,
+          password: form.password,
+          altura: form.altura,
+          peso: form.peso,
+          genero: form.genero,
+          image: imageUrl
+        })
+      });
 
-  const data = await response.json();
-  console.log(data);
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Usuario creado correctamente ✅");
+        window.location.href = "/login";
+      } else {
+        alert(data.msg || "Error al registrarse");
+      }
+
+    } catch (error) {
+      console.error(error);
+      alert("Error de conexión con el servidor");
+    }
   };
 
   return (
@@ -58,8 +79,6 @@ const Signup = () => {
           backdropFilter: "blur(10px)"
         }}
       >
-
-
         <div className="text-center mb-3">
           <h2 style={{ fontWeight: "700", color: "#3b3b3b" }}>
             🏋️ Sign Up
@@ -68,7 +87,6 @@ const Signup = () => {
             Únete a Fit Vitta y empieza tu progreso
           </p>
         </div>
-
 
         <div className="text-center mb-3">
           {imageUrl ? (
@@ -107,7 +125,6 @@ const Signup = () => {
           <CloudinaryUpload onUpload={handleUpload} />
         </div>
 
-        {/* FORM */}
         <form onSubmit={handleSubmit}>
 
           <div className="row">
@@ -120,7 +137,6 @@ const Signup = () => {
                 style={{ borderRadius: "10px" }}
               />
             </div>
-
             <div className="col-md-6 mb-2">
               <input
                 className="form-control"
@@ -159,14 +175,48 @@ const Signup = () => {
 
           <input
             type="password"
-            className="form-control mb-3"
+            className="form-control mb-2"
             placeholder="Confirmar contraseña"
             name="confirmPassword"
             onChange={handleChange}
             style={{ borderRadius: "10px" }}
           />
 
-          {/* BUTTON */}
+          <div className="row mb-2">
+            <div className="col-md-6">
+              <input
+                className="form-control"
+                placeholder="Altura (cm)"
+                name="altura"
+                type="number"
+                onChange={handleChange}
+                style={{ borderRadius: "10px" }}
+              />
+            </div>
+            <div className="col-md-6">
+              <input
+                className="form-control"
+                placeholder="Peso (kg)"
+                name="peso"
+                type="number"
+                onChange={handleChange}
+                style={{ borderRadius: "10px" }}
+              />
+            </div>
+          </div>
+
+          <select
+            className="form-control mb-3"
+            name="genero"
+            onChange={handleChange}
+            style={{ borderRadius: "10px", color: form.genero ? "#3b3b3b" : "#888" }}
+          >
+            <option value="">Género</option>
+            <option value="masculino">Masculino</option>
+            <option value="femenino">Femenino</option>
+            <option value="otro">Otro</option>
+          </select>
+
           <button
             type="submit"
             className="btn w-100"
