@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 export const Navbar = () => {
     return (
@@ -29,7 +30,7 @@ export const Navbar = () => {
 
                 <div className="d-flex align-items-center gap-3">
                     <i className="fas fa-search fa-lg" style={{ color: "white", cursor: "pointer" }}></i>
-                    <i className="fas fa-user-circle fa-2x" style={{ color: "white", cursor: "pointer" }}></i>
+                    <Link to="/signin" className="fas fa-user-circle fa-2x" style={{ color: "white", cursor: "pointer" }}></Link>
                 </div>
             </div>
         </nav>
