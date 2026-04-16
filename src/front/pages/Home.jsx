@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import RetoDiario from "./RetoDiario";
+import RetoDiario from "./RetoDiario.jsx";
+import { RecetarioVitta } from "./RecetarioVitta.jsx";
 
 
 export const Home = () => {
 	const colorVerdeVitta = "#6e8a4f";
 
-	//  efecto vidrio
+	// estado para abrir/cerrar el recetario nuevo
+	const [mostrarRecetario, setMostrarRecetario] = useState(false);
+
+	// efecto vidrio 
 	const cardGlassStyle = {
 		background: "rgba(255, 255, 255, 0.82)",
 		backdropFilter: "blur(15px)",
@@ -14,38 +18,19 @@ export const Home = () => {
 		borderRadius: "30px",
 		border: "1px solid rgba(255, 255, 255, 0.4)",
 		padding: "25px",
-		boxShadow: "0 15px 35px rgba(0,0,0,0.1)"
-	};
-
-	const manejarCompartir = async () => {
-		if (navigator.share) {
-			try {
-				await navigator.share({
-					title: "VITTA - Ahorro y Salud",
-					text: "¡Mira esta app para ahorrar en el súper y cuidar tu salud!",
-					url: window.location.href
-				});
-				console.log("Contenido compartido con éxito");
-			} catch (error) {
-				console.log("Error al compartir:", error);
-			}
-		} else {
-			alert("Copiado al portapapeles: " + window.location.href);
-			navigator.clipboard.writeText(window.location.href);
-		}
+		boxShadow: "0 15px 35px rgba(0,0,0,0.1)",
 	};
 
 	return (
 		<div
 			className="container-fluid p-0 d-flex flex-column"
-			style={{ minHeight: "100vh", paddingBottom: "100px" }}
-		>
+			style={{ minHeight: "100vh", paddingBottom: "100px" }}>
 
+			{/* cabecera principal */}
 			<div className="px-4 mt-5 mb-4">
 				<span
 					className="text-white-50 text-uppercase fw-bold"
-					style={{ fontSize: "12px", letterSpacing: "2px" }}
-				>
+					style={{ fontSize: "12px", letterSpacing: "2px" }}>
 					Bienvenido a
 				</span>
 
@@ -56,9 +41,8 @@ export const Home = () => {
 						fontWeight: "800",
 						letterSpacing: "-1.5px",
 						marginTop: "5px",
-						lineHeight: "1"
-					}}
-				>
+						lineHeight: "1",
+					}}>
 					VITTA
 				</h2>
 
@@ -67,9 +51,8 @@ export const Home = () => {
 						color: "rgba(255,255,255,0.7)",
 						fontSize: "15px",
 						marginTop: "10px",
-						fontWeight: "400"
-					}}
-				>
+						fontWeight: "400",
+					}}>
 					"Vive sano, compra sabio"
 				</p>
 			</div>
@@ -86,18 +69,16 @@ export const Home = () => {
 							alignItems: "center",
 							justifyContent: "space-between",
 							border: "1px solid rgba(255,255,255,0.2)",
-							marginBottom: "20px"
-						}}
-					>
+							marginBottom: "20px",
+						}}>
 						<div>
 							<h3
 								style={{
 									color: "white",
 									fontSize: "22px",
 									fontWeight: "800",
-									margin: 0
-								}}
-							>
+									margin: 0,
+								}}>
 								Compra Inteligente
 							</h3>
 
@@ -105,43 +86,35 @@ export const Home = () => {
 								style={{
 									color: "rgba(255,255,255,0.8)",
 									fontSize: "12px",
-									margin: 0
-								}}
-							>
-								Busca Tu Ahorro mas cercano
+									margin: 0,
+								}}>
+								Busca Tu Ahorro más cercano
 							</p>
 						</div>
 
-						<i
-							className="fas fa-shopping-basket text-white"
-							style={{ fontSize: "40px", opacity: 0.8 }}
-						></i>
+						<i className="fas fa-shopping-basket text-white"
+							style={{ fontSize: "40px", opacity: 0.8 }}>
+						</i>
 					</div>
 				</Link>
 
-				{/* botones secundario */}
-
+				{/* botones secundarios */}
 				<div className="d-flex gap-3 mb-4">
+
 					<Link to="/imc" className="flex-grow-1 text-decoration-none">
 						<div
 							style={{
 								...cardGlassStyle,
 								padding: "20px",
-								textAlign: "center"
-							}}
-						>
-							<i
-								className="fas fa-weight-hanging mb-2"
-								style={{
-									color: colorVerdeVitta,
-									fontSize: "20px"
-								}}
-							></i>
-
+								textAlign: "center",
+							}}>
+							<i className="fas fa-weight-hanging mb-2" style={{
+								color: colorVerdeVitta,
+								fontSize: "20px"
+							}}></i>
 							<span
 								className="d-block fw-bold"
-								style={{ color: "#222", fontSize: "14px" }}
-							>
+								style={{ color: "#222", fontSize: "14px" }}>
 								Mi IMC
 							</span>
 						</div>
@@ -152,21 +125,13 @@ export const Home = () => {
 							style={{
 								...cardGlassStyle,
 								padding: "20px",
-								textAlign: "center"
-							}}
-						>
-							<i
-								className="fas fa-list-ul mb-2"
-								style={{
-									color: colorVerdeVitta,
-									fontSize: "20px"
-								}}
-							></i>
-
+								textAlign: "center",
+							}}>
+							<i className="fas fa-list-ul mb-2"
+								style={{ color: colorVerdeVitta, fontSize: "20px" }}></i>
 							<span
 								className="d-block fw-bold"
-								style={{ color: "#222", fontSize: "14px" }}
-							>
+								style={{ color: "#222", fontSize: "14px" }}>
 								Mi Lista
 							</span>
 						</div>
@@ -174,11 +139,11 @@ export const Home = () => {
 				</div>
 			</div>
 
-			{/* reto diario del usuario  */}
+			{/* reto diario del usuario */}
 			<RetoDiario
 				cardGlassStyle={cardGlassStyle}
-				colorVerdeVitta={colorVerdeVitta}
-			/>
+				colorVerdeVitta={colorVerdeVitta} />
+
 			{/* botones inferiores */}
 			<div className="w-100 px-4 mt-auto">
 				<div className="d-flex justify-content-center gap-3">
@@ -187,8 +152,7 @@ export const Home = () => {
 					<Link
 						to="/conocenos"
 						className="flex-grow-1"
-						style={{ textDecoration: "none" }}
-					>
+						style={{ textDecoration: "none" }}>
 						<button
 							className="btn w-100 py-3 shadow-sm"
 							style={{
@@ -196,41 +160,32 @@ export const Home = () => {
 								color: "white",
 								borderRadius: "20px",
 								border: "1px solid rgba(255,255,255,0.1)",
-								fontWeight: "700"
-							}}
-						>
+								fontWeight: "700",
+							}}>
 							<i className="fas fa-users me-2"></i> Conócenos
 						</button>
 					</Link>
 
-					{/* boton para compartir */}
+					{/* recetario sustituye a compartir */}
 					<button
 						className="btn flex-grow-1 py-3 shadow-sm"
-						onClick={manejarCompartir}
+						onClick={() => setMostrarRecetario(true)}
 						style={{
 							backgroundColor: "rgba(0,0,0,0.2)",
 							color: "white",
 							borderRadius: "20px",
 							border: "1px solid rgba(255,255,255,0.1)",
-							fontWeight: "700"
-						}}
-					>
-						<i className="fas fa-share-alt me-2"></i> Comparte
+							fontWeight: "700",
+						}}>
+						<i className="fas fa-utensils me-2"></i> Recetario
 					</button>
 				</div>
 			</div>
+
+			{/* modal del recetario */}
+			{mostrarRecetario && (
+				<RecetarioVitta alCerrar={() => setMostrarRecetario(false)} />
+			)}
 		</div>
 	);
 };
-
-
-
-
-
-
-
-
-
-
-
-
