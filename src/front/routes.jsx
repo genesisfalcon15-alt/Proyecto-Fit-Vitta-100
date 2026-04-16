@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { Home } from "./pages/Home";
+import Lista from "./pages/Lista";
 import { Buscador } from "./pages/Buscador.jsx";
 import { Imc } from "./pages/Imc.jsx";
 import Signup from "./pages/Signup.jsx";
@@ -19,9 +20,9 @@ export const AppRoutes = ({ cardGlassStyle, colorVerdeVitta }) => {
       <Route path="/Imc" element={<Imc />} />
       <Route path="/conocenos" element={<Conocenos cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />}
       />
-
-      <Route element={<h1>Not found!</h1>} path="*" />
       <Route path="/lista" element={<Lista />} />
+      <Route element={<h1>Not found!</h1>} path="*" />
+
     </Routes>
   );
 };
