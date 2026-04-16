@@ -2,20 +2,41 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Login = () => {
-  const [correo, setCorreo] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    if (!correo || !password) {
+    if (!form.email || !form.password) {
       setError("Todos los campos son obligatorios");
       return;
     }
 
-    alert("Formulario enviado ✅");
+    try {
+      const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/api/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        sessionStorage.setItem("token", data.token);
+        window.location.href = "/private";
+      } else {
+        setError(data.msg || "Error al iniciar sesión");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Error de conexión con el servidor");
+    }
   };
 
   return (
@@ -39,8 +60,9 @@ const Login = () => {
               type="email"
               className="form-control"
               placeholder="Correo"
-              value={correo}
-              onChange={(e) => setCorreo(e.target.value)}
+              name="email"
+              value={form.email}
+              onChange={handleChange}
             />
           </div>
 
@@ -49,8 +71,9 @@ const Login = () => {
               type="password"
               className="form-control"
               placeholder="Contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              value={form.password}
+              onChange={handleChange}
             />
           </div>
 
