@@ -1,289 +1,214 @@
 import React, { useState, useEffect } from "react";
-import { ComposicionCorporal } from "./ComposicionCorporal";
-import { GraficaProgreso } from "./GraficasProgresos";
 import { AnalisisDetallado } from "./AnalisisDetallado";
+import { PlanificadorSemanal } from "./PlanificadorSemanal";
+import { RutinaIA } from "./RutinaIA";
 
-//componente principal 
 export const Imc = () => {
     const colorVerdeVitta = "#6e8a4f";
 
-    const [editandoPeso, setEditandoPeso] = useState(false); //usesState, lo utilizo para guardar datos dinamicos y asi poder controlar lo que se muestra.
-    const [editandoAltura, setEditandoAltura] = useState(false);
+
+    const [pesoConfirmado, setPesoConfirmado] = useState(100);
+    const [alturaConfirmado, setAlturaConfirmado] = useState(175);
     const [tempPeso, setTempPeso] = useState(100);
     const [tempAltura, setTempAltura] = useState(175);
+
+    const [minutosEntreno, setMinutosEntreno] = useState(45);
+    const [diasEntreno, setDiasEntreno] = useState(3);
+
+    const [guardando, setGuardando] = useState(false);
     const [mostrarAnalisis, setMostrarAnalisis] = useState(false);
+    const [verRutina, setVerRutina] = useState(false);
 
     useEffect(() => {
-        if (mostrarAnalisis === true) {
-            document.body.style.overflow = "hidden";
+        const app = document.getElementById("app-container");
+
+        if (!app) return;
+
+        if (mostrarAnalisis) {
+            app.style.overflow = "hidden";
         } else {
-            document.body.style.overflow = "auto";
+            app.style.overflow = "auto";
         }
 
         return () => {
-            document.body.style.overflow = "auto";
+            app.style.overflow = "auto";
         };
     }, [mostrarAnalisis]);
 
-    const [datosHistorial] = useState([ //historial de datos.
+    const [datosHistorial] = useState([
         { fecha: "01/04", peso: 105, objetivo: 90 },
         { fecha: "08/04", peso: 102, objetivo: 90 },
         { fecha: "15/04", peso: 103, objetivo: 90 },
         { fecha: "22/04", peso: 100, objetivo: 90 },
     ]);
-    const datosUsuario = {
-        peso: 100,
-        altura: 175,
-        grasa: 22,
+
+    const imcCalculado = (pesoConfirmado / ((alturaConfirmado / 100) ** 2)).toFixed(1);
+
+    const calcularPosicion = (valor) => {
+        const min = 15; const max = 35;
+        const porcentaje = ((valor - min) / (max - min)) * 100;
+        return Math.min(Math.max(porcentaje, 5), 95);
     };
 
-    const cardGlassStyle = {
-        background: "rgba(255, 255, 255, 0.9)",
-        backdropFilter: "blur(12px)",
+    const handleGuardarCambios = () => {
+        setGuardando(true);
+        setTimeout(() => {
+            setPesoConfirmado(parseFloat(tempPeso));
+            setAlturaConfirmado(parseFloat(tempAltura));
+            setGuardando(false);
+        }, 800);
+    };
+
+    const hayCambios = parseFloat(tempPeso) !== pesoConfirmado || parseFloat(tempAltura) !== alturaConfirmado;
+
+    const cardStyle = {
+        background: "rgba(255, 255, 255, 0.98)",
         borderRadius: "24px",
         padding: "20px",
         marginBottom: "16px",
-        width: "100%",
-        boxSizing: "border-box",
-        border: "1px solid rgba(255, 255, 255, 0.3)",
+        boxShadow: "0 8px 30px rgba(0,0,0,0.08)"
     };
 
     return (
-        <div style={{
-            width: "100%",
-            flex: 1,
-            position: "relative",
-            minHeight: "100vh",
-        }}>
+        <div style={{ width: "100%", flex: 1 }}>
+
             {mostrarAnalisis && (
                 <AnalisisDetallado
-                    usuario={datosUsuario}
-                    alCerrar={() => setMostrarAnalisis(false)} />)}
+                    usuario={{
+                        peso: pesoConfirmado,
+                        altura: alturaConfirmado,
+                        grasa: 22,
+                        minutos: minutosEntreno,
+                        dias: diasEntreno
+                    }}
+                    historial={datosHistorial}
+                    alCerrar={() => setMostrarAnalisis(false)}
+                />
+            )}
+
+            {verRutina && (
+                <RutinaIA
+                    imc={imcCalculado}
+                    alCerrar={() => setVerRutina(false)}
+                />
+            )}
 
             <style>
-                {`.texto-imc-labels span {
-            color:#444444 !important;
-            opacity: 1 !important;
-            font-weight: 800 !important;
-            -webkit-text-fill-color: #444444 !important;}`}
+                {`
+          #app-container .seccion-escritura span, 
+          #app-container .seccion-escritura p,
+          #app-container .seccion-escritura h4 {
+            color: #333333 !important;
+            font-family: 'Poppins', sans-serif;
+          }
+          .input-vitta-new {
+            background: #f0f2f0; border: none; border-radius: 12px;
+            color: #333 !important; width: 85px; font-weight: 800;
+            font-size: 22px; text-align: center; padding: 10px 5px;
+          }
+        `}
             </style>
 
-            {/*header*/}
             <div style={{ padding: "30px 20px 10px 20px" }}>
-                <h2 style={{
-                    fontSize: "28px",
-                    fontWeight: "800",
-                    color: "white",
-                    margin: 0,
-                    fontFamily: 'Poppins'
-                }}>Tu Estado Vitta</h2>
-                <p style={{
-                    color: "rgba(255,255,255,0.7)",
-                    fontSize: "14px",
-                    margin: "5px 0 0 0"
-                }}>Resumen de tu salud actual</p>
+                <h2 style={{ fontSize: "28px", fontWeight: "800", color: "white", margin: 0 }}>Resumen Saludable</h2>
+                <p style={{ color: "rgba(255,255,255,0.7)", fontSize: "14px" }}>Datos y Consejos</p>
             </div>
 
-            <div style={{
-                padding: "0 20px",
-                width: "100%",
-                boxSizing: "border-box"
-            }}>
+            <div style={{ padding: "0 20px" }} className="seccion-escritura">
 
-                {/*peso y altura*/}
-                <div style={{
-                    display: "flex",
-                    gap: "12px",
-                    marginBottom: "16px"
-                }}>
-                    <div style={{
-                        flex: 1,
-                        backgroundColor: "rgba(255,255,255,0.2)",
-                        borderRadius: "20px",
-                        padding: "15px",
-                        textAlign: "center",
-                        border: "1px solid rgba(255,255,255,0.2)",
-                        position: "relative"
-                    }}>
+                <div style={cardStyle}>
+                    <h4 style={{ marginBottom: "15px", fontSize: "16px", fontWeight: '800' }}>Mis Medidas e IMC</h4>
 
-                        <span
-                            style={{
-                                color: "rgba(255,255,255,0.6)",
-                                fontSize: "11px",
-                                display: "block"
-                            }}>PESO ACTUAL</span>
-
-                        {editandoPeso ? (
-                            <input type="number" autoFocus value={tempPeso}
-                                onChange={(e) => setTempPeso(Number(e.target.value))} onBlur={() => setEditandoPeso(false)}
-                                style={{
-                                    background: 'transparent',
-                                    border: 'none',
-                                    color: 'white',
-                                    width: '100%',
-                                    fontWeight: '800',
-                                    fontSize: '24px',
-                                    textAlign: 'center',
-                                    outline: 'none'
-                                }} />) : (
-
-                            <strong style={{
-                                color: "white",
-                                fontSize: "24px"
-                            }}> {tempPeso}kg</strong>)}
-                        <button onClick={() => setEditandoPeso(!editandoPeso)}
-                            style={{
-                                position: 'absolute',
-                                top: '8px',
-                                right: '10px',
-                                background: 'none',
-                                border: 'none',
-                                color: 'rgba(255,255,255,0.5)'
-                            }}>
-                            <i className={`fas ${editandoPeso ? 'fa-check text-success' : 'fa-pencil-alt'}`}></i>
-                        </button>
-                    </div>
-
-
-                    <div style={{
-                        flex: 1,
-                        backgroundColor: "rgba(255,255,255,0.2)",
-                        borderRadius: "20px",
-                        padding: "15px",
-                        textAlign: "center",
-                        border: "1px solid rgba(255,255,255,0.2)",
-                        position: "relative"
-                    }}>
-                        <span style={{
-                            color: "rgba(255,255,255,0.6)",
-                            fontSize: "11px",
-                            display: "block"
-                        }}>
-                            ALTURA
-                        </span>
-                        {editandoAltura ? (
-                            <input type="number" autoFocus value={tempAltura}
-                                onChange={(e) => setTempAltura(Number(e.target.value))} onBlur={() => setEditandoAltura(false)}
-                                style={{
-                                    background: 'transparent',
-                                    border: 'none',
-                                    color: 'white',
-                                    width: '100%',
-                                    fontWeight: '800',
-                                    fontSize: '24px',
-                                    textAlign: 'center',
-                                    outline: 'none'
-                                }} />
-                        ) : (
-                            <strong style={{
-                                color: "white",
-                                fontSize: "24px"
-                            }}>
-                                {tempAltura}cm</strong>)}
-                        <button onClick={() => setEditandoAltura(!editandoAltura)}
-                            style={{
-                                position: 'absolute',
-                                top: '8px',
-                                right: '10px',
-                                background: 'none',
-                                border: 'none',
-                                color: 'rgba(255,255,255,0.5)'
-                            }}>
-                            <i className={`fas ${editandoAltura ? 'fa-check text-success' : 'fa-pencil-alt'}`}></i>
-                        </button>
-                    </div>
-                </div>
-
-                {/*IMC CARD*/}
-
-                <div style={cardGlassStyle}>
-                    <div style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        marginBottom: "15px"
-                    }}>
-                        <h4 style={{
-                            fontSize: "16px",
-                            fontWeight: "700",
-                            color: "#333",
-                            margin: 0
-                        }}> Índice de Masa Corporal</h4>
-
-
-                        <div style={{
-                            backgroundColor: colorVerdeVitta,
-                            color: "white",
-                            padding: "4px 10px",
-                            borderRadius: "8px",
-                            fontWeight: "800",
-                            fontSize: "14px"
-                        }}>26.1
+                    <div style={{ display: "flex", justifyContent: "space-around", marginBottom: "20px", alignItems: 'center' }}>
+                        <div style={{ textAlign: "center" }}>
+                            <span style={{ fontSize: "10px", display: "block", marginBottom: '5px' }}>PESO (KG)</span>
+                            <input type="number" className="input-vitta-new" value={tempPeso} onChange={(e) => setTempPeso(e.target.value)} />
+                        </div>
+                        <div style={{ width: '1px', height: '50px', backgroundColor: '#eee' }}></div>
+                        <div style={{ textAlign: "center" }}>
+                            <span style={{ fontSize: "10px", display: "block", marginBottom: '5px' }}>ALTURA (CM)</span>
+                            <input type="number" className="input-vitta-new" value={tempAltura} onChange={(e) => setTempAltura(e.target.value)} />
                         </div>
                     </div>
 
+                    <button
+                        onClick={handleGuardarCambios}
+                        disabled={!hayCambios || guardando}
+                        style={{
+                            background: hayCambios ? colorVerdeVitta : "#eee",
+                            color: hayCambios ? "white" : "#999",
+                            border: "none", borderRadius: "14px", padding: "14px", fontWeight: "800", width: "100%", cursor: 'pointer'
+                        }}
+                    >
+                        {guardando ? "GUARDANDO..." : "ACTUALIZAR"}
+                    </button>
 
-                    <div style={{
-                        position: "relative",
-                        height: "6px",
-                        backgroundColor: "#ccc",
-                        borderRadius: "10px",
-                        margin: "25px 0"
-                    }}>
+                    <hr style={{ border: "none", borderTop: "1px solid #f0f0f0", margin: "25px 0" }} />
+
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+                        <span style={{ fontSize: "14px", fontWeight: '600' }}>TU IMC ACTUAL</span>
+                        <strong style={{ fontSize: "24px", color: colorVerdeVitta, fontWeight: '900' }}>{imcCalculado}</strong>
+                    </div>
+
+                    <div style={{ position: "relative", height: "10px", backgroundColor: "#eee", borderRadius: "10px", margin: "20px 0 10px 0" }}>
+                        <div style={{ position: "absolute", inset: 0, borderRadius: "10px", background: "linear-gradient(to right, #3498db, #2ecc71, #f1c40f, #e74c3c)", opacity: 0.25 }}></div>
                         <div style={{
                             position: "absolute",
-                            left: "60%",
+                            left: `${calcularPosicion(imcCalculado)}%`,
                             top: "50%",
                             transform: "translate(-50%, -50%)",
-                            width: "18px",
-                            height: "18px",
+                            width: "18px", height: "18px",
                             backgroundColor: "white",
-                            border: `3px solid ${colorVerdeVitta}`,
+                            border: `4px solid ${colorVerdeVitta}`,
                             borderRadius: "50%",
-                            boxShadow: "0 2px 5px rgba(0,0,0,0.2)"
-                        }}>
-                        </div>
+                            boxShadow: "0 3px 6px rgba(0,0,0,0.15)",
+                            transition: "left 0.7s cubic-bezier(0.23, 1, 0.32, 1)"
+                        }}></div>
                     </div>
 
-
-                    {/*clases para que el inyectado del css funcione*/}
-                    <div className="texto-imc-labels"
-                        style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            width: "100%"
-                        }}>
-                        <span>BAJO</span>
-                        <span>SALUDABLE</span>
-                        <span>SOBREPESO</span>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10px", fontWeight: '700', color: '#999' }}>
+                        <span>BAJO</span><span>NORMAL</span><span>SOBREPESO</span>
                     </div>
-                </div>
 
-                <div style={cardGlassStyle}>
-                    <h4 style={{
-                        fontSize: "16px",
-                        fontWeight: "700",
-                        color: "#333",
-                        marginBottom: "15px"
-                    }}>Composición Corporal</h4>
-
-                    <ComposicionCorporal grasa={22} musculo={45} agua={58} />
                     <button
-                        onClick={() => setMostrarAnalisis(true)}
-                        className="btn-negro-transparente">
-                        VER ANÁLISIS COMPLETO
+                        onClick={() => setVerRutina(true)}
+                        style={{
+                            marginTop: '25px',
+                            backgroundColor: colorVerdeVitta,
+                            color: 'white',
+                            border: "none", borderRadius: "16px", padding: "16px",
+                            fontWeight: "800", width: "100%", cursor: 'pointer',
+                            fontSize: '12px', letterSpacing: '0.5px'
+                        }}
+                    >
+                        🔥 VER MI RUTINA PERSONALIZADA
                     </button>
                 </div>
 
-                <div style={cardGlassStyle}>
-                    <h4 style={{
-                        fontSize: "16px",
-                        fontWeight: "700",
-                        color: "#333",
-                        marginBottom: "10px"
-                    }}>Evolución de Peso</h4>
-                    <GraficaProgreso datos={datosHistorial} />
+                <div style={cardStyle}>
+                    <h4 style={{ marginBottom: "15px", fontSize: "16px", fontWeight: '800' }}>Mi Plan de Actividad</h4>
+                    <PlanificadorSemanal
+                        colorVerdeVitta={colorVerdeVitta}
+                        onCambioActividad={(mins, dias) => {
+                            setMinutosEntreno(mins);
+                            setDiasEntreno(dias);
+                        }}
+                    />
                 </div>
+
+                <button
+                    onClick={() => setMostrarAnalisis(true)}
+                    style={{
+                        width: "100%", background: colorVerdeVitta, color: "white",
+                        padding: "18px", borderRadius: "20px", border: "none",
+                        fontWeight: "800", fontSize: "14px", letterSpacing: "1px",
+                        marginBottom: "30px", boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
+                        cursor: 'pointer'
+                    }}
+                >
+                    VER INFORME Y EVOLUCIÓN <i className="fas fa-chart-line" style={{ marginLeft: "10px" }}></i>
+                </button>
+
             </div>
         </div>
     );

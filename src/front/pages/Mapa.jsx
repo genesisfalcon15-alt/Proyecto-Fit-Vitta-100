@@ -1,4 +1,4 @@
-import React, { useState, useImperativeHandle, forwardRef } from "react";
+import React, { useState, useImperativeHandle, forwardRef, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, useMap, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -17,9 +17,16 @@ const tiendaIcon = new L.DivIcon({
     iconAnchor: [16, 16],
 });
 
-const RecenterMap = ({ coords }) => {
+const ControladorMapa = ({ coords, tiendas }) => {
     const map = useMap();
-    if (coords) map.setView(coords, 16);
+
+    useEffect(() => {
+        if (coords) {
+            map.setView(coords, 15);
+        }
+        map.invalidateSize();
+    }, [coords, tiendas, map]);
+
     return null;
 };
 
@@ -31,42 +38,52 @@ export const Mapa = forwardRef(({ tiendas = [] }, ref) => {
         moverA: (lat, lon) => {
             setPosition([lat, lon]);
             setCargado(true);
-        }
+        },
     }));
 
     return (
-        <div style={{
-            borderRadius: "28px",
-            overflow: "hidden",
-            height: "450px",
-            border: "1px solid rgba(110, 138, 79, 0.15)",
-            boxShadow: "0 15px 35px rgba(0,0,0,0.06)",
-            position: "relative"
-        }}>
-
+        <div
+            style={{
+                borderRadius: "28px",
+                overflow: "hidden",
+                height: "450px",
+                border: "1px solid rgba(110, 138, 79, 0.15)",
+                boxShadow: "0 15px 35px rgba(0,0,0,0.06)",
+                position: "relative",
+            }}
+        >
             {!cargado && (
-                <div style={{
-                    position: "absolute",
-                    inset: 0,
-                    zIndex: 1000,
-                    backgroundColor: "rgba(255, 255, 255, 0.4)",
-                    backdropFilter: "blur(8px)",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    pointerEvents: "none",
-                    transition: "all 0.5s ease"
-                }}>
-                    <div style={{
-                        backgroundColor: "white",
-                        padding: "15px 25px",
-                        borderRadius: "20px",
-                        boxShadow: "0 10px 20px rgba(0,0,0,0.05)",
-                        textAlign: "center"
-                    }}>
-                        <i className="fas fa-map-marked-alt mb-2" style={{ color: "#6e8a4f", fontSize: "24px" }}></i>
-                        <p style={{ margin: 0, fontSize: "12px", fontWeight: "700", color: "#555", textTransform: "uppercase", letterSpacing: "1px" }}>
+                <div
+                    style={{
+                        position: "absolute",
+                        inset: 0,
+                        zIndex: 1000,
+                        backgroundColor: "rgba(255, 255, 255, 0.4)",
+                        backdropFilter: "blur(8px)",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        pointerEvents: "none",
+                    }}
+                >
+                    <div
+                        style={{
+                            backgroundColor: "white",
+                            padding: "15px 25px",
+                            borderRadius: "20px",
+                            boxShadow: "0 10px 20px rgba(0,0,0,0.05)",
+                            textAlign: "center",
+                        }}
+                    >
+                        <i className="fas fa-map-marked-alt mb-2"
+                            style={{ color: "#6e8a4f", fontSize: "24px" }}></i>
+                        <p style={{
+                            margin: 0,
+                            fontSize: "12px",
+                            fontWeight: "700",
+                            color: "#555"
+                        }}>
                             Explora tu zona VITTA
                         </p>
                     </div>
@@ -78,7 +95,7 @@ export const Mapa = forwardRef(({ tiendas = [] }, ref) => {
                 zoom={13}
                 style={{ height: "100%", width: "100%" }}
                 zoomControl={false}
-                whenReady={() => setTimeout(() => setCargado(true), 1500)}
+                whenReady={() => setTimeout(() => setCargado(true), 800)}
             >
                 <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
 
@@ -86,21 +103,27 @@ export const Mapa = forwardRef(({ tiendas = [] }, ref) => {
 
                 {tiendas.map((tienda) => (
                     <Marker
-                        key={tienda.id}
+                        key={`${tienda.id}-${tienda.lat}`}
                         position={[tienda.lat, tienda.lon]}
                         icon={tiendaIcon}
                     >
                         <Popup>
-                            <div style={{ textAlign: "center", fontFamily: "Poppins" }}>
-                                <span style={{ fontWeight: "800", color: "#6e8a4f" }}>{tienda.nombre}</span>
-                                <br />
-                                <span style={{ fontSize: "10px", color: "#999" }}>Supermercado cercano</span>
+                            <div style={{
+                                textAlign: "center",
+                                fontFamily: "Poppins"
+                            }}>
+                                <span style={{
+                                    fontWeight: "800",
+                                    color: "#6e8a4f"
+                                }}>
+                                    {tienda.nombre}
+                                </span>
                             </div>
                         </Popup>
                     </Marker>
                 ))}
 
-                <RecenterMap coords={position} />
+                <ControladorMapa coords={position} tiendas={tiendas} />
             </MapContainer>
         </div>
     );
