@@ -52,7 +52,7 @@ const Signup = () => {
 
       if (response.ok) {
         alert("Usuario creado correctamente ✅");
-        window.location.href = "/login";
+        window.location.href = "/signin";
       } else {
         alert(data.msg || "Error al registrarse");
       }
