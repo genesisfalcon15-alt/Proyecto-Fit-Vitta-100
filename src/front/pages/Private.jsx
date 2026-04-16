@@ -7,7 +7,7 @@ const Private = () => {
     const token = sessionStorage.getItem("token");
 
     if (!token) {
-      window.location.href = "/login";
+      window.location.href = "/signin";
       return;
     }
 
@@ -17,17 +17,17 @@ const Private = () => {
       .then((res) => {
         if (!res.ok) {
           sessionStorage.removeItem("token");
-          window.location.href = "/login";
+          window.location.href = "/signin";
         }
         return res.json();
       })
       .then((data) => setUser(data.user))
-      .catch(() => window.location.href = "/login");
+      .catch(() => window.location.href = "/signin");
   }, []);
 
   const handleLogout = () => {
     sessionStorage.removeItem("token");
-    window.location.href = "/login";
+    window.location.href = "/signin";
   };
 
   if (!user) return <p className="text-center mt-5">Cargando...</p>;
