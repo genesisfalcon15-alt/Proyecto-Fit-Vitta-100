@@ -7,7 +7,6 @@ import { Imc } from "./pages/Imc.jsx";
 import Signup from "./pages/Signup.jsx";
 import Signin from "./pages/Signin.jsx";
 import Conocenos from "./pages/Conocenos.jsx";
-import Lista from "./pages/Lista.jsx";
 import Private from "./pages/Private.jsx";
 
 
