@@ -181,3 +181,10 @@ label {
     top: 0;
     height: 100%;
 }
+
+.navbar {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 12px 20px; 
+}
