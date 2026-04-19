@@ -4,14 +4,17 @@ import TarjetaDestino from "./TarjetaDestino.jsx";
 import { MisLugaresFavoritos } from "./MisLugaresFavoritos.jsx";
 
 export const Buscador = () => {
+    // Estados principales de búsqueda
     const [query, setQuery] = useState("");
     const [sugerencias, setSugerencias] = useState([]);
     const [buscando, setBuscando] = useState(false);
 
+    // Origen y destino del usuario
     const [origen, setOrigen] = useState({ nombre: "Mi ubicación", lat: 40.4167, lon: -3.7033 });
     const [destino, setDestino] = useState(null);
     const [editandoOrigen, setEditandoOrigen] = useState(false);
 
+    // Datos de tiendas y favoritos
     const [tiendas, setTiendas] = useState([]);
     const [mostrarFavoritos, setMostrarFavoritos] = useState(false);
     const [favoritos, setFavoritos] = useState(() => {
@@ -29,16 +32,6 @@ export const Buscador = () => {
         { id: "market", label: "Mercados", icon: "fa-store" },
     ];
 
-    const toggleFavorito = (sitio) => {
-        setFavoritos(prev => {
-            const existe = prev.find(f => f.nombre === sitio.nombre);
-            let nuevaLista = existe
-                ? prev.filter(f => f.nombre !== sitio.nombre)
-                : [...prev, sitio];
-            localStorage.setItem("vitta_favoritos", JSON.stringify(nuevaLista));
-            return nuevaLista;
-        });
-    };
 
     const buscarLocalesCercanos = async (categoriaLabel) => {
         setSugerencias([]);
@@ -69,21 +62,18 @@ export const Buscador = () => {
                     lat: el.lat,
                     lon: el.lon
                 }));
-
                 setTiendas(locales);
-
-                if (mapRef.current) {
-                    mapRef.current.moverA(locales[0].lat, locales[0].lon);
-                }
+                if (mapRef.current) mapRef.current.moverA(locales[0].lat, locales[0].lon);
             } else {
-                alert("No se encontraron locales en esta zona");
+                alert("No se han encontrado locales en esta zona.");
             }
         } catch (error) {
-            console.error(error);
+            console.error("Error Overpass:", error);
         } finally {
             setBuscando(false);
         }
     };
+
 
     const seleccionarDireccion = (item) => {
         const lat = parseFloat(item.lat || item.latitude);
@@ -94,8 +84,8 @@ export const Buscador = () => {
             setOrigen({ nombre: nombreLimpio, lat, lon });
             setEditandoOrigen(false);
             setQuery("");
-            setTiendas([]);
             if (mapRef.current) mapRef.current.moverA(lat, lon);
+            setTiendas([]);
         } else {
             setDestino({ nombre: nombreLimpio, lat, lon });
             setQuery(nombreLimpio);
@@ -104,6 +94,7 @@ export const Buscador = () => {
         setSugerencias([]);
     };
 
+    // ubicación actual del usuario
     const obtenerUbicacionActual = () => {
         if (navigator.geolocation) {
             setBuscando(true);
@@ -113,10 +104,14 @@ export const Buscador = () => {
                 setOrigen(miUb);
                 if (mapRef.current) mapRef.current.moverA(latitude, longitude);
                 setBuscando(false);
-            }, () => setBuscando(false));
+            }, () => {
+                alert("No se pudo acceder a tu ubicación.");
+                setBuscando(false);
+            });
         }
     };
 
+    // Autocompletado de direcciones
     useEffect(() => {
         const fetchSugerencias = async () => {
             if (query.length < 3 || query === "Mi ubicación actual") {
@@ -134,20 +129,67 @@ export const Buscador = () => {
                 setBuscando(false);
             }
         };
-        const timeout = setTimeout(fetchSugerencias, 300);
+        const timeout = setTimeout(fetchSugerencias, 400);
         return () => clearTimeout(timeout);
     }, [query]);
 
+    // Añadir o quitar favoritos
+    const toggleFavorito = (sitio) => {
+        setFavoritos(prev => {
+            const existe = prev.find(f => f.nombre === sitio.nombre);
+            let nuevaLista = existe
+                ? prev.filter(f => f.nombre !== sitio.nombre)
+                : [...prev, sitio];
+            localStorage.setItem("vitta_favoritos", JSON.stringify(nuevaLista));
+            return nuevaLista;
+        });
+    };
+
     return (
-        <div className="container-fluid p-3" style={{ minHeight: "100vh", fontFamily: "'Poppins', sans-serif" }}>
-            <h2 className="fw-bold mb-4" style={{ color: "white", letterSpacing: "-1px" }}>Buscador VITTA</h2>
+        <div className="container-fluid p-3" style={{
+            minHeight: "100vh",
+            fontFamily: "'Poppins', sans-serif"
+        }}>
+
+
+            <div style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "20px"
+            }}>
+                <h2 className="fw-bold m-0" style={{
+                    color: "white",
+                    letterSpacing: "-1px"
+                }}>Buscador VITTA</h2>
+
+                <button
+                    onClick={() => setMostrarFavoritos(true)}
+                    style={{
+                        padding: "8px 15px",
+                        borderRadius: "12px",
+                        border: "none",
+                        backgroundColor: "rgba(255,255,255,0.15)",
+                        color: "white",
+                        fontSize: "11px",
+                        fontWeight: "700",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        backdropFilter: "blur(10px)"
+                    }}
+                >
+                    <i className="fas fa-star" style={{ color: "#ffc107" }}></i>
+                    MIS SITIOS ({favoritos.length})
+                </button>
+            </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
                 <div style={{
                     display: 'flex', alignItems: 'center', padding: '12px 15px', borderRadius: '18px',
                     backgroundColor: editandoOrigen ? '#fff' : 'rgba(255,255,255,0.7)',
                     border: editandoOrigen ? `2px solid #3498db` : '2px solid transparent',
-                    transition: 'all 0.3s'
+                    transition: '0.3s'
                 }}>
                     <i className="fas fa-dot-circle me-3" style={{ color: '#3498db' }}></i>
                     <input
@@ -156,18 +198,30 @@ export const Buscador = () => {
                         value={editandoOrigen ? query : origen.nombre}
                         onFocus={() => { setEditandoOrigen(true); setQuery(""); }}
                         onChange={(e) => setQuery(e.target.value)}
-                        style={{ border: 'none', background: 'transparent', width: '100%', fontSize: '13px', fontWeight: '600', outline: 'none' }}
+                        style={{
+                            border: 'none',
+                            background: 'transparent',
+                            width: '100%', fontSize: '13px',
+                            fontWeight: '600', outline: 'none'
+                        }}
                     />
-                    <button onClick={obtenerUbicacionActual} style={{ border: 'none', background: 'none', color: '#3498db' }}>
+                    <button onClick={obtenerUbicacionActual}
+                        style={{
+                            border: 'none',
+                            background: 'none',
+                            color: '#3498db'
+                        }}>
                         <i className={`fas ${buscando ? 'fa-spinner fa-spin' : 'fa-location-arrow'}`}></i>
                     </button>
                 </div>
 
                 <div style={{
-                    display: 'flex', alignItems: 'center', padding: '12px 15px', borderRadius: '18px',
+                    display: 'flex', alignItems: 'center',
+                    padding: '12px 15px',
+                    borderRadius: '18px',
                     backgroundColor: !editandoOrigen ? '#fff' : 'rgba(255,255,255,0.7)',
                     border: !editandoOrigen ? `2px solid ${colorVerdeVitta}` : '2px solid transparent',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)', transition: 'all 0.3s'
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)', transition: '0.3s'
                 }}>
                     <i className="fas fa-map-marker-alt me-3" style={{ color: colorVerdeVitta }}></i>
                     <input
@@ -176,29 +230,50 @@ export const Buscador = () => {
                         value={!editandoOrigen ? query : (destino?.nombre || "")}
                         onFocus={() => { setEditandoOrigen(false); setQuery(""); }}
                         onChange={(e) => setQuery(e.target.value)}
-                        style={{ border: 'none', background: 'transparent', width: '100%', fontSize: '14px', fontWeight: '800', outline: 'none' }}
-                    />
+                        style={{
+                            border: 'none',
+                            background: 'transparent',
+                            width: '100%', fontSize: '14px',
+                            fontWeight: '800',
+                            outline: 'none'
+                        }} />
                 </div>
             </div>
 
-            <div className="mb-4" style={{ display: "flex", gap: "10px", overflowX: "auto", paddingBottom: "10px", scrollbarWidth: "none" }}>
+
+            <div className="mb-4" style={{
+                display: "flex", gap: "10px",
+                overflowX: "auto", paddingBottom: "10px",
+                scrollbarWidth: "none"
+            }}>
                 {categorias.map(cat => (
                     <button
                         key={cat.id}
-                        onClick={() => {
-                            setEditandoOrigen(false);
-                            setQuery(cat.label);
-                            buscarLocalesCercanos(cat.label);
-                        }}
-                        style={{ whiteSpace: "nowrap", padding: "8px 16px", borderRadius: "20px", border: "none", backgroundColor: "rgba(255,255,255,0.2)", color: "white", fontSize: "13px", fontWeight: "600", display: "flex", alignItems: "center", gap: "8px", backdropFilter: "blur(5px)" }}
-                    >
+                        onClick={() => { setEditandoOrigen(false); setQuery(cat.label); buscarLocalesCercanos(cat.label); }}
+                        style={{
+                            whiteSpace: "nowrap",
+                            padding: "8px 16px",
+                            borderRadius: "20px",
+                            border: "none",
+                            backgroundColor: "rgba(255,255,255,0.2)",
+                            color: "white", fontSize: "13px",
+                            fontWeight: "600", display: "flex",
+                            alignItems: "center", gap: "8px",
+                            backdropFilter: "blur(5px)"
+                        }} >
                         <i className={`fas ${cat.icon}`}></i>{cat.label}
                     </button>
                 ))}
             </div>
 
             {sugerencias.length > 0 && (
-                <ul className="list-group shadow-lg mb-3" style={{ borderRadius: "18px", overflow: "hidden", border: "none", position: "relative", zIndex: 1000 }}>
+                <ul className="list-group shadow-lg mb-3" style={{
+                    borderRadius: "18px",
+                    overflow: "hidden",
+                    border: "none",
+                    position: "relative",
+                    zIndex: 1000
+                }}>
                     {sugerencias.map((item, index) => (
                         <li key={index} className="list-group-item list-group-item-action py-3" onClick={() => seleccionarDireccion(item)} style={{ cursor: "pointer", fontSize: "13px" }}>
                             <i className="fas fa-search me-2 text-muted"></i> {item.display_name}
@@ -216,15 +291,15 @@ export const Buscador = () => {
                 esFavorito={favoritos.some(f => f.nombre === destino?.nombre)}
             />
 
-            <Mapa ref={mapRef} tiendas={tiendas} />
+            <div style={{
+                marginTop: "10px",
+                borderRadius: "28px",
+                overflow: "hidden",
+                boxShadow: "0 10px 30px rgba(0,0,0,0.1)"
+            }}>
+                <Mapa ref={mapRef} tiendas={tiendas} />
+            </div>
 
-            <button
-                onClick={() => setMostrarFavoritos(true)}
-                style={{ width: "100%", marginTop: "20px", padding: "18px", borderRadius: "22px", border: "none", backgroundColor: "#6e8a4f", color: "white", fontWeight: "800", fontSize: "13px", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}
-            >
-                <i className="fas fa-star" style={{ color: "#ffc107" }}></i>
-                MIS LUGARES FAVORITOS ({favoritos.length})
-            </button>
 
             {mostrarFavoritos && (
                 <MisLugaresFavoritos
@@ -238,6 +313,8 @@ export const Buscador = () => {
                     }}
                 />
             )}
+
+            <div style={{ height: "40px" }}></div>
         </div>
     );
 };
