@@ -24,23 +24,13 @@ body {
     width: 100%;
     max-width: 450px;
     margin: 0 auto;
-    height: 100vh;
+    min-height: 100vh;
     background-color: var(--vitta-oliva) !important;
     position: relative;
-    overflow-y: auto !important;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
 }
-
-#app-container.modal-open {
-    overflow: hidden;
-}
-
-#app-container.modal-open>*:not(.analisis-overlay) {
-    display: none;
-}
-
-
 
 h1,
 h2,
@@ -64,7 +54,6 @@ label {
     color: rgba(255, 255, 255, 0.6) !important;
 }
 
-
 .vitta-btn-animation {
     transition: transform 0.2s ease;
 }
@@ -77,7 +66,6 @@ label {
     border: 2.5px solid #000000 !important;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
-
 
 .vitta-card-resumen {
     background-color: rgba(255, 255, 255, 0.95);
@@ -103,7 +91,6 @@ label {
     transition: background 0.3s ease;
 }
 
-
 .italic {
     font-style: italic;
 }
@@ -112,7 +99,6 @@ label {
 .container {
     background-color: transparent !important;
 }
-
 
 @keyframes slideUpVitta {
     from {
@@ -134,18 +120,15 @@ label {
     box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
 }
 
-
 .vitta-route-card h6,
 .vitta-route-card span,
 .vitta-route-card div {
     color: var(--vitta-text-dark) !important;
 }
 
-
 .vitta-route-card i {
     margin-bottom: 4px;
 }
-
 
 @keyframes aparecerSubiendo {
     from {
@@ -176,8 +159,18 @@ label {
     animation-delay: 0.6s;
 }
 
-.analisis-overlay {
-    position: sticky;
-    top: 0;
-    height: 100%;
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.navbar {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 12px 20px; 
 }

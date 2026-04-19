@@ -1,8 +1,27 @@
 import React, { useState, useEffect } from 'react';
-export const RutinaIA = ({ imc, alCerrar }) => {
 
-
+export const RutinaIA = ({ alCerrar }) => {
+    // Estado de carga 
     const [cargando, setCargando] = useState(true);
+
+    // Aquí se guarda el plan generado
+    const [plan, setPlan] = useState(null);
+
+    useEffect(() => {
+        const datoGuardado = localStorage.getItem("vitta_valor_imc");
+        const valorParaCalcular = datoGuardado ? parseFloat(datoGuardado) : 22;
+
+        //  se genera el plan según el IMC del usuario
+        const nuevoPlan = obtenerPlanTexto(valorParaCalcular);
+
+        //  se guarda el plan en el estado
+        setPlan(nuevoPlan);
+
+        const timer = setTimeout(() => setCargando(false), 1200);
+        return () => clearTimeout(timer);
+    }, []);
+
+    // aqui se decide qué tipo de rutina se va a crear según el IMC
     const obtenerPlanTexto = (valorImc) => {
         if (valorImc > 25) {
             return {
@@ -37,94 +56,156 @@ export const RutinaIA = ({ imc, alCerrar }) => {
         }
     };
 
-    const plan = obtenerPlanTexto(imc);
-    useEffect(() => {
-        const timer = setTimeout(() => setCargando(false), 800);
-        return () => clearTimeout(timer);
-    }, []);
+    if (!plan) return null;
 
     return (
         <div style={{
-            position: 'fixed',
-            top: 0, left: 0, right: 0, bottom: 0,
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            zIndex: 10000,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            fontFamily: "'Poppins', sans-serif",
-            padding: '20px'
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 10000,
+            display: 'flex', justifyContent: 'center', alignItems: 'center',
+            fontFamily: "'Poppins', sans-serif", padding: '20px', backdropFilter: 'blur(4px)'
         }}>
 
             <div style={{
-                width: '100%',
-                maxWidth: '360px',
-                height: '85vh',
-                backgroundColor: '#f8f9fa',
-                borderRadius: '30px',
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden',
+                width: '100%', maxWidth: '360px', height: '85vh',
+                backgroundColor: '#f8f9fa', borderRadius: '30px',
+                display: 'flex', flexDirection: 'column', overflow: 'hidden',
                 boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
             }}>
 
-                <div style={{ padding: '15px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff', borderBottom: '1px solid #eee' }}>
-                    <span style={{ fontSize: '13px', fontWeight: '900', color: '#333' }}>RUTINA IA</span>
-                    <button onClick={alCerrar} style={{ background: '#eee', border: 'none', borderRadius: '50%', width: '30px', height: '30px', cursor: 'pointer', fontSize: '14px' }}>✕</button>
+
+                <div style={{
+                    padding: '15px 20px',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    backgroundColor: '#fff',
+                    borderBottom: '1px solid #eee'
+                }}>
+                    <div>
+                        <span style={{
+                            fontSize: '13px',
+                            fontWeight: '900',
+                            color: '#333'
+                        }}>RUTINA IA</span>
+                        <p style={{
+                            margin: 0,
+                            fontSize: '9px',
+                            color: '#999',
+                            fontWeight: '700'
+                        }}>ADAPTADA A TU IMC</p>
+                    </div>
+                    <button onClick={alCerrar}
+                        style={{
+                            background: '#eee',
+                            border: 'none',
+                            borderRadius: '50%',
+                            width: '30px',
+                            height: '30px',
+                            cursor: 'pointer',
+                            fontSize: '12px'
+                        }}>✕</button>
                 </div>
 
-                <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
+                <div style={{
+                    flex: 1,
+                    overflowY: 'auto',
+                    padding: '20px'
+                }}>
+
+
                     <div style={{ marginBottom: '20px' }}>
-                        <h2 style={{ margin: 0, fontSize: '18px', fontWeight: '900', color: '#1a1a1a' }}>
-                            {plan.categoria}
-                        </h2>
-                        <div style={{ width: '30px', height: '3px', backgroundColor: plan.color, marginTop: '5px' }}></div>
+                        <h2 style={{
+                            margin: 0,
+                            fontSize: '20px',
+                            fontWeight: '900',
+                            color: '#1a1a1a'
+                        }}>{plan.categoria}</h2>
+                        <div style={{
+                            width: '40px',
+                            height: '4px',
+                            backgroundColor: plan.color,
+                            marginTop: '5px',
+                            borderRadius: '2px'
+                        }}></div>
                     </div>
+
                     {cargando ? (
-                        <p style={{ textAlign: 'center', color: '#888', fontSize: '14px' }}>
-                            Calculando bloques...</p>
+                        <div style={{ textAlign: 'center', marginTop: '40px' }}>
+                            <i className="fas fa-spinner fa-spin"
+                                style={{
+                                    color: plan.color,
+                                    fontSize: '24px',
+                                    marginBottom: '10px'
+                                }}></i>
+                            <p style={{
+                                color: '#888',
+                                fontSize: '13px',
+                                fontWeight: '600'
+                            }}>Analizando biometría...</p>
+                        </div>
                     ) : (
                         <div style={{ display: 'grid', gap: '12px' }}>
+
+                            {/* Lista de bloques de entrenamiento */}
                             {plan.bloques.map((bloque, index) => (
-                                <div
-                                    key={index}
-                                    style={{
-                                        background: '#fff',
-                                        padding: '15px',
-                                        borderRadius: '18px',
-                                        borderLeft: `5px solid ${plan.color}`,
-                                        boxShadow: '0 2px 8px rgba(0,0,0,0.02)'
+                                <div key={index} style={{
+                                    background: '#fff',
+                                    padding: '16px',
+                                    borderRadius: '20px',
+                                    borderLeft: `6px solid ${plan.color}`,
+                                    boxShadow: '0 4px 12px rgba(0,0,0,0.03)'
+                                }}>
+                                    <div style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        marginBottom: '6px'
                                     }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-                                        <h4 style={{ margin: 0, fontSize: '14px', fontWeight: '800', color: '#333' }}>
-                                            {bloque.titulo}
-                                        </h4>
-                                        <span style={{ fontSize: '10px', background: '#f0f0f0', padding: '2px 8px', borderRadius: '6px', fontWeight: '800' }}>
+                                        <h4 style={{
+                                            margin: 0,
+                                            fontSize: '14px',
+                                            fontWeight: '800',
+                                            color: '#333'
+                                        }}>{bloque.titulo}</h4>
+                                        <span style={{
+                                            fontSize: '10px',
+                                            background: '#f0f0f0',
+                                            color: '#666',
+                                            padding: '3px 10px',
+                                            borderRadius: '8px',
+                                            fontWeight: '800'
+                                        }}>
                                             {bloque.tiempo}
                                         </span>
                                     </div>
-                                    <p style={{ margin: 0, fontSize: '12px', color: '#666', lineHeight: '1.4' }}>
+                                    <p style={{
+                                        margin: 0,
+                                        fontSize: '12px',
+                                        color: '#777',
+                                        lineHeight: '1.5'
+                                    }}>
                                         {bloque.detalle}
                                     </p>
                                 </div>
                             ))}
-                        </div>)}
 
-                    <button
-                        onClick={alCerrar}
-                        style={{
-                            width: '100%',
-                            padding: '15px',
-                            borderRadius: '15px',
-                            background: plan.color,
-                            color: 'white',
-                            border: 'none',
-                            fontWeight: '800',
-                            marginTop: '25px',
-                            fontSize: '13px'
-                        }}>
-                        CONFIRMAR Y EMPEZAR
-                    </button>
+                            <button
+                                onClick={alCerrar}
+                                style={{
+                                    width: '100%',
+                                    padding: '16px',
+                                    borderRadius: '18px',
+                                    background: plan.color, color: 'white',
+                                    border: 'none',
+                                    fontWeight: '800',
+                                    marginTop: '15px', fontSize: '14px',
+                                    boxShadow: `0 8px 20px ${plan.color}44`
+                                }}>
+                                CONFIRMAR Y EMPEZAR
+                            </button>
+
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
