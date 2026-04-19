@@ -1,4 +1,5 @@
 import React from 'react';
+
 export const MisLugaresFavoritos = ({ favoritos, alCerrar, alSeleccionar, alEliminar, colorVerdeVitta }) => {
     return (
         <div style={{
@@ -35,11 +36,30 @@ export const MisLugaresFavoritos = ({ favoritos, alCerrar, alSeleccionar, alElim
                     borderBottom: '1px solid #eee'
                 }}>
                     <div>
-                        <h2 style={{ fontSize: '16px', fontWeight: '900', margin: 0, color: '#333' }}>MIS LUGARES</h2>
-                        <span style={{ fontSize: '10px', color: colorVerdeVitta, fontWeight: '800' }}>Guardados</span>
+                        <h2 style={{
+                            fontSize: '16px',
+                            fontWeight: '900',
+                            margin: 0,
+                            color: '#333'
+                        }}>
+                            MIS LUGARES</h2>
+                        <span
+                            style={{
+                                fontSize: '10px',
+                                color: colorVerdeVitta,
+                                fontWeight: '800'
+                            }}>Guardados</span>
                     </div>
-                    <button onClick={alCerrar} style={{ background: '#f0f0f0', border: 'none', borderRadius: '50%', width: '30px', height: '30px', cursor: 'pointer' }}>
-                        <i className="fas fa-times" style={{ fontSize: '12px' }}></i>
+                    <button onClick={alCerrar}
+                        style={{
+                            background: '#f0f0f0',
+                            border: 'none',
+                            borderRadius: '50%',
+                            width: '30px',
+                            height: '30px', cursor: 'pointer'
+                        }}>
+                        <i className="fas fa-times"
+                            style={{ fontSize: '12px' }}></i>
                     </button>
                 </div>
 
@@ -51,9 +71,14 @@ export const MisLugaresFavoritos = ({ favoritos, alCerrar, alSeleccionar, alElim
                                 borderRadius: '50%', display: 'flex', alignItems: 'center',
                                 justifyContent: 'center', margin: '0 auto 15px'
                             }}>
-                                <i className="fas fa-star" style={{ color: '#ccc', fontSize: '24px' }}></i>
+                                <i className="fas fa-star"
+                                    style={{ color: '#ccc', fontSize: '24px' }}></i>
                             </div>
-                            <p style={{ color: '#999', fontSize: '13px', fontWeight: '600' }}>No hay lugares guardados aún</p>
+                            <p style={{
+                                color: '#999',
+                                fontSize: '13px',
+                                fontWeight: '600'
+                            }}>No hay lugares guardados aún</p>
                         </div>
                     ) : (
                         <div style={{ display: 'grid', gap: '12px' }}>
@@ -68,17 +93,37 @@ export const MisLugaresFavoritos = ({ favoritos, alCerrar, alSeleccionar, alElim
                                     boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
                                     border: '1px solid #f0f0f0'
                                 }}>
-                                    <div style={{ maxWidth: '75%', cursor: 'pointer' }} onClick={() => alSeleccionar(fav)}>
-                                        <h4 style={{ margin: 0, fontSize: '13px', fontWeight: '800', color: '#333', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                    <div style={{
+                                        maxWidth: '75%',
+                                        cursor: 'pointer'
+                                    }} onClick={() => alSeleccionar(fav)}>
+                                        <h4 style={{
+                                            margin: 0,
+                                            fontSize: '13px',
+                                            fontWeight: '800',
+                                            color: '#333',
+                                            whiteSpace: 'nowrap',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis'
+                                        }}>
                                             {fav.nombre}
                                         </h4>
-                                        <span style={{ fontSize: '9px', color: colorVerdeVitta, fontWeight: '800' }}>
+                                        <span style={{
+                                            fontSize: '9px',
+                                            color: colorVerdeVitta,
+                                            fontWeight: '800'
+                                        }}>
                                             VER RUTA AHORA
                                         </span>
                                     </div>
                                     <button
                                         onClick={() => alEliminar(fav)}
-                                        style={{ background: '#fff0f0', border: 'none', color: '#ff5c5c', width: '32px', height: '32px', borderRadius: '10px' }}
+                                        style={{
+                                            background: '#fff0f0',
+                                            border: 'none', color: '#ff5c5c',
+                                            width: '32px', height: '32px',
+                                            borderRadius: '10px'
+                                        }}
                                     >
                                         <i className="fas fa-trash-alt" style={{ fontSize: '12px' }}></i>
                                     </button>
@@ -88,15 +133,18 @@ export const MisLugaresFavoritos = ({ favoritos, alCerrar, alSeleccionar, alElim
                     )}
                 </div>
 
-                <div style={{ padding: '15px 20px', backgroundColor: '#fff', borderTop: '1px solid #eee' }}>
+                <div style={{
+                    padding: '15px 20px',
+                    backgroundColor: '#fff',
+                    borderTop: '1px solid #eee'
+                }}>
                     <button
                         onClick={alCerrar}
                         style={{
                             width: '100%', padding: '12px', borderRadius: '15px',
                             background: '#1a1a1a', color: 'white', border: 'none',
                             fontWeight: '800', fontSize: '12px'
-                        }}
-                    >
+                        }}>
                         VOLVER AL BUSCADOR
                     </button>
                 </div>
