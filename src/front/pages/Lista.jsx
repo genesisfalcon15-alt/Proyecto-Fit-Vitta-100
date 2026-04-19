@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 
 
 function Lista() {
@@ -9,6 +9,8 @@ function Lista() {
   const [store, setStore] = useState("");
   const [category, setCategory] = useState("");
 
+  const token = sessionStorage.getItem("token");
+
   const categoryImages = {
     lacteos: "/images/lacteos.jpg",
     frutas_verduras: "/images/frutas.jpg",
@@ -17,39 +19,117 @@ function Lista() {
     panaderia: "/public/pan.jpeg",
   };
 
-  const addProduct = () => {
-    if (!newProduct.trim() || !price || !store.trim() || !category) return;
+  /* GET PRODUCTS */
+    
+   useEffect(() => {
+     if (!token) return;
 
-    const newItem = {
-      id: Date.now(),
-      name: newProduct,
-      store: store,
-      price: parseFloat(price),
-      category: category,
-      image: categoryImages[category],
-      added: false,
-  
-    };
+     fetch(import.meta.env.VITE_BACKEND_URL + "/api/products", {
+       headers: {
+         Authorization: "Bearer " + token,
+       },
+     })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("GET DATA:", data);
+        setProducts(Array.isArray(data) ? data : []);
+   })
+    .catch((err) => {
+      console.log("GET error:", err);
+      setProducts([]);
+   });
+}, [token]);
 
-    setProducts([...products, newItem]);
-    setNewProduct("");
-    setPrice("");
-    setStore("");
-    setCategory("");
-  };
+/* ADD PRODUCT */
+  const addProduct = async () => {
+    if (!newProduct || !price || !store || !category) return;
 
-  const toggleProduct = (id) => {
+    try {
+      const res = await fetch(
+        import.meta.env.VITE_BACKEND_URL + "/api/products",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+          body: JSON.stringify({
+              name: newProduct,
+              store: store,
+              price: parseFloat(price),
+              category: category,
+              image: categoryImages[category],
+              added: false,
+          }),
+        }
+      );
+
+      if (!res.ok) throw new Error("Error al crear producto");
+
+      const data = await res.json();
+
+      setProducts((prev)=>
+        Array.isArray(prev) ? [...prev, data] : [data]
+      );
+
+      setNewProduct("");
+      setPrice("");
+      setStore("");
+      setCategory("");
+    } catch (err) {
+      console.error("POST product error:", err);
+  }
+};
+
+/* DELETE PRODUCT */
+  const deleteProduct = async (id) => {
+    try {
+      await fetch(
+        import.meta.env.VITE_BACKEND_URL + `/api/products/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+
+      setProducts((prev) => 
+        prev.filter((item) => item.id !== id)
+    );
+    } catch (err) {
+      console.error("DELETE error:", err);
+    }
+};
+   
+/* TOGGLE PRODUCT */
+   const toggleProduct = async (id) => {
+   try {
+       const res = await fetch(
+         import.meta.env.VITE_BACKEND_URL + `/api/products/${id}`,
+         {
+           method: "PUT",
+           headers: {
+             Authorization: "Bearer " + token,
+        },
+      }
+    );
+    if (!res.ok) {
+      throw new Error("Error PUT");
+    }
+    const updated = await res.json();
+
     setProducts((prev) =>
-      prev.map((p) =>
-        p.id === id ? { ...p, added: !p.added } : p
+      prev.map((p) => 
+        p.id === id ? updated : p
       )
     );
-  };
-
-  const deleteProduct = (id) => {
-    setProducts((prev) => prev.filter((p) => p.id !== id));
-  };
-
+  } catch (err) {
+    console.error("PUT error:", err);
+  }
+};
+ 
+/* FILTER */
   const filteredProducts =
     search.length >= 3
       ? products.filter((p) =>
@@ -57,7 +137,9 @@ function Lista() {
       )
       : products;
 
-  const totalAdded = products.filter((p) => p.added).length;
+  const totalAdded = Array.isArray(products)
+     ? products.filter((p) => p.added).length 
+     : 0;
 
   return (
     <div 
@@ -68,7 +150,7 @@ function Lista() {
       }}
     >
 
-      {/* HEADER */}
+      
       <nav className="navbar">
         <h1 className="vitta-title" style={{ color:"white"}}>VITTA</h1>
         <div style={{ position: "relative", cursor: "pointer" }}>
@@ -102,7 +184,7 @@ function Lista() {
        </div>
       </nav>
 
-      {/* CONTENIDO */}
+      
       <div className="container-fluid p-3">
 
         <h4 style={{ color: "white", fontWeight: "600" }}>Los favoritos de VITTA</h4>
@@ -110,7 +192,7 @@ function Lista() {
           Encuentra las mejores ofertas para ti
         </p>
 
-        {/* BUSCADOR */}
+        
         <input
           className="form-control mb-3"
           placeholder="Buscar productos..."
@@ -118,7 +200,7 @@ function Lista() {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        {/* FORMULARIO */}
+        
         <div className="vitta-card-resumen mb-3">
           <input
             className="form-control mb-2"
@@ -174,7 +256,7 @@ function Lista() {
           </button>
         </div>
 
-        {/* LISTA */}
+        
         {filteredProducts.map((product) => (
         <div
             key={product.id}
@@ -219,12 +301,12 @@ function Lista() {
             </div>
 
             <div>
-              <strong>€{product.price.toFixed(2)}</strong>
+              <strong>€{Number(product.price || 0).toFixed(2)}</strong>
 
              <button
                onClick={(e) => {
                  e.stopPropagation();
-                 deleteProduct(product.id);
+                 deleteProduct(product.id || product._id);
               }}
               style={{
                 background: "rgba(255,255,255,0.12)",
