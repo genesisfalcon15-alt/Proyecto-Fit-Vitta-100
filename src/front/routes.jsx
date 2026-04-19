@@ -7,6 +7,10 @@ import Lista from "./pages/Lista.jsx";
 import Conocenos from "./pages/Conocenos.jsx";
 import { AnalisisDetallado } from "./pages/AnalisisDetallado.jsx";
 import { ContenedorActividad } from "./pages/ContenedorActividad.jsx";
+import Signup from "./pages/Signup.jsx";
+import Signin from "./pages/Signin.jsx";
+import Private from "./pages/Private.jsx";
+import EditarStats from "./pages/EditarStats.jsx";
 
 export const AppRoutes = ({ cardGlassStyle, colorVerdeVitta }) => {
   const navigate = useNavigate();
@@ -21,35 +25,24 @@ export const AppRoutes = ({ cardGlassStyle, colorVerdeVitta }) => {
   ];
 
   return (
-    <Routes Routes >
-      <Route
-        path="/"
-        element={<Home cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />} />
-
-      <Route
-        path="/buscador"
-        element={<Buscador cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />} />
-
-      <Route
-        path="/imc"
-        element={<Imc cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />} />
-
-      <Route
-        path="/imc/analisis"
-        element={
-          <AnalisisDetallado
-            usuario={usuarioFake}
-            historial={historialFake}
-            alCerrar={() => navigate("/imc")}
-          />} />
-
+    <Routes>
+      <Route path="/" element={<Home cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />} />
+      <Route path="/buscador" element={<Buscador cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />} />
+      <Route path="/imc" element={<Imc cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />} />
+      <Route path="/imc/analisis" element={
+        <AnalisisDetallado
+          usuario={usuarioFake}
+          historial={historialFake}
+          alCerrar={() => navigate("/imc")}
+        />} />
       <Route path="/imc/plan" element={<ContenedorActividad />} />
-      <Route
-        path="/lista"
-        element={<Lista cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />} />
-      <Route
-        path="/conocenos"
-        element={<Conocenos cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />} />
-    </Routes >
+      <Route path="/lista" element={<Lista cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />} />
+      <Route path="/conocenos" element={<Conocenos cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />} />
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/signin" element={<Signin />} />
+      <Route path="/private" element={<Private />} />
+      <Route path="/editar-stats" element={<EditarStats />} />
+      <Route element={<h1>Not found!</h1>} path="*" />
+    </Routes>
   );
 };
