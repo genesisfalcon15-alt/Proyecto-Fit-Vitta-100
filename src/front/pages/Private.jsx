@@ -58,7 +58,7 @@ const Private = () => {
         <h3 style={{ fontWeight: "700", color: "#3b3b3b" }}>
           Bienvenido, {user.nombre} 👋
         </h3>
-        <p style={{ color: "#777" }}>{user.email}</p>
+        <p style={{ color: "#000000" }}>{user.email}</p>
         {user.stats && (
           <div className="mt-3">
             <p><strong>Peso:</strong> {user.stats.peso} kg</p>
