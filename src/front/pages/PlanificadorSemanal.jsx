@@ -9,35 +9,41 @@ export const PlanificadorSemanal = ({ colorVerdeVitta, onCambioActividad }) => {
         { id: 3, nombre: "J", activo: true },
         { id: 4, nombre: "V", activo: false },
         { id: 5, nombre: "S", activo: false },
-        { id: 6, nombre: "D", activo: false }
+        { id: 6, nombre: "D", activo: false },
     ]);
 
-    const update = (m, d) => onCambioActividad(m, d.filter(x => x.activo).length);
+    const update = (m, d) =>
+        onCambioActividad(m, d.filter((x) => x.activo).length);
 
     return (
-        <div style={{
-            background: "rgba(255, 255, 255, 0.6)",
-            backdropFilter: "blur(8px)",
-            borderRadius: "24px",
-            padding: "20px",
-            border: `1px solid ${colorVerdeVitta}33`,
-            maxWidth: "360px",
-            margin: "0 auto",
-            boxShadow: "0 4px 15px rgba(0,0,0,0.05)"
-        }}>
-
-            <div style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "20px"
+        <div
+            style={{
+                background: "rgba(255, 255, 255, 0.6)",
+                backdropFilter: "blur(8px)",
+                borderRadius: "24px",
+                padding: "20px",
+                border: `1px solid ${colorVerdeVitta}33`,
+                maxWidth: "360px",
+                margin: "0 auto",
+                boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
             }}>
-                <span style={{
-                    color: "#333",
-                    fontSize: "12px",
-                    fontWeight: "800",
-                    letterSpacing: "0.5px"
+
+            {/* minutos por sesión */}
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "20px",
                 }}>
+                <span
+                    style={{
+                        color: "#333",
+                        fontSize: "12px",
+                        fontWeight: "800",
+                        letterSpacing: "0.5px",
+                    }}>
+
                     MINUTOS SESIÓN
                 </span>
 
@@ -49,7 +55,6 @@ export const PlanificadorSemanal = ({ colorVerdeVitta, onCambioActividad }) => {
                         setMinutos(val);
                         update(val, dias);
                     }}
-
                     style={{
                         width: "65px",
                         height: "40px",
@@ -60,17 +65,19 @@ export const PlanificadorSemanal = ({ colorVerdeVitta, onCambioActividad }) => {
                         textAlign: "center",
                         fontSize: "18px",
                         fontWeight: "900",
-                        outline: "none"
+                        outline: "none",
                     }} />
             </div>
 
+            {/* selección de días */}
             <div style={{ display: "flex", justifyContent: "space-between", gap: "6px" }}>
-                {dias.map(d => (
+                {dias.map((d) => (
                     <button
                         key={d.id}
                         onClick={() => {
-                            const nuevos = dias.map(x =>
-                                x.id === d.id ? { ...x, activo: !x.activo } : x);
+                            const nuevos = dias.map((x) =>
+                                x.id === d.id ? { ...x, activo: !x.activo } : x
+                            );
                             setDias(nuevos);
                             update(minutos, nuevos);
                         }}
@@ -88,20 +95,22 @@ export const PlanificadorSemanal = ({ colorVerdeVitta, onCambioActividad }) => {
                             alignItems: "center",
                             justifyContent: "center",
                             transition: "all 0.2s ease",
-                            flexShrink: 0
-                        }}>
+                            flexShrink: 0,
+                        }}  >
                         {d.nombre}
                     </button>
                 ))}
             </div>
-            <p style={{
-                textAlign: "center",
-                color: colorVerdeVitta,
-                fontSize: "10px",
-                marginTop: "15px",
-                fontWeight: "700",
-                opacity: 0.8
-            }}>
+
+            <p
+                style={{
+                    textAlign: "center",
+                    color: colorVerdeVitta,
+                    fontSize: "10px",
+                    marginTop: "15px",
+                    fontWeight: "700",
+                    opacity: 0.8,
+                }}>
                 SELECCIONA TUS DÍAS DE ACTIVIDAD
             </p>
         </div>
