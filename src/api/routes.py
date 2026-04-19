@@ -10,7 +10,6 @@ api = Blueprint('api', __name__)
 @api.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
-
     if not data.get("email") or not data.get("password"):
         return jsonify({"msg": "Email y contraseña son obligatorios"}), 400
 
@@ -32,10 +31,10 @@ def signup():
     )
 
     db.session.add(new_user)
-    db.session.flush()
+    db.session.commit()  # 👈 commit primero para generar el id
 
     new_stats = UserStats(
-        user_id=new_user.id,
+        user_id=new_user.id,  # 👈 ahora sí tiene id
         password=hashed_password,
         image=data.get("image", ""),
         peso=data.get("peso"),
@@ -50,33 +49,22 @@ def signup():
         "user": new_user.serialize()
     }), 201
 
-
 @api.route('/signin', methods=['POST'])
 def signin():
     data = request.get_json()
-
     if not data.get("email") or not data.get("password"):
         return jsonify({"msg": "Email y contraseña son obligatorios"}), 400
-
     user = User.query.filter_by(email=data["email"]).first()
-
     if not user or not user.stats:
         return jsonify({"msg": "Correo o contraseña incorrectos"}), 401
-
     password_valid = bcrypt.checkpw(
         data["password"].encode("utf-8"),
         user.stats.password.encode("utf-8")
     )
-
     if not password_valid:
         return jsonify({"msg": "Correo o contraseña incorrectos"}), 401
-
     token = create_access_token(identity=str(user.id))
-
-    return jsonify({
-        "token": token,
-        "user": user.serialize()
-    }), 200
+    return jsonify({"token": token, "user": user.serialize()}), 200
 
 
 @api.route('/private', methods=['GET'])
@@ -84,8 +72,45 @@ def signin():
 def private():
     current_user_id = get_jwt_identity()
     user = User.query.get(current_user_id)
-
     if not user:
         return jsonify({"msg": "Usuario no encontrado"}), 404
-
     return jsonify({"user": user.serialize()}), 200
+
+
+@api.route('/user/stats', methods=['GET'])
+@jwt_required()
+def get_user_stats():
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    if not user or not user.stats:
+        return jsonify({"msg": "Usuario no encontrado"}), 404
+    return jsonify({"peso": user.stats.peso, "altura": user.stats.altura}), 200
+
+
+@api.route('/user/stats', methods=['PUT'])
+@jwt_required()
+def update_user_stats():
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    if not user or not user.stats:
+        return jsonify({"msg": "Usuario no encontrado"}), 404
+    data = request.get_json()
+    if "peso" in data:
+        user.stats.peso = data["peso"]
+    if "altura" in data:
+        user.stats.altura = data["altura"]
+    db.session.commit()
+    return jsonify({"msg": "Datos actualizados correctamente", "peso": user.stats.peso, "altura": user.stats.altura}), 200
+
+
+@api.route('/user/stats', methods=['DELETE'])
+@jwt_required()
+def delete_user_stats():
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    if not user or not user.stats:
+        return jsonify({"msg": "Usuario no encontrado"}), 404
+    user.stats.peso = None
+    user.stats.altura = None
+    db.session.commit()
+    return jsonify({"msg": "Peso y altura eliminados correctamente"}), 200

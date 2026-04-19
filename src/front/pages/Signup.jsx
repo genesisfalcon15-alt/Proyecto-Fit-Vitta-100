@@ -28,14 +28,13 @@ const Signup = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
     try {
+      
       const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/api/signup", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nombre: form.nombre,
           apellidos: form.apellidos,
@@ -50,11 +49,32 @@ const Signup = () => {
 
       const data = await response.json();
 
-      if (response.ok) {
-        alert("Usuario creado correctamente ✅");
-        window.location.href = "/signin";
-      } else {
+      if (!response.ok) {
         alert(data.msg || "Error al registrarse");
+        return;
+      }
+
+      
+      const loginResponse = await fetch(import.meta.env.VITE_BACKEND_URL + "/api/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password
+        })
+      });
+
+      const loginData = await loginResponse.json();
+
+      if (loginResponse.ok) {
+        
+        sessionStorage.setItem("token", loginData.token);
+        sessionStorage.setItem("user", JSON.stringify(loginData.user));
+        alert("Usuario creado correctamente ✅");
+        window.location.href = "/private";
+      } else {
+        alert("Registro exitoso, pero error al iniciar sesión");
+        window.location.href = "/signin";
       }
 
     } catch (error) {
