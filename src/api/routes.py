@@ -1,22 +1,59 @@
-"""
-This module takes care of starting the API Server, Loading the DB and Adding the endpoints
-"""
-from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User
+from flask import Blueprint, request, jsonify
+from api.models import db, User, UserStats, Product
 from api.utils import generate_sitemap, APIException
-from flask_cors import CORS
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+import bcrypt
 
 api = Blueprint('api', __name__)
 
-# Allow CORS requests to this API
-CORS(api)
+
+@api.route("/products", methods=["GET"])
+def get_products():
+    products = Product.query.all()
+    return jsonify([p.serialize() for p in products]), 200
 
 
-@api.route('/hello', methods=['POST', 'GET'])
-def handle_hello():
 
-    response_body = {
-        "message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
-    }
+@api.route("/products", methods=["POST"])
+def create_product():
+    data = request.get_json()
 
-    return jsonify(response_body), 200
+    new_product = Product(
+        name=data["name"],
+        store=data["store"],
+        price=data["price"],
+        category=data["category"],
+        image=data.get("image"),
+        added=False
+    )
+
+    db.session.add(new_product)
+    db.session.commit()
+
+    return jsonify(new_product.serialize()), 201
+
+
+
+@api.route("/products/<int:id>", methods=["DELETE"])
+def delete_product(id):
+    product = Product.query.get(id)
+    if not product:
+        return jsonify({"msg": "Not found"}), 404
+
+    db.session.delete(product)
+    db.session.commit()
+
+    return jsonify({"msg": "deleted"}), 200
+
+
+
+@api.route("/products/<int:id>", methods=["PUT"])
+def toggle_product(id):
+    product = Product.query.get(id)
+    if not product:
+        return jsonify({"msg": "Not found"}), 404
+
+    product.added = not product.added
+    db.session.commit()
+
+    return jsonify(product.serialize()), 200
