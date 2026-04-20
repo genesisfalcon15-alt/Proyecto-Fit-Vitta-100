@@ -71,7 +71,7 @@ const Signup = () => {
         sessionStorage.setItem("token", loginData.token);
         sessionStorage.setItem("user", JSON.stringify(loginData.user));
         alert("Usuario creado correctamente ✅");
-        window.location.href = "/private";
+        window.location.href = "/signin";
       } else {
         alert("Registro exitoso, pero error al iniciar sesión");
         window.location.href = "/signin";
