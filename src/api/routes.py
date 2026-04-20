@@ -170,6 +170,59 @@ def delete_historial_entrada(entrada_id):
     if not entrada:
         return jsonify({"msg": "Entrada no encontrada"}), 404
 
+
+
+@api.route("/products", methods=["GET"])
+def get_products():
+    products = Product.query.all()
+    return jsonify([p.serialize() for p in products]), 200
+
+
+
+@api.route("/products", methods=["POST"])
+def create_product():
+    data = request.json
+
+    new_product = Product(
+        name=data["name"],
+        store=data["store"],
+        price=data["price"],
+        category=data["category"],
+        image=data["image"],
+        added=False
+    )
+
+    db.session.add(new_product)
+    db.session.commit()
+
+    return jsonify(new_product.serialize()), 201
+
+
+
+@api.route("/products/<int:id>", methods=["DELETE"])
+def delete_product(id):
+    product = Product.query.get(id)
+    if not product:
+        return jsonify({"msg": "Not found"}), 404
+
+    db.session.delete(product)
+    db.session.commit()
+
+    return jsonify({"msg": "deleted"}), 200
+
+
+
+@api.route("/products/<int:id>", methods=["PUT"])
+def toggle_product(id):
+    product = Product.query.get(id)
+    if not product:
+        return jsonify({"msg": "Not found"}), 404
+
+    product.added = not product.added
+    db.session.commit()
+
+    return jsonify(product.serialize()), 200
+
     db.session.delete(entrada)
     db.session.commit()
     return jsonify({"msg": "Entrada eliminada correctamente"}), 200
