@@ -3,6 +3,28 @@ from sqlalchemy import String, Boolean, Float, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 db = SQLAlchemy()
+
+class User(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    nombre: Mapped[str] = mapped_column(String(100), nullable=False)
+    apellidos: Mapped[str] = mapped_column(String(100), nullable=False)
+    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(nullable=False)
+    genero: Mapped[str] = mapped_column(String(20), nullable=True)
+    is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=True)
+
+    stats: Mapped["UserStats"] = relationship("UserStats", back_populates="user", uselist=False)
+    historial_peso: Mapped[list["HistorialPeso"]] = relationship("HistorialPeso", back_populates="user")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "nombre": self.nombre,
+            "apellidos": self.apellidos,
+            "email": self.email,
+            "genero": self.genero,
+            "stats": self.stats.serialize() if self.stats else None
+        }
     
 
 class Product(db.Model):
