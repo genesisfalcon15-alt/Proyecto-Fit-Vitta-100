@@ -25,6 +25,23 @@ class User(db.Model):
             "genero": self.genero,
             "stats": self.stats.serialize() if self.stats else None
         }
+
+
+class UserStats(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
+    image: Mapped[str] = mapped_column(String(300), nullable=True)
+    peso: Mapped[float] = mapped_column(Float, nullable=True)
+    altura: Mapped[float] = mapped_column(Float, nullable=True)
+
+    user: Mapped["User"] = relationship("User", back_populates="stats")
+
+    def serialize(self):
+        return {
+            "peso": self.peso,
+            "altura": self.altura,
+            "image": self.image
+        }
     
 
 class Product(db.Model):
