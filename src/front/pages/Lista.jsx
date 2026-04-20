@@ -180,7 +180,7 @@ function Lista() {
             key={product.id}
             onClick={() => toggleProduct(product.id)}
             style={{
-              background: product.added ? "#2e7d32" : "#ffffff", // ⚪ blanco por defecto
+              background: product.added ? "#4caf50" : "#ffffff", 
               color: product.added ? "white" : "#333",
               borderRadius: "12px",
               padding: "10px",
