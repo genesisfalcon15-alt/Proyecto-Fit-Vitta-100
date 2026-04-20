@@ -120,7 +120,6 @@ export const AnalisisDetallado = ({ usuario, historial, alCerrar }) => {
             flexDirection: "column"
         }}>
 
-            {/* header con botón volver */}
             <div style={{
                 padding: "15px 20px",
                 display: "flex",
@@ -251,7 +250,6 @@ export const AnalisisDetallado = ({ usuario, historial, alCerrar }) => {
                         </div>
                     </div>
 
-                    {/* gráfica de progreso */}
                     <div className="animar-entrada delay-2" style={{
                         background: "white",
                         padding: "20px 10px",
