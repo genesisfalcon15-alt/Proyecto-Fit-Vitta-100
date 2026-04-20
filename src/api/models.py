@@ -45,7 +45,7 @@ class UserStats(db.Model):
     
 
 class Product(db.Model):
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(foreign_key=True)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     store: Mapped[str] = mapped_column(String(120), nullable=False)
     price: Mapped[float] = mapped_column(Float, nullable=False)
