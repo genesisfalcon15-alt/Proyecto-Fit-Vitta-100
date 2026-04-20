@@ -131,7 +131,7 @@ export const RecetarioVitta = ({ alCerrar }) => {
                         </div>
                     )}
 
-                    {/* estado inicial */}
+
                     {!receta && !cargando && !error && (
                         <div style={{ textAlign: "center", marginTop: "40px" }}>
                             <div style={{ fontSize: "50px", marginBottom: "15px" }}>🥗</div>
