@@ -70,7 +70,7 @@ const Signup = () => {
         
         sessionStorage.setItem("token", loginData.token);
         sessionStorage.setItem("user", JSON.stringify(loginData.user));
-        alert("Usuario creado correctamente ✅");
+        alert("Usuario creado correctamente");
         window.location.href = "/signin";
       } else {
         alert("Registro exitoso, pero error al iniciar sesión");
@@ -101,7 +101,7 @@ const Signup = () => {
       >
         <div className="text-center mb-3">
           <h2 style={{ fontWeight: "700", color: "#3b3b3b" }}>
-            🏋️ Sign Up
+            🏋️ Registro
           </h2>
           <p style={{ fontSize: "14px", color: "#777" }}>
             Únete a Fit Vitta y empieza tu progreso
