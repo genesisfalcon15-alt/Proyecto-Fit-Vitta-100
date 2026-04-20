@@ -38,7 +38,6 @@ const Layout = () => {
             }}>
 
             <BrowserRouter>
-                {/* esto es para que el navbar siempre este visible arriba */}
                 <Navbar colorVerdeVitta={colorVerdeVitta} />
 
                 <div
@@ -54,18 +53,16 @@ const Layout = () => {
                         width: "100%",
                     }}>
 
-                    {/* esto hace que al cambiar de ruta suba arriba automáticamente */}
+
                     <ScrollToTop />
 
 
                     <Breadcrumbs />
 
-                    {/* paso estilos globales a todas las páginas */}
+
                     <AppRoutes
                         cardGlassStyle={cardGlassStyle}
                         colorVerdeVitta={colorVerdeVitta} />
-
-                    {/* espacio extra en la parte de abajo para q el footer no tape contenido */}
                     <div style={{ height: "100px", width: "100%" }}></div>
                 </div>
 
