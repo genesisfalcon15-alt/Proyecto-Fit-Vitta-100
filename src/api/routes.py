@@ -32,7 +32,7 @@ def signup():
     )
 
     db.session.add(new_user)
-    db.session.commit()
+    db.session.flush()  # Genera el ID sin commit todavía
 
     new_stats = UserStats(
         user_id=new_user.id,
@@ -40,8 +40,16 @@ def signup():
         peso=data.get("peso"),
         altura=data.get("altura")
     )
-
     db.session.add(new_stats)
+
+    if data.get("peso") and data.get("altura"):
+        primer_registro = HistorialPeso(
+            user_id=new_user.id,
+            peso=data["peso"],
+            altura=data["altura"]
+        )
+        db.session.add(primer_registro)
+
     db.session.commit()
 
     return jsonify({
@@ -120,7 +128,7 @@ def delete_user_stats():
     return jsonify({"msg": "Peso y altura eliminados correctamente"}), 200
 
 
-# ── HistorialPeso ──────────────────────────────────────────────────────────────
+# Historial Peso
 
 @api.route('/user/historial', methods=['POST'])
 @jwt_required()
