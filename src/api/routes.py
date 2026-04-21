@@ -230,3 +230,16 @@ def toggle_product(id):
     db.session.commit()
 
     return jsonify(product.serialize()), 200
+
+@api.route('/user/profile', methods=['PUT'])
+@jwt_required()
+def update_user_profile():
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    if not user:
+        return jsonify({"msg": "Usuario no encontrado"}), 404
+    data = request.get_json()
+    if "genero" in data:
+        user.genero = data["genero"]
+    db.session.commit()
+    return jsonify({"msg": "Perfil actualizado correctamente", "user": user.serialize()}), 200
