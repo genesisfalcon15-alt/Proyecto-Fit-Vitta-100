@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { AnalisisDetallado } from "./AnalisisDetallado";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Imc = () => {
     const colorVerdeVitta = "#6e8a4f";
     const token = localStorage.getItem("token");
+    const navigate = useNavigate();
 
     const [pesoConfirmado, setPesoConfirmado] = useState(
         () => parseFloat(localStorage.getItem("vitta_peso")) || 100
@@ -60,16 +61,6 @@ export const Imc = () => {
         const base = genero === "mujer" ? 45.5 : 50;
         return parseFloat((base + 2.3 * pulgadas).toFixed(1));
     };
-
-    const datosGrafica = datosHistorial.map((entrada) => {
-        const d = new Date(entrada.fecha);
-        const fecha = `${d.getDate()}/${d.getMonth() + 1}`;
-        return {
-            fecha,
-            peso: entrada.peso,
-            objetivo: calcularPesoIdeal(entrada.altura, genero)
-        };
-    });
 
     const imcCalculado = (pesoConfirmado / ((alturaConfirmado / 100) ** 2)).toFixed(1);
 
@@ -163,7 +154,7 @@ export const Imc = () => {
                         minutos: 45,
                         dias: 3
                     }}
-                    historial={datosGrafica}
+                    historial={datosHistorial}
                     alCerrar={() => setMostrarAnalisis(false)}
                 />
             )}
@@ -212,16 +203,16 @@ export const Imc = () => {
                         <i className="fas fa-calendar-alt"></i> MI ACTIVIDAD
                     </Link>
 
-                    <Link to="/imc/analisis" style={{
+                    <button onClick={() => navigate("/imc/analisis")} style={{
                         position: "absolute", top: "-12px", right: "15px", zIndex: 10,
                         background: "linear-gradient(135deg, #6e8a4f 0%, #444 100%)",
                         color: "white", padding: "8px 14px", borderRadius: "12px",
-                        textDecoration: "none", fontSize: "10px", fontWeight: "800",
+                        border: "none", cursor: "pointer", fontSize: "10px", fontWeight: "800",
                         display: "flex", alignItems: "center", gap: "6px",
                         boxShadow: "0 4px 12px rgba(0,0,0,0.15)"
                     }}>
                         BIO-INFORME <i className="fas fa-chart-line"></i>
-                    </Link>
+                    </button>
 
                     <h4 style={{ marginBottom: "15px", marginTop: "10px", fontSize: "16px", fontWeight: "800" }}>
                         Mis Medidas e IMC
