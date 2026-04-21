@@ -4,17 +4,22 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 db = SQLAlchemy()
 
+
 class User(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     nombre: Mapped[str] = mapped_column(String(100), nullable=False)
     apellidos: Mapped[str] = mapped_column(String(100), nullable=False)
-    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(
+        String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
     genero: Mapped[str] = mapped_column(String(20), nullable=True)
-    is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=True)
+    is_active: Mapped[bool] = mapped_column(
+        Boolean(), nullable=False, default=True)
 
-    stats: Mapped["UserStats"] = relationship("UserStats", back_populates="user", uselist=False)
-    historial_peso: Mapped[list["HistorialPeso"]] = relationship("HistorialPeso", back_populates="user")
+    stats: Mapped["UserStats"] = relationship(
+        "UserStats", back_populates="user", uselist=False)
+    historial_peso: Mapped[list["HistorialPeso"]] = relationship(
+        "HistorialPeso", back_populates="user")
 
     def serialize(self):
         return {
@@ -42,10 +47,12 @@ class UserStats(db.Model):
             "altura": self.altura,
             "image": self.image
         }
-    
+
 
 class Product(db.Model):
-    id: Mapped[int] = mapped_column(foreign_key=True)
+    __tablename__ = "product"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     store: Mapped[str] = mapped_column(String(120), nullable=False)
     price: Mapped[float] = mapped_column(Float, nullable=False)
@@ -62,4 +69,4 @@ class Product(db.Model):
             "category": self.category,
             "image": self.image,
             "added": self.added
-}
+        }
