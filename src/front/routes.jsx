@@ -11,6 +11,7 @@ import Signup from "./pages/Signup.jsx";
 import Signin from "./pages/Signin.jsx";
 import Private from "./pages/Private.jsx";
 import EditarStats from "./pages/EditarStats.jsx";
+import Perfil from "./pages/Perfil.jsx";
 
 export const AppRoutes = ({ cardGlassStyle, colorVerdeVitta }) => {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ export const AppRoutes = ({ cardGlassStyle, colorVerdeVitta }) => {
       <Route path="/signin" element={<Signin />} />
       <Route path="/private" element={<Private />} />
       <Route path="/editar-stats" element={<EditarStats />} />
+      <Route path="/perfil" element={<Perfil />} />
       <Route element={<h1>Not found!</h1>} path="*" />
     </Routes>
   );
