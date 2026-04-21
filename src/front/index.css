@@ -100,6 +100,11 @@ label {
     background-color: transparent !important;
 }
 
+nav.navbar {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
 @keyframes slideUpVitta {
     from {
         transform: translateY(100px);

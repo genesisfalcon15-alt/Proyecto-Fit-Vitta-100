@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from api.models import db, User, UserStats, HistorialPeso
+from api.models import db, User, UserStats, Product,HistorialPeso
 from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 import bcrypt
@@ -230,7 +230,3 @@ def toggle_product(id):
     db.session.commit()
 
     return jsonify(product.serialize()), 200
-
-    db.session.delete(entrada)
-    db.session.commit()
-    return jsonify({"msg": "Entrada eliminada correctamente"}), 200

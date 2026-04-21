@@ -1,6 +1,6 @@
 import os
 from flask_admin import Admin
-from .models import db, User, UserStats, HistorialPeso
+from .models import db, User, UserStats, HistorialPeso, Product
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.theme import Bootstrap4Theme
 
@@ -18,6 +18,9 @@ class HistorialPesoAdmin(ModelView):
     column_list = ['id', 'user_id', 'peso', 'altura', 'fecha']
     column_default_sort = ('fecha', True)
 
+class ProductsAdmin(ModelView):
+    column_list = ['id', 'name', 'store', 'price']
+
 
 def setup_admin(app):
     app.secret_key = os.environ.get('FLASK_APP_KEY', 'sample key')
@@ -26,3 +29,4 @@ def setup_admin(app):
     admin.add_view(UserAdmin(User, db.session))
     admin.add_view(UserStatsAdmin(UserStats, db.session))
     admin.add_view(HistorialPesoAdmin(HistorialPeso, db.session))
+    admin.add_view(ProductsAdmin(Product, db.session))

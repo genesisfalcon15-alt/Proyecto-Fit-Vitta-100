@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 
 function Lista() {
@@ -9,46 +9,90 @@ function Lista() {
   const [store, setStore] = useState("");
   const [category, setCategory] = useState("");
 
+  const API = import.meta.env.VITE_BACKEND_URL;
+
   const categoryImages = {
-    lacteos: "/images/lacteos.jpg",
-    frutas_verduras: "/images/frutas.jpg",
-    carnes_aves: "/images/carne.jpg",
-    pescados_mariscos: "/images/pescado.jpg",
-    panaderia: "/public/pan.jpeg",
+    lacteos: "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=100&h=100&fit=crop",
+    frutas_verduras: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=100&h=100&fit=crop",
+    carnes_aves: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=100&h=100&fit=crop",
+    pescados_mariscos: "https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=100&h=100&fit=crop",
+    panaderia: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=100&h=100&fit=crop",
+
   };
 
-  const addProduct = () => {
-    if (!newProduct.trim() || !price || !store.trim() || !category) return;
 
-    const newItem = {
-      id: Date.now(),
-      name: newProduct,
-      store: store,
-      price: parseFloat(price),
-      category: category,
-      image: categoryImages[category],
-      added: false,
-  
-    };
 
-    setProducts([...products, newItem]);
-    setNewProduct("");
-    setPrice("");
-    setStore("");
-    setCategory("");
+  useEffect(() => {
+    fetch(`${API}/api/products`)
+      .then((res) => res.json())
+      .then((data) => setProducts(Array.isArray(data) ? data : []))
+      .catch(() => setProducts([]));
+  }, []);
+
+
+  const addProduct = async () => {
+    if (!newProduct || !price || !store || !category) return;
+
+    try {
+      const res = await fetch(`${API}/api/products`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+
+        },
+        body: JSON.stringify({
+          name: newProduct,
+          store: store,
+          price: parseFloat(price),
+          category: category,
+          image: categoryImages[category],
+
+        }),
+      }
+      );
+
+      const data = await res.json();
+      setProducts((prev) => [...prev, data]);
+
+      setNewProduct("");
+      setPrice("");
+      setStore("");
+      setCategory("");
+    } catch (err) {
+      console.error("POST product error:", err);
+    }
   };
 
-  const toggleProduct = (id) => {
-    setProducts((prev) =>
-      prev.map((p) =>
-        p.id === id ? { ...p, added: !p.added } : p
-      )
-    );
+
+  const deleteProduct = async (id) => {
+    try {
+      await fetch(`${API}/api/products/${id}`, {
+        method: "DELETE",
+      });
+
+      setProducts((prev) => prev.filter((p) => p.id !== id));
+    } catch (err) {
+      console.error("DELETE error:", err);
+    }
   };
 
-  const deleteProduct = (id) => {
-    setProducts((prev) => prev.filter((p) => p.id !== id));
+
+  const toggleProduct = async (id) => {
+    try {
+      const res = await fetch(`${API}/api/products/${id}`, {
+        method: "PUT",
+      });
+
+      const updated = await res.json();
+
+      setProducts((prev) =>
+        prev.map((p) => (p.id === id ? updated : p))
+      );
+    } catch (err) {
+      console.error("PUT error:", err);
+    }
   };
+
 
   const filteredProducts =
     search.length >= 3
@@ -57,52 +101,56 @@ function Lista() {
       )
       : products;
 
-  const totalAdded = products.filter((p) => p.added).length;
+  const totalAdded = Array.isArray(products)
+    ? products.filter((p) => p.added).length
+    : 0;
 
   return (
-    <div 
+    <div
       id="app-container"
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(145deg, #556B2F, #3E4E22)"
+        background: "linear-gradient(145deg, #556B2F, #3E4E22)",
+       
       }}
     >
+     
 
-      {/* HEADER */}
+
       <nav className="navbar">
-        <h1 className="vitta-title" style={{ color:"white"}}>VITTA</h1>
+        <h1 className="vitta-title" style={{ color: "white" }}>VITTA</h1>
         <div style={{ position: "relative", cursor: "pointer" }}>
 
 
-     <i
-        className="fas fa-shopping-basket"
-        style={{ fontSize: "24px", color: "white" }}
-      ></i>
+          <i
+            className="fas fa-shopping-basket"
+            style={{ fontSize: "24px", color: "white" }}
+          ></i>
 
 
-      {totalAdded > 0 && (
-        <span style={{
-          position: "absolute",
-          top: "-6px",
-          right: "-8px",
-          background: "red",
-          color: "white",
-          borderRadius: "50%",
-          padding: "3px 6px",
-          fontSize: "11px",
-          fontWeight: "bold",
-          minWidth: "16px",
-          textAlign: "center",
-          lineHeight: "1"
-        }}>
-          {totalAdded}
-        </span>
-     )}
+          {totalAdded > 0 && (
+            <span style={{
+              position: "absolute",
+              top: "-6px",
+              right: "-8px",
+              background: "red",
+              color: "white",
+              borderRadius: "50%",
+              padding: "3px 6px",
+              fontSize: "11px",
+              fontWeight: "bold",
+              minWidth: "16px",
+              textAlign: "center",
+              lineHeight: "1"
+            }}>
+              {totalAdded}
+            </span>
+          )}
 
-       </div>
+        </div>
       </nav>
 
-      {/* CONTENIDO */}
+
       <div className="container-fluid p-3">
 
         <h4 style={{ color: "white", fontWeight: "600" }}>Los favoritos de VITTA</h4>
@@ -110,7 +158,6 @@ function Lista() {
           Encuentra las mejores ofertas para ti
         </p>
 
-        {/* BUSCADOR */}
         <input
           className="form-control mb-3"
           placeholder="Buscar productos..."
@@ -118,7 +165,6 @@ function Lista() {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        {/* FORMULARIO */}
         <div className="vitta-card-resumen mb-3">
           <input
             className="form-control mb-2"
@@ -127,21 +173,21 @@ function Lista() {
             onChange={(e) => setNewProduct(e.target.value)}
           />
 
-            <select
-              className="form-control mb-2"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
+          <select
+            className="form-control mb-2"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
 
-              <option value="">Selecciona categoría</option>
-              <option value="lacteos">🥛 Lácteos</option>
-              <option value="frutas_verduras">🍎 Frutas y verduras</option>
-              <option value="carnes_aves">🍗 Carnes y aves</option>
-              <option value="pescados_mariscos">🐟 Pescados y mariscos</option>
-              <option value="panaderia">🥖 Panadería</option>
+            <option value="">Selecciona categoría</option>
+            <option value="lacteos">🥛 Lácteos</option>
+            <option value="frutas_verduras">🍎 Frutas y verduras</option>
+            <option value="carnes_aves">🍗 Carnes y aves</option>
+            <option value="pescados_mariscos">🐟 Pescados y mariscos</option>
+            <option value="panaderia">🥖 Panadería</option>
 
-            </select>
-          
+          </select>
+
           <input
             className="form-control mb-2"
             placeholder="Supermercado"
@@ -159,28 +205,28 @@ function Lista() {
           <button
             onClick={addProduct}
             style={{
-               backgroundColor: "#556B2F",
-               color: "white",
-               border: "none",
-               padding: "10px",
-               width: "100%",
-               borderRadius: "8px",
-               fontWeight: "600"
-               
+              backgroundColor: "#556B2F",
+              color: "white",
+              border: "none",
+              padding: "10px",
+              width: "100%",
+              borderRadius: "8px",
+              fontWeight: "600"
+
 
             }}
-           >
+          >
             Añadir producto
           </button>
         </div>
 
-        {/* LISTA */}
+
         {filteredProducts.map((product) => (
-        <div
+          <div
             key={product.id}
             onClick={() => toggleProduct(product.id)}
             style={{
-              background: product.added ? "#4caf50" : "#ffffff", 
+              background: product.added ? "#c2c9c2" : "#ffffff",
               color: product.added ? "white" : "#333",
               borderRadius: "12px",
               padding: "10px",
@@ -191,8 +237,8 @@ function Lista() {
               cursor: "pointer",
               transition: "0.2s",
             }}
-            
-              
+
+
           >
             <div className="d-flex align-items-center">
               <img
@@ -203,15 +249,15 @@ function Lista() {
               />
               <div>
                 <p
-                 className="mb-0"
-                 style={{
-                   color: product.added ? "white" : "#333",
-                   fontWeight: "500",
-                   textDecoration: product.added ? "line-through" : "none",
-                }}
-               >
+                  className="mb-0"
+                  style={{
+                    color: product.added ? "white" : "#333",
+                    fontWeight: "500",
+                    textDecoration: product.added ? "line-through" : "none",
+                  }}
+                >
                   {product.name}
-               </p>
+                </p>
                 <small style={{ color: "rgba(11, 11, 11, 0.7)" }}>
                   {product.store}
                 </small>
@@ -219,36 +265,36 @@ function Lista() {
             </div>
 
             <div>
-              <strong>€{product.price.toFixed(2)}</strong>
+              <strong>€{Number(product.price || 0).toFixed(2)}</strong>
 
-             <button
-               onClick={(e) => {
-                 e.stopPropagation();
-                 deleteProduct(product.id);
-              }}
-              style={{
-                background: "rgba(255,255,255,0.12)",
-                border: "1px solid rgba(255,255,255,0.2)",
-                color: "white",
-                borderRadius: "10px",
-                width: "34px",
-                height: "34px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                transition: "0.2s"
-              }}
-              onMouseOver={(e) => {
-                e.target.style.background = "rgba(220, 53, 69, 0.3)";
-                e.target.style.border = "1px solid rgba(220, 53, 69, 0.5)";
-              }}
-              onMouseOut={(e) => {
-                e.target.style.background = "rgba(255,255,255,0.12)";
-                e.target.style.border = "1px solid rgba(255,255,255,0.2)";
-              }}
-            >
-              <i className="fas fa-trash-alt"></i>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteProduct(product.id);
+                }}
+                style={{
+                  background: "rgba(255,255,255,0.12)",
+                  border: "1px solid rgba(255,255,255,0.2)",
+                  color: "white",
+                  borderRadius: "10px",
+                  width: "34px",
+                  height: "34px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  transition: "0.2s"
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.background = "rgba(6, 104, 22, 0.3)";
+                  e.target.style.border = "1px solid rgba(20, 85, 59, 0.5)";
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.background = "rgba(255,255,255,0.12)";
+                  e.target.style.border = "1px solid rgba(255,255,255,0.2)";
+                }}
+              >
+                <i className="fas fa-trash-alt"></i>
               </button>
             </div>
           </div>
