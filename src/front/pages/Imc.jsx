@@ -6,10 +6,15 @@ export const Imc = () => {
     const colorVerdeVitta = "#6e8a4f";
     const token = localStorage.getItem("token");
 
-    const [pesoConfirmado, setPesoConfirmado] = useState(100);
-    const [alturaConfirmado, setAlturaConfirmado] = useState(175);
-    const [tempPeso, setTempPeso] = useState(100);
-    const [tempAltura, setTempAltura] = useState(175);
+    const [pesoConfirmado, setPesoConfirmado] = useState(
+        () => parseFloat(localStorage.getItem("vitta_peso")) || 100
+    );
+    const [alturaConfirmado, setAlturaConfirmado] = useState(
+        () => parseFloat(localStorage.getItem("vitta_altura")) || 175
+    );
+    const [tempPeso, setTempPeso] = useState(pesoConfirmado);
+    const [tempAltura, setTempAltura] = useState(alturaConfirmado);
+
     const [guardando, setGuardando] = useState(false);
     const [mostrarAnalisis, setMostrarAnalisis] = useState(false);
     const [datosHistorial, setDatosHistorial] = useState([]);
@@ -21,7 +26,6 @@ export const Imc = () => {
             return;
         }
 
-        // GET - género del usuario
         fetch(import.meta.env.VITE_BACKEND_URL + "/api/private", {
             headers: { Authorization: "Bearer " + token }
         })
@@ -29,14 +33,13 @@ export const Imc = () => {
             .then((data) => setGenero(data.user.genero?.toLowerCase() || "hombre"))
             .catch(() => console.error("Error al cargar género"));
 
-        // GET - peso y altura
         fetch(import.meta.env.VITE_BACKEND_URL + "/api/user/stats", {
             headers: { Authorization: "Bearer " + token }
         })
             .then((res) => res.json())
             .then((data) => {
-                const peso = data.peso ?? 100;
-                const altura = data.altura ?? 175;
+                const peso = data.peso ?? parseFloat(localStorage.getItem("vitta_peso")) ?? 100;
+                const altura = data.altura ?? parseFloat(localStorage.getItem("vitta_altura")) ?? 175;
                 setPesoConfirmado(peso);
                 setAlturaConfirmado(altura);
                 setTempPeso(peso);
@@ -44,7 +47,6 @@ export const Imc = () => {
             })
             .catch(() => console.error("Error al cargar los datos"));
 
-        // GET - historial
         fetch(import.meta.env.VITE_BACKEND_URL + "/api/user/historial", {
             headers: { Authorization: "Bearer " + token }
         })
@@ -53,23 +55,22 @@ export const Imc = () => {
             .catch(() => console.error("Error al cargar el historial"));
     }, []);
 
-    // Fórmula Devine para peso ideal
     const calcularPesoIdeal = (alturaCm, genero) => {
         const pulgadas = (alturaCm - 152.4) / 2.54;
         const base = genero === "mujer" ? 45.5 : 50;
         return parseFloat((base + 2.3 * pulgadas).toFixed(1));
     };
 
+    const datosGrafica = datosHistorial.map((entrada) => {
+        const d = new Date(entrada.fecha);
+        const fecha = `${d.getDate()}/${d.getMonth() + 1}`;
+        return {
+            fecha,
+            peso: entrada.peso,
+            objetivo: calcularPesoIdeal(entrada.altura, genero)
+        };
+    });
 
-const datosGrafica = datosHistorial.map((entrada) => {
-    const d = new Date(entrada.fecha);
-    const fecha = `${d.getDate()}/${d.getMonth() + 1}`;
-    return {
-        fecha,
-        peso: entrada.peso,
-        objetivo: calcularPesoIdeal(entrada.altura, genero)
-    };
-});
     const imcCalculado = (pesoConfirmado / ((alturaConfirmado / 100) ** 2)).toFixed(1);
 
     const calcularPosicion = (valor) => {
@@ -109,6 +110,8 @@ const datosGrafica = datosHistorial.map((entrada) => {
                 else if (imcReal < 30) estado = "Sobrepeso";
                 else estado = "Obesidad";
 
+                localStorage.setItem("vitta_peso", nuevoPeso);
+                localStorage.setItem("vitta_altura", nuevaAltura);
                 localStorage.setItem("vitta_estado_fisico", estado);
                 localStorage.setItem("vitta_valor_imc", imcReal);
             } else {
@@ -156,9 +159,9 @@ const datosGrafica = datosHistorial.map((entrada) => {
                     usuario={{
                         peso: pesoConfirmado,
                         altura: alturaConfirmado,
-                        grasa: 22,      
-                        minutos: 45,     
-                        dias: 3         
+                        grasa: 22,
+                        minutos: 45,
+                        dias: 3
                     }}
                     historial={datosGrafica}
                     alCerrar={() => setMostrarAnalisis(false)}
@@ -286,7 +289,6 @@ const datosGrafica = datosHistorial.map((entrada) => {
                     </div>
                 </div>
 
-                {/* Historial de peso */}
                 {datosHistorial.length > 0 && (
                     <div style={cardStyle}>
                         <h4 style={{ fontSize: "14px", fontWeight: "800", marginBottom: "12px" }}>HISTORIAL DE PESO</h4>
