@@ -1,57 +1,53 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Abril+Fatface&display=swap");
 
-
 :root {
-  --vitta-oliva: rgba(113, 121, 103, 1);
-  --vitta-green: #6e8a4f;
-  --vitta-text-light: #ffffff;
-  --vitta-text-dark: #333;
-  --font-main: "Poppins", sans-serif;
-  --font-accent: "Abril Fatface", cursive;
-  --radius: 16px;
-  --radius-lg: 30px;
+    --vitta-oliva: rgba(113, 121, 103, 1);
+    --vitta-green: #6e8a4f;
+    --vitta-text-light: #ffffff;
+    --vitta-text-dark: #333;
+    --font-main: "Poppins", sans-serif;
+    --font-accent: "Abril Fatface", cursive;
+    --radius: 16px;
+    --radius-lg: 30px;
 }
 
-
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
-    font-family: var(--font-main);
-    background-color: #f1f1f1; 
-    display: flex;
-    justify-content: center;
-    
+    background-color: #f1f1f1;
+    display: block;
 }
-
 
 #app-container {
     width: 100%;
     max-width: 450px;
     margin: 0 auto;
     min-height: 100vh;
-    height: auto;
-    background-color: var(--vitta-oliva) !important; 
-    box-shadow: 0 0 25px rgba(0,0,0,0.2);
+    background-color: var(--vitta-oliva) !important;
     position: relative;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
 }
 
-
-h1, h2, h3, .vitta-title {
-  font-family: var(--font-accent);
-  color: white; 
+h1,
+h2,
+h3,
+.vitta-title {
+    font-family: var(--font-accent);
+    color: white;
 }
 
 .vitta-title {
-    color: var(--vitta-green); 
+    color: var(--vitta-green);
 }
 
-p, span, label {
-    color: rgba(255, 255, 255, 0.9); 
+p,
+span,
+label {
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .text-muted {
@@ -67,10 +63,9 @@ p, span, label {
 }
 
 .rounded-circle {
-    border: 2.5px solid #000000 !important; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    border: 2.5px solid #000000 !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
-
 
 .vitta-card-resumen {
     background-color: rgba(255, 255, 255, 0.95);
@@ -80,32 +75,28 @@ p, span, label {
     color: var(--vitta-text-dark);
 }
 
-.vitta-card-resumen p, .vitta-card-resumen i {
+.vitta-card-resumen p,
+.vitta-card-resumen i {
     color: var(--vitta-text-dark) !important;
 }
 
 .btn-negro-transparente {
-    background-color: rgba(0, 0, 0, 0.25) !important; 
+    background-color: rgba(0, 0, 0, 0.25) !important;
     color: white !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: 15px;
     padding: 12px;
     font-weight: 600;
-    backdrop-filter: blur(5px); 
+    backdrop-filter: blur(5px);
     transition: background 0.3s ease;
 }
-
-.btn-negro-transparente:hover {
-    background-color: rgba(0, 0, 0, 0.45) !important;
-}
-
 
 .italic {
     font-style: italic;
 }
 
-
-.container-fluid, .container {
+.container-fluid,
+.container {
     background-color: transparent !important;
 }
 
@@ -113,6 +104,73 @@ nav.navbar {
     background-color: rgba(255, 255, 255, 0.1) !important;
     backdrop-filter: blur(10px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+@keyframes slideUpVitta {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.vitta-route-card {
+    animation: slideUpVitta 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.vitta-route-card h6,
+.vitta-route-card span,
+.vitta-route-card div {
+    color: var(--vitta-text-dark) !important;
+}
+
+.vitta-route-card i {
+    margin-bottom: 4px;
+}
+
+@keyframes aparecerSubiendo {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animar-entrada {
+    opacity: 0;
+    animation: aparecerSubiendo 0.8s ease-out forwards;
+}
+
+.delay-1 {
+    animation-delay: 0.2s;
+}
+
+.delay-2 {
+    animation-delay: 0.4s;
+}
+
+.delay-3 {
+    animation-delay: 0.6s;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 .navbar {

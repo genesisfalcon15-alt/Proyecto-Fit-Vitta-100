@@ -158,14 +158,12 @@ function Lista() {
           Encuentra las mejores ofertas para ti
         </p>
 
-
         <input
           className="form-control mb-3"
           placeholder="Buscar productos..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-
 
         <div className="vitta-card-resumen mb-3">
           <input

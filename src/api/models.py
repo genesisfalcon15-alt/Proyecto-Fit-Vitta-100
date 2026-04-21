@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean, Float, ForeignKey
+from sqlalchemy import String, Boolean, Float, ForeignKey, DateTime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from datetime import datetime, timezone
 
 db = SQLAlchemy()
 
@@ -9,17 +10,13 @@ class User(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     nombre: Mapped[str] = mapped_column(String(100), nullable=False)
     apellidos: Mapped[str] = mapped_column(String(100), nullable=False)
-    email: Mapped[str] = mapped_column(
-        String(120), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
     genero: Mapped[str] = mapped_column(String(20), nullable=True)
-    is_active: Mapped[bool] = mapped_column(
-        Boolean(), nullable=False, default=True)
+    is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=True)
 
-    stats: Mapped["UserStats"] = relationship(
-        "UserStats", back_populates="user", uselist=False)
-    historial_peso: Mapped[list["HistorialPeso"]] = relationship(
-        "HistorialPeso", back_populates="user")
+    stats: Mapped["UserStats"] = relationship("UserStats", back_populates="user", uselist=False)
+    historial_peso: Mapped[list["HistorialPeso"]] = relationship("HistorialPeso", back_populates="user")
 
     def serialize(self):
         return {
@@ -49,9 +46,25 @@ class UserStats(db.Model):
         }
 
 
-class Product(db.Model):
-    __tablename__ = "product"
+class HistorialPeso(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
+    peso: Mapped[float] = mapped_column(Float, nullable=False)
+    altura: Mapped[float] = mapped_column(Float, nullable=False)
+    fecha: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), nullable=False)
 
+    user: Mapped["User"] = relationship("User", back_populates="historial_peso")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "peso": self.peso,
+            "altura": self.altura,
+            "fecha": self.fecha.isoformat()
+        }
+
+class Product(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     store: Mapped[str] = mapped_column(String(120), nullable=False)

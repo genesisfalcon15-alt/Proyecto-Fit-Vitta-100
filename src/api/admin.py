@@ -1,18 +1,32 @@
 import os
-import inspect
 from flask_admin import Admin
-from . import models
-from .models import db
+from .models import db, User, UserStats, HistorialPeso, Product
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.theme import Bootstrap4Theme
+
+
+class UserAdmin(ModelView):
+    column_list = ['id', 'nombre', 'apellidos', 'email', 'genero', 'is_active', 'password']
+    column_searchable_list = ['email', 'nombre', 'apellidos']
+
+
+class UserStatsAdmin(ModelView):
+    column_list = ['id', 'user_id', 'image', 'peso', 'altura']
+
+
+class HistorialPesoAdmin(ModelView):
+    column_list = ['id', 'user_id', 'peso', 'altura', 'fecha']
+    column_default_sort = ('fecha', True)
+
+class ProductsAdmin(ModelView):
+    column_list = ['id', 'name', 'store', 'price']
 
 
 def setup_admin(app):
     app.secret_key = os.environ.get('FLASK_APP_KEY', 'sample key')
     admin = Admin(app, name='4Geeks Admin', theme=Bootstrap4Theme(swatch='cerulean'))
 
-    # Dynamically add all models to the admin interface
-    for name, obj in inspect.getmembers(models):
-        # Verify that the object is a SQLAlchemy model before adding it to the admin. 
-        if inspect.isclass(obj) and issubclass(obj, db.Model):
-            admin.add_view(ModelView(obj, db.session))
+    admin.add_view(UserAdmin(User, db.session))
+    admin.add_view(UserStatsAdmin(UserStats, db.session))
+    admin.add_view(HistorialPesoAdmin(HistorialPeso, db.session))
+    admin.add_view(ProductsAdmin(Product, db.session))

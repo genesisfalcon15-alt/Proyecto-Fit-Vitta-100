@@ -1,159 +1,320 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Mapa } from "./Mapa.jsx";
+import Mapa from "./Mapa.jsx";
+import TarjetaDestino from "./TarjetaDestino.jsx";
+import { MisLugaresFavoritos } from "./MisLugaresFavoritos.jsx";
 
 export const Buscador = () => {
+    // Estados principales de búsqueda
     const [query, setQuery] = useState("");
     const [sugerencias, setSugerencias] = useState([]);
+    const [buscando, setBuscando] = useState(false);
+
+    // Origen y destino del usuario
+    const [origen, setOrigen] = useState({ nombre: "Mi ubicación", lat: 40.4167, lon: -3.7033 });
+    const [destino, setDestino] = useState(null);
+    const [editandoOrigen, setEditandoOrigen] = useState(false);
+
+    // Datos de tiendas y favoritos
+    const [tiendas, setTiendas] = useState([]);
+    const [mostrarFavoritos, setMostrarFavoritos] = useState(false);
+    const [favoritos, setFavoritos] = useState(() => {
+        const guardados = localStorage.getItem("vitta_favoritos");
+        return guardados ? JSON.parse(guardados) : [];
+    });
+
     const mapRef = useRef();
+    const colorVerdeVitta = "#6e8a4f";
+
+    const categorias = [
+        { id: "super", label: "Supermercado", icon: "fa-shopping-cart" },
+        { id: "bio", label: "Tienda Bio", icon: "fa-leaf" },
+        { id: "fruit", label: "Frutería", icon: "fa-apple-alt" },
+        { id: "market", label: "Mercados", icon: "fa-store" },
+    ];
 
 
-    {/* Este useEffect se encarga de obtener las sugerencias de búsqueda cada vez que el query cambia */ }
-    useEffect(() => {
-        const fetchSugerencias = async () => {
-            if (query.length < 3) {
-                setSugerencias([]);
-                return;
-            }
+    const buscarLocalesCercanos = async (categoriaLabel) => {
+        setSugerencias([]);
+        setBuscando(true);
+        setTiendas([]);
 
-
-            try {
-                const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=5`);
-                const data = await response.json();
-                setSugerencias(data);
-            } catch (error) {
-                console.error("Error en autocompletado:", error);
-            }
+        const tipos = {
+            "Supermercado": "supermarket",
+            "Tienda Bio": "health_food",
+            "Frutería": "greengrocer",
+            "Mercados": "marketplace"
         };
 
+        const tipoOsm = tipos[categoriaLabel] || "supermarket";
+        const lat = parseFloat(origen.lat);
+        const lon = parseFloat(origen.lon);
 
-        const timeout = setTimeout(fetchSugerencias, 300); // aqui se Espera el error 300! después de que el usuario deje de escribir
-        return () => clearTimeout(timeout); // con este limpio el timeout si el usuario sigue escribiendo antes de los 300.
-    }, [query]);
+        const url = `https://overpass-api.de/api/interpreter?data=[out:json];node["shop"="${tipoOsm}"](around:3000,${lat},${lon});out;`;
 
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
 
-
-    const seleccionarDireccion = (item) => {
-        setQuery(item.display_name);
-        setSugerencias([]);
-        // aqui declaro las coordenadas del item seleccionado y muevo el mapa a esa ubicación
-        if (mapRef.current) {
-            mapRef.current.moverA(parseFloat(item.lat), parseFloat(item.lon));
+            if (data.elements && data.elements.length > 0) {
+                const locales = data.elements.map(el => ({
+                    id: el.id,
+                    nombre: el.tags.name || categoriaLabel,
+                    lat: el.lat,
+                    lon: el.lon
+                }));
+                setTiendas(locales);
+                if (mapRef.current) mapRef.current.moverA(locales[0].lat, locales[0].lon);
+            } else {
+                alert("No se han encontrado locales en esta zona.");
+            }
+        } catch (error) {
+            console.error("Error Overpass:", error);
+        } finally {
+            setBuscando(false);
         }
     };
 
+
+    const seleccionarDireccion = (item) => {
+        const lat = parseFloat(item.lat || item.latitude);
+        const lon = parseFloat(item.lon || item.longitude);
+        const nombreLimpio = (item.display_name || item.nombre).split(',')[0];
+
+        if (editandoOrigen) {
+            setOrigen({ nombre: nombreLimpio, lat, lon });
+            setEditandoOrigen(false);
+            setQuery("");
+            if (mapRef.current) mapRef.current.moverA(lat, lon);
+            setTiendas([]);
+        } else {
+            setDestino({ nombre: nombreLimpio, lat, lon });
+            setQuery(nombreLimpio);
+            if (mapRef.current) mapRef.current.moverA(lat, lon);
+        }
+        setSugerencias([]);
+    };
+
+    // ubicación actual del usuario
+    const obtenerUbicacionActual = () => {
+        if (navigator.geolocation) {
+            setBuscando(true);
+            navigator.geolocation.getCurrentPosition((pos) => {
+                const { latitude, longitude } = pos.coords;
+                const miUb = { nombre: "Mi ubicación actual", lat: latitude, lon: longitude };
+                setOrigen(miUb);
+                if (mapRef.current) mapRef.current.moverA(latitude, longitude);
+                setBuscando(false);
+            }, () => {
+                alert("No se pudo acceder a tu ubicación.");
+                setBuscando(false);
+            });
+        }
+    };
+
+    // Autocompletado de direcciones
+    useEffect(() => {
+        const fetchSugerencias = async () => {
+            if (query.length < 3 || query === "Mi ubicación actual") {
+                setSugerencias([]);
+                return;
+            }
+            setBuscando(true);
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`);
+                const data = await response.json();
+                setSugerencias(data);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setBuscando(false);
+            }
+        };
+        const timeout = setTimeout(fetchSugerencias, 400);
+        return () => clearTimeout(timeout);
+    }, [query]);
+
+    // Añadir o quitar favoritos
+    const toggleFavorito = (sitio) => {
+        setFavoritos(prev => {
+            const existe = prev.find(f => f.nombre === sitio.nombre);
+            let nuevaLista = existe
+                ? prev.filter(f => f.nombre !== sitio.nombre)
+                : [...prev, sitio];
+            localStorage.setItem("vitta_favoritos", JSON.stringify(nuevaLista));
+            return nuevaLista;
+        });
+    };
+
     return (
-        <div className="container-fluid p-0 d-flex flex-column" style={{ minHeight: "auto" }}>
-            <div className="mt-4 mb-4 px-3">
-                <h2>Buscador VITTA</h2>
+        <div className="container-fluid p-3" style={{
+            minHeight: "100vh",
+            fontFamily: "'Poppins', sans-serif"
+        }}>
+
+
+            <div style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "20px"
+            }}>
+                <h2 className="fw-bold m-0" style={{
+                    color: "white",
+                    letterSpacing: "-1px"
+                }}>Buscador VITTA</h2>
+
+                <button
+                    onClick={() => setMostrarFavoritos(true)}
+                    style={{
+                        padding: "8px 15px",
+                        borderRadius: "12px",
+                        border: "none",
+                        backgroundColor: "rgba(255,255,255,0.15)",
+                        color: "white",
+                        fontSize: "11px",
+                        fontWeight: "700",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        backdropFilter: "blur(10px)"
+                    }}
+                >
+                    <i className="fas fa-star" style={{ color: "#ffc107" }}></i>
+                    MIS SITIOS ({favoritos.length})
+                </button>
             </div>
 
-            {/* personalización del input */}
-            <div className="position-relative px-3 mb-4">
-                <div className="d-flex align-items-center bg-white p-3 shadow-sm" style={{ borderRadius: "15px" }}>
-                    <i className="fas fa-search me-3 text-success"></i>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+                <div style={{
+                    display: 'flex', alignItems: 'center', padding: '12px 15px', borderRadius: '18px',
+                    backgroundColor: editandoOrigen ? '#fff' : 'rgba(255,255,255,0.7)',
+                    border: editandoOrigen ? `2px solid #3498db` : '2px solid transparent',
+                    transition: '0.3s'
+                }}>
+                    <i className="fas fa-dot-circle me-3" style={{ color: '#3498db' }}></i>
                     <input
                         type="text"
-                        className="form-control border-0 p-0"
-                        placeholder="Busca una dirección..."
-                        value={query}
+                        placeholder="Desde: Mi ubicación..."
+                        value={editandoOrigen ? query : origen.nombre}
+                        onFocus={() => { setEditandoOrigen(true); setQuery(""); }}
                         onChange={(e) => setQuery(e.target.value)}
-                        style={{ boxShadow: "none" }}
+                        style={{
+                            border: 'none',
+                            background: 'transparent',
+                            width: '100%', fontSize: '13px',
+                            fontWeight: '600', outline: 'none'
+                        }}
                     />
+                    <button onClick={obtenerUbicacionActual}
+                        style={{
+                            border: 'none',
+                            background: 'none',
+                            color: '#3498db'
+                        }}>
+                        <i className={`fas ${buscando ? 'fa-spinner fa-spin' : 'fa-location-arrow'}`}></i>
+                    </button>
                 </div>
 
-                {/* el bloque encargado de mostrar las sugerecias*/}
-
-                {sugerencias.length > 0 && (
-                    <ul className="list-group position-absolute w-100 shadow-lg" style={{ zIndex: 1050, borderRadius: "15px", marginTop: "5px" }}>
-                        {sugerencias.map((item, index) => (
-                            <li
-                                key={index}
-                                className="list-group-item list-group-item-action border-0"
-                                onClick={() => seleccionarDireccion(item)}
-                                style={{ cursor: "pointer", fontSize: "14px" }}>
-                                <i className="fas fa-map-marker-alt me-2 text-muted"></i>
-                                {item.display_name}
-                            </li>
-                        ))}
-                    </ul>
-                )}
-            </div>
-
-            <Mapa ref={mapRef} />
-
-            {/* esta es la sección que he creado para Tiendas Favoritas / Frecuentes */}
-            <div className="px-3 mt-4">
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                    <p className="mb-0" style={{
-                        color: "rgba(255,255,255,0.8)",
-                        fontSize: "14px",
-                        fontWeight: "bold",
-                        letterSpacing: "1px",
-                        textTransform: "uppercase"
-                    }}>
-                        Tiendas Frecuentes
-                    </p>
-                    <i className="fas fa-star text-warning" style={{ fontSize: "12px" }}></i>
-                </div>
-
-                {/* Contenedor de scroll horizontal para las tiendas */}
-                <div className="d-flex gap-3 pb-2" style={{ overflowX: "auto", scrollbarWidth: "none" }}>
-
-                    {/* Tienda 1 */}
-                    <div style={{
-                        minWidth: "160px",
-                        backgroundColor: "rgba(255, 255, 255, 0.15)",
-                        borderRadius: "15px",
-                        padding: "12px",
-                        border: "1px solid rgba(255, 255, 255, 0.2)",
-                        backdropFilter: "blur(5px)"
-                    }}>
-                        <div className="d-flex justify-content-between align-items-start mb-2">
-                            <div className="bg-white rounded-circle d-flex align-items-center justify-content-center" style={{ width: "35px", height: "35px" }}>
-                                <i className="fas fa-store text-success" style={{ fontSize: "18px" }}></i>
-                            </div>
-                            <span className="badge rounded-pill bg-success" style={{ fontSize: "9px" }}>Sano</span>
-                        </div>
-                        <p className="mb-0 text-white fw-bold" style={{ fontSize: "13px" }}>EcoMarket Sol</p>
-                        <p className="mb-0" style={{ color: "rgba(255,255,255,0.6)", fontSize: "11px" }}>A 300m de ti</p>
-                    </div>
-
-                    {/* Tienda 2 */}
-                    <div style={{
-                        minWidth: "160px",
-                        backgroundColor: "rgba(255, 255, 255, 0.15)",
-                        borderRadius: "15px",
-                        padding: "12px",
-                        border: "1px solid rgba(255, 255, 255, 0.2)",
-                        backdropFilter: "blur(5px)"
-                    }}>
-                        <div className="d-flex justify-content-between align-items-start mb-2">
-                            <div className="bg-white rounded-circle d-flex align-items-center justify-content-center" style={{ width: "35px", height: "35px" }}>
-                                <i className="fas fa-apple-alt text-danger" style={{ fontSize: "18px" }}></i>
-                            </div>
-                            <span className="badge rounded-pill bg-warning text-dark" style={{ fontSize: "9px" }}>Oferta</span>
-                        </div>
-                        <p className="mb-0 text-white fw-bold" style={{ fontSize: "13px" }}>Frutas Doña Ana</p>
-                        <p className="mb-0" style={{ color: "rgba(255,255,255,0.6)", fontSize: "11px" }}>A 1.2km de ti</p>
-                    </div>
-
-                    {/* Card para añadir más */}
-                    <div className="d-flex align-items-center justify-content-center" style={{
-                        minWidth: "60px",
-                        backgroundColor: "rgba(255, 255, 255, 0.05)",
-                        borderRadius: "15px",
-                        border: "1px dashed rgba(255, 255, 255, 0.3)"
-                    }}>
-                        <i className="fas fa-plus text-white-50"></i>
-                    </div>
+                <div style={{
+                    display: 'flex', alignItems: 'center',
+                    padding: '12px 15px',
+                    borderRadius: '18px',
+                    backgroundColor: !editandoOrigen ? '#fff' : 'rgba(255,255,255,0.7)',
+                    border: !editandoOrigen ? `2px solid ${colorVerdeVitta}` : '2px solid transparent',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)', transition: '0.3s'
+                }}>
+                    <i className="fas fa-map-marker-alt me-3" style={{ color: colorVerdeVitta }}></i>
+                    <input
+                        type="text"
+                        placeholder="¿A dónde vamos?"
+                        value={!editandoOrigen ? query : (destino?.nombre || "")}
+                        onFocus={() => { setEditandoOrigen(false); setQuery(""); }}
+                        onChange={(e) => setQuery(e.target.value)}
+                        style={{
+                            border: 'none',
+                            background: 'transparent',
+                            width: '100%', fontSize: '14px',
+                            fontWeight: '800',
+                            outline: 'none'
+                        }} />
                 </div>
             </div>
+
+
+            <div className="mb-4" style={{
+                display: "flex", gap: "10px",
+                overflowX: "auto", paddingBottom: "10px",
+                scrollbarWidth: "none"
+            }}>
+                {categorias.map(cat => (
+                    <button
+                        key={cat.id}
+                        onClick={() => { setEditandoOrigen(false); setQuery(cat.label); buscarLocalesCercanos(cat.label); }}
+                        style={{
+                            whiteSpace: "nowrap",
+                            padding: "8px 16px",
+                            borderRadius: "20px",
+                            border: "none",
+                            backgroundColor: "rgba(255,255,255,0.2)",
+                            color: "white", fontSize: "13px",
+                            fontWeight: "600", display: "flex",
+                            alignItems: "center", gap: "8px",
+                            backdropFilter: "blur(5px)"
+                        }} >
+                        <i className={`fas ${cat.icon}`}></i>{cat.label}
+                    </button>
+                ))}
+            </div>
+
+            {sugerencias.length > 0 && (
+                <ul className="list-group shadow-lg mb-3" style={{
+                    borderRadius: "18px",
+                    overflow: "hidden",
+                    border: "none",
+                    position: "relative",
+                    zIndex: 1000
+                }}>
+                    {sugerencias.map((item, index) => (
+                        <li key={index} className="list-group-item list-group-item-action py-3" onClick={() => seleccionarDireccion(item)} style={{ cursor: "pointer", fontSize: "13px" }}>
+                            <i className="fas fa-search me-2 text-muted"></i> {item.display_name}
+                        </li>
+                    ))}
+                </ul>
+            )}
+
+            <TarjetaDestino
+                destino={destino}
+                ubicacionUsuario={origen}
+                alCerrar={() => setDestino(null)}
+                colorVerdeVitta={colorVerdeVitta}
+                onToggleFavorito={toggleFavorito}
+                esFavorito={favoritos.some(f => f.nombre === destino?.nombre)}
+            />
+
+            <div style={{
+                marginTop: "10px",
+                borderRadius: "28px",
+                overflow: "hidden",
+                boxShadow: "0 10px 30px rgba(0,0,0,0.1)"
+            }}>
+                <Mapa ref={mapRef} tiendas={tiendas} />
+            </div>
+
+
+            {mostrarFavoritos && (
+                <MisLugaresFavoritos
+                    favoritos={favoritos}
+                    colorVerdeVitta={colorVerdeVitta}
+                    alCerrar={() => setMostrarFavoritos(false)}
+                    alEliminar={toggleFavorito}
+                    alSeleccionar={(fav) => {
+                        seleccionarDireccion(fav);
+                        setMostrarFavoritos(false);
+                    }}
+                />
+            )}
 
             <div style={{ height: "40px" }}></div>
-
-
         </div>
-
-
     );
 };
