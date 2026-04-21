@@ -229,7 +229,7 @@ export const Buscador = () => {
                         placeholder="¿A dónde vamos?"
                         value={!editandoOrigen ? query : (destino?.nombre || "")}
                         onFocus={() => { setEditandoOrigen(false); setQuery(""); }}
-                        onChange={(e) => setQuery(e.target.value)}
+                        onChange={(e) => { setQuery(e.target.value); setDestino(null); }}
                         style={{
                             border: 'none',
                             background: 'transparent',
@@ -266,7 +266,8 @@ export const Buscador = () => {
                 ))}
             </div>
 
-            {sugerencias.length > 0 && (
+            {/* CAMBIO 1: solo muestra sugerencias si NO hay destino seleccionado */}
+            {sugerencias.length > 0 && !destino && (
                 <ul className="list-group shadow-lg mb-3" style={{
                     borderRadius: "18px",
                     overflow: "hidden",
@@ -291,13 +292,14 @@ export const Buscador = () => {
                 esFavorito={favoritos.some(f => f.nombre === destino?.nombre)}
             />
 
+            {/* CAMBIO 2: se pasan origen y destino al mapa para dibujar la ruta */}
             <div style={{
                 marginTop: "10px",
                 borderRadius: "28px",
                 overflow: "hidden",
                 boxShadow: "0 10px 30px rgba(0,0,0,0.1)"
             }}>
-                <Mapa ref={mapRef} tiendas={tiendas} />
+                <Mapa ref={mapRef} tiendas={tiendas} origen={origen} destino={destino} />
             </div>
 
 
