@@ -15,26 +15,18 @@ import EditarStats from "./pages/EditarStats.jsx";
 export const AppRoutes = ({ cardGlassStyle, colorVerdeVitta }) => {
   const navigate = useNavigate();
 
-  const usuarioFake = { peso: 70, grasa: 18, minutos: 30, dias: 5 };
-
-  const historialFake = [
-    { fecha: "Sem 1", peso: 75, objetivo: 70 },
-    { fecha: "Sem 2", peso: 73, objetivo: 70 },
-    { fecha: "Sem 3", peso: 72, objetivo: 70 },
-    { fecha: "Sem 4", peso: 70, objetivo: 70 },
-  ];
 
   return (
     <Routes>
       <Route path="/" element={<Home cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />} />
       <Route path="/buscador" element={<Buscador cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />} />
       <Route path="/imc" element={<Imc cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />} />
+
+    
       <Route path="/imc/analisis" element={
-        <AnalisisDetallado
-          usuario={usuarioFake}
-          historial={historialFake}
-          alCerrar={() => navigate("/imc")}
-        />} />
+        <AnalisisDetallado alCerrar={() => navigate("/imc")} />
+      } />
+
       <Route path="/imc/plan" element={<ContenedorActividad />} />
       <Route path="/lista" element={<Lista cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />} />
       <Route path="/conocenos" element={<Conocenos cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />} />
