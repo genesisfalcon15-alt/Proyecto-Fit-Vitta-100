@@ -20,6 +20,7 @@ export const Imc = () => {
     const [mostrarAnalisis, setMostrarAnalisis] = useState(false);
     const [datosHistorial, setDatosHistorial] = useState([]);
     const [genero, setGenero] = useState("hombre");
+    const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
 
     useEffect(() => {
         if (!token) {
@@ -52,17 +53,30 @@ export const Imc = () => {
             headers: { Authorization: "Bearer " + token }
         })
             .then((res) => res.json())
-            .then((data) => setDatosHistorial(data))
+            .then((data) => {
+                setDatosHistorial(data);
+
+                if (data && data.length > 0) {
+                    const ordenado = [...data].sort(
+                        (a, b) => new Date(b.fecha) - new Date(a.fecha)
+                    );
+                    const ultimo = ordenado[0];
+                    if (ultimo.peso) {
+                        setPesoConfirmado(ultimo.peso);
+                        setTempPeso(ultimo.peso);
+                    }
+                    if (ultimo.altura) {
+                        setAlturaConfirmado(ultimo.altura);
+                        setTempAltura(ultimo.altura);
+                    }
+                }
+            })
             .catch(() => console.error("Error al cargar el historial"));
     }, []);
 
-    const calcularPesoIdeal = (alturaCm, genero) => {
-        const pulgadas = (alturaCm - 152.4) / 2.54;
-        const base = genero === "mujer" ? 45.5 : 50;
-        return parseFloat((base + 2.3 * pulgadas).toFixed(1));
-    };
-
-    const imcCalculado = (pesoConfirmado / ((alturaConfirmado / 100) ** 2)).toFixed(1);
+    const imcCalculado = tempAltura > 0
+        ? (parseFloat(tempPeso) / ((parseFloat(tempAltura) / 100) ** 2)).toFixed(1)
+        : "0.0";
 
     const calcularPosicion = (valor) => {
         const v = parseFloat(valor);
@@ -72,7 +86,31 @@ export const Imc = () => {
         return Math.min(Math.max(porcentaje, 5), 95);
     };
 
+    const obtenerUltimoPesoHistorial = () => {
+        if (!datosHistorial || datosHistorial.length === 0) return null;
+        const ordenado = [...datosHistorial].sort(
+            (a, b) => new Date(b.fecha) - new Date(a.fecha)
+        );
+        return ordenado[0].peso ?? null;
+    };
+
+    const handleClickActualizar = () => {
+        const nuevoPeso = parseFloat(tempPeso);
+        const ultimoPeso = obtenerUltimoPesoHistorial();
+
+        if (ultimoPeso !== null) {
+            const diferencia = Math.abs(nuevoPeso - ultimoPeso) / ultimoPeso;
+            if (diferencia > 0.1) {
+                setMostrarConfirmacion(true);
+                return;
+            }
+        }
+
+        handleGuardarCambios();
+    };
+
     const handleGuardarCambios = async () => {
+        setMostrarConfirmacion(false);
         setGuardando(true);
         const nuevoPeso = parseFloat(tempPeso);
         const nuevaAltura = parseFloat(tempAltura);
@@ -159,6 +197,71 @@ export const Imc = () => {
                 />
             )}
 
+            {mostrarConfirmacion && (
+                <div style={{
+                    position: "fixed", inset: 0, zIndex: 9999,
+                    background: "rgba(0,0,0,0.5)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    padding: "20px"
+                }}>
+                    <div style={{
+                        background: "white", borderRadius: "24px",
+                        padding: "28px 24px", maxWidth: "340px", width: "100%",
+                        boxShadow: "0 20px 60px rgba(0,0,0,0.25)",
+                        textAlign: "center"
+                    }}>
+                        <div style={{
+                            width: "56px", height: "56px", borderRadius: "50%",
+                            background: "#fff5e6", display: "flex",
+                            alignItems: "center", justifyContent: "center",
+                            margin: "0 auto 16px auto", fontSize: "24px"
+                        }}>
+                            ⚠️
+                        </div>
+                        <h3 style={{
+                            fontSize: "17px", fontWeight: "800",
+                            color: "#333", marginBottom: "10px"
+                        }}>
+                            ¿Estás seguro que quieres ingresar este dato?
+                        </h3>
+                        <p style={{
+                            fontSize: "13px", color: "#888",
+                            marginBottom: "24px", lineHeight: "1.5"
+                        }}>
+                            El peso introducido ({parseFloat(tempPeso)} kg) difiere más de un{" "}
+                            <strong>10%</strong> respecto al último registrado (
+                            {obtenerUltimoPesoHistorial()} kg).
+                        </p>
+                        <div style={{ display: "flex", gap: "10px" }}>
+                            <button
+                                onClick={() => setMostrarConfirmacion(false)}
+                                style={{
+                                    flex: 1, padding: "13px",
+                                    borderRadius: "14px", border: "2px solid #eee",
+                                    background: "white", color: "#666",
+                                    fontWeight: "700", fontSize: "13px",
+                                    cursor: "pointer"
+                                }}
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={handleGuardarCambios}
+                                style={{
+                                    flex: 1, padding: "13px",
+                                    borderRadius: "14px", border: "none",
+                                    background: colorVerdeVitta, color: "white",
+                                    fontWeight: "800", fontSize: "13px",
+                                    cursor: "pointer"
+                                }}
+                            >
+                                Sí, guardar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <style>{`
                 #app-container .seccion-escritura span,
                 #app-container .seccion-escritura p,
@@ -221,17 +324,27 @@ export const Imc = () => {
                     <div style={{ display: "flex", justifyContent: "space-around", marginBottom: "20px", alignItems: "center" }}>
                         <div style={{ textAlign: "center" }}>
                             <span style={{ fontSize: "10px", display: "block", marginBottom: "5px" }}>PESO (KG)</span>
-                            <input type="number" className="input-vitta-new" value={tempPeso} onChange={(e) => setTempPeso(e.target.value)} />
+                            <input
+                                type="number"
+                                className="input-vitta-new"
+                                value={tempPeso}
+                                onChange={(e) => setTempPeso(e.target.value)}
+                            />
                         </div>
                         <div style={{ width: "1px", height: "50px", backgroundColor: "#eee" }}></div>
                         <div style={{ textAlign: "center" }}>
                             <span style={{ fontSize: "10px", display: "block", marginBottom: "5px" }}>ALTURA (CM)</span>
-                            <input type="number" className="input-vitta-new" value={tempAltura} onChange={(e) => setTempAltura(e.target.value)} />
+                            <input
+                                type="number"
+                                className="input-vitta-new"
+                                value={tempAltura}
+                                onChange={(e) => setTempAltura(e.target.value)}
+                            />
                         </div>
                     </div>
 
                     <button
-                        onClick={handleGuardarCambios}
+                        onClick={handleClickActualizar}
                         disabled={!hayCambios || guardando}
                         style={{
                             background: hayCambios ? colorVerdeVitta : "#eee",
@@ -269,7 +382,7 @@ export const Imc = () => {
                             border: `4px solid ${colorVerdeVitta}`,
                             borderRadius: "50%",
                             boxShadow: "0 3px 6px rgba(0,0,0,0.15)",
-                            transition: "left 0.7s cubic-bezier(0.23, 1, 0.32, 1)"
+                            transition: "left 0.4s cubic-bezier(0.23, 1, 0.32, 1)"
                         }}></div>
                     </div>
 
