@@ -119,48 +119,6 @@ export const Mapa = forwardRef(({ tiendas = [], origen, destino }, ref) => {
         <div style={{ borderRadius: "28px", overflow: "hidden", height: "450px", position: "relative", border: "1px solid #eee" }}>
 
             
-            {destino && (
-                <div style={{
-                    position: "absolute",
-                    top: "12px",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    zIndex: 1000,
-                    backgroundColor: "white",
-                    borderRadius: "16px",
-                    padding: "10px 18px",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.18)",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "10px",
-                    minWidth: "220px",
-                    maxWidth: "85%",
-                    backdropFilter: "blur(8px)"
-                }}>
-                    <div style={{
-                        width: "32px", height: "32px",
-                        borderRadius: "50%",
-                        backgroundColor: "#fdecea",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        flexShrink: 0
-                    }}>
-                        <i className="fas fa-map-marker-alt" style={{ color: "#e74c3c", fontSize: "14px" }}></i>
-                    </div>
-                    <div style={{ overflow: "hidden" }}>
-                        <div style={{ fontSize: "10px", color: "#999", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.5px" }}>
-                            Destino
-                        </div>
-                        <div style={{
-                            fontSize: "13px", fontWeight: "800",
-                            color: "#222", whiteSpace: "nowrap",
-                            overflow: "hidden", textOverflow: "ellipsis",
-                            fontFamily: "'Poppins', sans-serif"
-                        }}>
-                            {destino.nombre}
-                        </div>
-                    </div>
-                </div>
-            )}
 
             <MapContainer
                 center={position}
