@@ -5,6 +5,7 @@ from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
 from api.models import db
 from api.routes import api
+from api.ia_routes import ia_api
 from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_cors import CORS, cross_origin
@@ -35,6 +36,7 @@ setup_admin(app)
 setup_commands(app)
 
 app.register_blueprint(api, url_prefix='/api')
+app.register_blueprint(ia_api, url_prefix='/api')
 
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):

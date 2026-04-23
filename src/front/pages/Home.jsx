@@ -207,6 +207,27 @@ export const Home = () => {
 			{mostrarRecetario && (
 				<RecetarioVitta alCerrar={() => setMostrarRecetario(false)} />
 			)}
+			<footer className="pb-3 mt-1" style={{ textAlign: 'center' }}>
+
+				<hr style={{ border: '0', borderTop: '1px solid rgba(255,255,255,0.1)', width: '40%', margin: '0 auto 10px auto' }} />
+
+				<p style={{ color: 'white', opacity: 0.7, fontSize: '12px', marginBottom: '8px' }}>Síguenos</p>
+
+				<div className="d-flex justify-content-center gap-4">
+
+					<a href="https://www.instagram.com/vittasabio/" target="_blank" rel="noopener noreferrer" className="social-icon">
+						<i className="fab fa-instagram fa-lg"></i>
+					</a>
+
+					<a href="https://facebook.com/vitta" target="_blank" rel="noopener noreferrer" className="social-icon">
+						<i className="fab fa-facebook fa-lg"></i>
+					</a>
+				</div>
+				<p className="mt-3" style={{ color: 'white', opacity: 0.5, fontSize: '10px' }}>
+					© 2026 VITTA
+				</p>
+			</footer>
+
 		</div>
 	);
 };

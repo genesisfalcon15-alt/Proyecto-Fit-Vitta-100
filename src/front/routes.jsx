@@ -11,6 +11,7 @@ import Signup from "./pages/Signup.jsx";
 import Signin from "./pages/Signin.jsx";
 import Private from "./pages/Private.jsx";
 import EditarStats from "./pages/EditarStats.jsx";
+import { Landing } from "./pages/Landing.jsx";
 
 export const AppRoutes = ({ cardGlassStyle, colorVerdeVitta }) => {
   const navigate = useNavigate();
@@ -26,7 +27,9 @@ export const AppRoutes = ({ cardGlassStyle, colorVerdeVitta }) => {
 
   return (
     <Routes>
-      <Route path="/" element={<Home cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />} />
+      <Route path="/" element={<Home />} />
+      <Route path="/welcome" element={<Landing />} />
+      <Route path="/home" element={<Home cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />} />
       <Route path="/buscador" element={<Buscador cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />} />
       <Route path="/imc" element={<Imc cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />} />
       <Route path="/imc/analisis" element={

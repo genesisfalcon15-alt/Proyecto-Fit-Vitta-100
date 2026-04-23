@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+
 export const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -284,6 +285,20 @@ export const Navbar = () => {
                                 style={{ color: "#333", fontWeight: "700" }} onClick={() => setIsOpen(false)}>
                                 <i className="fas fa-weight" style={{ color: colorVerdeVitta }} />
                                 Mi Salud e IMC
+                            </Link>
+                        </li>
+                        <li className="mb-4">
+                            <Link
+                                to="/welcome"
+                                className="text-decoration-none d-flex align-items-center gap-3"
+                                style={{ color: "#333", fontWeight: "700" }}
+                                onClick={() => setIsOpen(false)} >
+
+                                <i
+                                    className="fas fa-leaf"
+                                    style={{ color: colorVerdeVitta }}
+                                ></i>{" "}
+                                Página de Bienvenida
                             </Link>
                         </li>
                     </ul>
