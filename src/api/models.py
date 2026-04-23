@@ -5,10 +5,7 @@ from datetime import datetime, timezone
 
 db = SQLAlchemy()
 
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/main
 class User(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     nombre: Mapped[str] = mapped_column(String(100), nullable=False)
@@ -85,8 +82,4 @@ class Product(db.Model):
             "category": self.category,
             "image": self.image,
             "added": self.added
-<<<<<<< HEAD
-}
-=======
         }
->>>>>>> origin/main

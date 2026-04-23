@@ -73,7 +73,6 @@ export const ContenedorActividad = () => {
                             textTransform: 'uppercase',
                             letterSpacing: '0.5px'
                         }}>
-<<<<<<< HEAD
 
                         <i className="ai-icon" style={{ display: "flex", alignItems: "center" }}>
                             <img
@@ -92,10 +91,6 @@ export const ContenedorActividad = () => {
                                 }} />
                         </i>
 
-=======
-                        <i className="fas fa-robot"
-                            style={{ color: "white", fontSize: '18px' }}></i>
->>>>>>> origin/main
                         GENERAR MI RUTINA PERSONALIZADA
                     </button>
                 </div>
@@ -115,17 +110,10 @@ export const ContenedorActividad = () => {
                         onCambioActividad={manejarCambioActividad} />
                 </div>
 
-<<<<<<< HEAD
                 {verRutina && (
                     <RutinaIA
                         alCerrar={() => setVerRutina(false)} />
                 )}
-=======
-
-                {verRutina && (
-                    <RutinaIA
-                        alCerrar={() => setVerRutina(false)} />)}
->>>>>>> origin/main
 
             </div>
         </div>
