@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Landing } from "./Landing";
 
 const Login = () => {
     const [form, setForm] = useState({ email: "", password: "" });
@@ -51,7 +52,7 @@ const Login = () => {
     return (
         <div
             className="d-flex justify-content-center align-items-center vh-100"
-            style={{ backgroundColor: "#6e8b4f" }}
+            style={{ backgroundColor: "#6e8a4f" }}
         >
             <div
                 className="card p-4 shadow"

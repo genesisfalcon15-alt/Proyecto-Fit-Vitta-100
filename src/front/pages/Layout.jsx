@@ -1,10 +1,46 @@
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, useLocation } from "react-router-dom";
 import { AppRoutes } from "../routes.jsx";
 import { Navbar } from "../components/Navbar.jsx";
 import { Footer } from "../components/Footer.jsx";
 import ScrollToTop from "../components/ScrollToTop.jsx";
 import { Breadcrumbs } from "../components/Breadcrumbs.jsx";
+
+
+//componente interno para poder usar useLocation()
+const LayoutContent = ({ colorVerdeVitta, cardGlassStyle }) => {
+    const location = useLocation();
+
+    // Definimos la ruta donde NO queremos ver Navbar, Footer ni Breadcrumbs
+    const esLanding = location.pathname === "/welcome";
+
+    return (
+        <>
+            {!esLanding && <Navbar colorVerdeVitta={colorVerdeVitta} />}
+
+            <div id="scroll-container" style={{
+                flex: "1 1 auto",
+                overflowY: "scroll",
+                overflowX: "hidden",
+                WebkitOverflowScrolling: "touch",
+                display: "block",
+                position: "relative",
+                zIndex: 1,
+                width: "100%"
+            }}>
+                <ScrollToTop />
+                {!esLanding && <Breadcrumbs />}
+
+                <AppRoutes
+                    cardGlassStyle={cardGlassStyle}
+                    colorVerdeVitta={colorVerdeVitta}
+                />
+                {!esLanding && <div style={{ height: "100px", width: "100%" }}></div>}
+            </div>
+            {!esLanding && <Footer />}
+        </>
+    );
+};
 
 
 const Layout = () => {
@@ -38,36 +74,11 @@ const Layout = () => {
             }}>
 
             <BrowserRouter>
-                <Navbar colorVerdeVitta={colorVerdeVitta} />
+                <LayoutContent
+                    colorVerdeVitta={colorVerdeVitta}
+                    cardGlassStyle={cardGlassStyle}
+                />
 
-                <div
-                    id="scroll-container"
-                    style={{
-                        flex: "1 1 auto",
-                        overflowY: "scroll",
-                        overflowX: "hidden",
-                        WebkitOverflowScrolling: "touch",
-                        display: "block",
-                        position: "relative",
-                        zIndex: 1,
-                        width: "100%",
-                    }}>
-
-
-                    <ScrollToTop />
-
-
-                    <Breadcrumbs />
-
-
-                    <AppRoutes
-                        cardGlassStyle={cardGlassStyle}
-                        colorVerdeVitta={colorVerdeVitta} />
-                    <div style={{ height: "100px", width: "100%" }}></div>
-                </div>
-
-
-                <Footer />
             </BrowserRouter>
         </div>
     );

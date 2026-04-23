@@ -169,8 +169,29 @@ label {
 }
 
 .navbar {
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
-   padding: 12px 20px; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+}
+
+.social-icon {
+    color: white;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.social-icon:hover {
+    opacity: 1;
+    transform: translateY(-3px);
+    color: #c9d6bc;
+}
+
+.fa-instagram:hover {
+    color: #E1306C;
+}
+
+.fa-facebook:hover {
+    color: #4267B2;
 }
