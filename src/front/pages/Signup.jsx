@@ -55,7 +55,6 @@ const Signup = () => {
         return;
       }
 
-
       const loginResponse = await fetch(import.meta.env.VITE_BACKEND_URL + "/api/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -68,7 +67,6 @@ const Signup = () => {
       const loginData = await loginResponse.json();
 
       if (loginResponse.ok) {
-
         sessionStorage.setItem("token", loginData.token);
         sessionStorage.setItem("user", JSON.stringify(loginData.user));
         alert("Usuario creado correctamente");

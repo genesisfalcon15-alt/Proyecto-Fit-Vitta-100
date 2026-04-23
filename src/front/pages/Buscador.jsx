@@ -32,12 +32,10 @@ export const Buscador = () => {
         { id: "market", label: "Mercados", icon: "fa-store" },
     ];
 
-
     const buscarLocalesCercanos = async (categoriaLabel) => {
         setSugerencias([]);
         setBuscando(true);
         setTiendas([]);
-
         const tipos = {
             "Supermercado": "supermarket",
             "Tienda Bio": "health_food",
@@ -74,12 +72,10 @@ export const Buscador = () => {
         }
     };
 
-
     const seleccionarDireccion = (item) => {
         const lat = parseFloat(item.lat || item.latitude);
         const lon = parseFloat(item.lon || item.longitude);
         const nombreLimpio = (item.display_name || item.nombre).split(',')[0];
-
         if (editandoOrigen) {
             setOrigen({ nombre: nombreLimpio, lat, lon });
             setEditandoOrigen(false);

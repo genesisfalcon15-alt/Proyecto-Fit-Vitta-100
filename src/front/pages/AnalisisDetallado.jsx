@@ -16,7 +16,6 @@ const ContadorAnimado = ({ valorFinal, decimales = 0, color = "#333" }) => {
 
         const timer = setInterval(() => {
             inicio += incremento;
-
             if (inicio >= valorFinal) {
                 setValor(valorFinal);
                 clearInterval(timer);
