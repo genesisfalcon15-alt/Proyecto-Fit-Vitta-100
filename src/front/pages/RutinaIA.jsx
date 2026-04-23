@@ -1,62 +1,83 @@
 import React, { useState, useEffect } from 'react';
+import { fetchRutinaIA } from '../services/aiService';
 
 export const RutinaIA = ({ alCerrar }) => {
-    // Estado de carga 
+
+    // estado de carga 
     const [cargando, setCargando] = useState(true);
 
-    // Aquí se guarda el plan generado
+    // aquí se guarda el plan generado
     const [plan, setPlan] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        const datoGuardado = localStorage.getItem("vitta_valor_imc");
-        const valorParaCalcular = datoGuardado ? parseFloat(datoGuardado) : 22;
+        const obtenerRutinaReal = async () => {
+            try {
+                const datoGuardado = localStorage.getItem("vitta_valor_imc");
+                const valorParaCalcular = datoGuardado ? parseFloat(datoGuardado) : 22;
 
-        //  se genera el plan según el IMC del usuario
-        const nuevoPlan = obtenerPlanTexto(valorParaCalcular);
+                // ahora genera el plan según el imc del Us y se llama a la ia 
+                const rutinaIA = await fetchRutinaIA(valorParaCalcular);
 
-        //  se guarda el plan en el estado
-        setPlan(nuevoPlan);
+                //  se guarda el plan en el estado
+                setPlan(rutinaIA);
 
-        const timer = setTimeout(() => setCargando(false), 1200);
-        return () => clearTimeout(timer);
+            } catch (err) {
+                console.error("Error obteniendo rutina:", err);
+                setError("No pudimos conectar con Vitta AI. Revisa que el servidor esté encendido.");
+            } finally {
+                const timer = setTimeout(() => setCargando(false), 1000);
+                return () => clearTimeout(timer);
+            }
+        };
+
+        obtenerRutinaReal();
     }, []);
 
-    // aqui se decide qué tipo de rutina se va a crear según el IMC
-    const obtenerPlanTexto = (valorImc) => {
-        if (valorImc > 25) {
-            return {
-                categoria: "QUEMA DE GRASA",
-                color: "#e74c3c",
-                bloques: [
-                    { titulo: "Cardio", tiempo: "45 min", detalle: "Caminar rápido o elíptica suave." },
-                    { titulo: "Pierna", tiempo: "15 min", detalle: "Sentadillas (3x15) y Zancadas (3x12)." },
-                    { titulo: "Core", tiempo: "10 min", detalle: "Plancha frontal (3x45 seg)." }
-                ]
-            };
-        } else if (valorImc < 18.5) {
-            return {
-                categoria: "GANANCIA MUSCULAR",
-                color: "#3498db",
-                bloques: [
-                    { titulo: "Calentamiento", tiempo: "10 min", detalle: "Movilidad articular suave." },
-                    { titulo: "Brazo/Pecho", tiempo: "30 min", detalle: "Flexiones (4x10) y Press militar." },
-                    { titulo: "Inferior", tiempo: "20 min", detalle: "Sentadilla con peso (4x10)." }
-                ]
-            };
-        } else {
-            return {
-                categoria: "TONIFICACIÓN",
-                color: "#6e8a4f",
-                bloques: [
-                    { titulo: "HIIT", tiempo: "20 min", detalle: "1 min intenso / 1 min descanso." },
-                    { titulo: "Full Body", tiempo: "30 min", detalle: "Burpees (3x10) y Squats (3x15)." },
-                    { titulo: "Estiramiento", tiempo: "10 min", detalle: "Cadena muscular completa." }
-                ]
-            };
-        }
-    };
+    if (error) {
+        return (
+            <div style={{
+                position: 'fixed',
+                inset: 0,
+                backgroundColor: 'rgba(0,0,0,0.6)',
+                zIndex: 10000, display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center', padding: '20px'
+            }}>
+                <div style={{
+                    background: 'white',
+                    padding: '30px',
+                    borderRadius: '20px',
+                    textAlign: 'center', maxWidth: '300px'
+                }}>
+                    <i className="fas fa-exclamation-triangle"
+                        style={{
+                            fontSize: '30px',
+                            color: '#e74c3c',
+                            marginBottom: '15px'
+                        }}></i>
+                    <p style={{
+                        fontSize: '14px',
+                        fontWeight: '700'
+                    }}>{error}</p>
+                    <button onClick={alCerrar}
+                        style={{
+                            background: '#333',
+                            color: 'white', border: 'none',
+                            padding: '10px 20px',
+                            borderRadius: '10px',
+                            marginTop: '10px'
+                        }}>CERRAR</button>
+                </div>
+            </div>
+        );
+    }
 
-    if (!plan) return null;
+    // si no hay plan y no se esta cargando, no se renderiza nada
+    if (!plan && !cargando) return null;
+
+
+    const colorTema = plan?.color || "#6e8a4f";
 
     return (
         <div style={{
@@ -73,7 +94,6 @@ export const RutinaIA = ({ alCerrar }) => {
                 boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
             }}>
 
-
                 <div style={{
                     padding: '15px 20px',
                     display: 'flex',
@@ -87,73 +107,75 @@ export const RutinaIA = ({ alCerrar }) => {
                             fontSize: '13px',
                             fontWeight: '900',
                             color: '#333'
-                        }}>RUTINA IA</span>
+                        }}>
+                            VITTA AI COACH</span>
                         <p style={{
                             margin: 0,
                             fontSize: '9px',
                             color: '#999',
                             fontWeight: '700'
-                        }}>ADAPTADA A TU IMC</p>
+                        }}>INTELIGENCIA ARTIFICIAL ACTIVA</p>
                     </div>
-                    <button onClick={alCerrar}
-                        style={{
-                            background: '#eee',
-                            border: 'none',
-                            borderRadius: '50%',
-                            width: '30px',
-                            height: '30px',
-                            cursor: 'pointer',
-                            fontSize: '12px'
-                        }}>✕</button>
+                    <button onClick={alCerrar} style={{
+                        background: '#eee',
+                        border: 'none',
+                        borderRadius: '50%',
+                        width: '30px',
+                        height: '30px',
+                        cursor: 'pointer',
+                        fontSize: '12px'
+                    }}>✕</button>
                 </div>
 
-                <div style={{
-                    flex: 1,
-                    overflowY: 'auto',
-                    padding: '20px'
-                }}>
-
-
-                    <div style={{ marginBottom: '20px' }}>
-                        <h2 style={{
-                            margin: 0,
-                            fontSize: '20px',
-                            fontWeight: '900',
-                            color: '#1a1a1a'
-                        }}>{plan.categoria}</h2>
-                        <div style={{
-                            width: '40px',
-                            height: '4px',
-                            backgroundColor: plan.color,
-                            marginTop: '5px',
-                            borderRadius: '2px'
-                        }}></div>
-                    </div>
+                <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
 
                     {cargando ? (
-                        <div style={{ textAlign: 'center', marginTop: '40px' }}>
-                            <i className="fas fa-spinner fa-spin"
+                        <div style={{ textAlign: 'center', marginTop: '60px' }}>
+                            <i className="fas fa-circle-notch fa-spin"
                                 style={{
-                                    color: plan.color,
-                                    fontSize: '24px',
-                                    marginBottom: '10px'
+                                    color: colorTema,
+                                    fontSize: '40px',
+                                    marginBottom: '20px'
                                 }}></i>
+                            <h2
+                                style={{
+                                    fontSize: '18px',
+                                    fontWeight: '900',
+                                    color: '#333'
+                                }}>CREANDO TU PLAN</h2>
                             <p style={{
                                 color: '#888',
-                                fontSize: '13px',
+                                fontSize: '12px',
                                 fontWeight: '600'
-                            }}>Analizando biometría...</p>
+                            }}>
+                                Analizando tu IMC y optimizando ejercicios...</p>
                         </div>
                     ) : (
                         <div style={{ display: 'grid', gap: '12px' }}>
 
+                            <div style={{ marginBottom: '20px' }}>
+                                <h2 style={{
+                                    margin: 0,
+                                    fontSize: '20px',
+                                    fontWeight: '900',
+                                    color: '#1a1a1a'
+                                }}>{plan.categoria}</h2>
+                                <div style={{
+                                    width: '40px',
+                                    height: '4px',
+                                    backgroundColor: colorTema,
+                                    marginTop: '5px',
+                                    borderRadius: '2px'
+                                }}></div>
+                            </div>
+
                             {/* Lista de bloques de entrenamiento */}
-                            {plan.bloques.map((bloque, index) => (
+                            {plan.bloques?.map((bloque, index) => (
                                 <div key={index} style={{
                                     background: '#fff',
                                     padding: '16px',
                                     borderRadius: '20px',
-                                    borderLeft: `6px solid ${plan.color}`,
+                                    borderLeft: `6px solid ${colorTema}`,
                                     boxShadow: '0 4px 12px rgba(0,0,0,0.03)'
                                 }}>
                                     <div style={{
@@ -192,16 +214,13 @@ export const RutinaIA = ({ alCerrar }) => {
                             <button
                                 onClick={alCerrar}
                                 style={{
-                                    width: '100%',
-                                    padding: '16px',
-                                    borderRadius: '18px',
-                                    background: plan.color, color: 'white',
-                                    border: 'none',
-                                    fontWeight: '800',
-                                    marginTop: '15px', fontSize: '14px',
-                                    boxShadow: `0 8px 20px ${plan.color}44`
-                                }}>
-                                CONFIRMAR Y EMPEZAR
+                                    width: '100%', padding: '16px', borderRadius: '18px',
+                                    background: colorTema, color: 'white', border: 'none',
+                                    fontWeight: '800', marginTop: '15px', fontSize: '14px',
+                                    boxShadow: `0 8px 20px ${colorTema}44`
+                                }}
+                            >
+                                EMPEZAR ENTRENAMIENTO IA
                             </button>
 
                         </div>

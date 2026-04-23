@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 const TarjetaDestino = ({ destino, ubicacionUsuario, alCerrar, colorVerdeVitta, onToggleFavorito, esFavorito }) => {
     const [datosReales, setDatosReales] = useState({ km: 0, pasos: 0 });
 
+    // aqui se calcula distancia real y pasos estimados cuando hay destino
     useEffect(() => {
         if (destino && ubicacionUsuario) {
             const R = 6371;
@@ -12,82 +13,128 @@ const TarjetaDestino = ({ destino, ubicacionUsuario, alCerrar, colorVerdeVitta, 
                 Math.cos(ubicacionUsuario.lat * Math.PI / 180) * Math.cos(destino.lat * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             const distancia = R * c;
-            setDatosReales({ km: distancia.toFixed(2), pasos: Math.round(distancia * 1315) });
+
+            setDatosReales({
+                km: distancia.toFixed(2),
+                pasos: Math.round(distancia * 1315)
+            });
         }
     }, [destino, ubicacionUsuario]);
 
     if (!destino) return null;
 
     return (
-        <div style={{
-            backgroundColor: "white",
-            borderRadius: "20px 20px 0 0",
-            padding: "12px 16px 10px",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            boxShadow: "0 -2px 16px rgba(0,0,0,0.12)",
-            fontFamily: "'Poppins', sans-serif"
-        }}>
-         
-            <div style={{
-                width: "36px", height: "36px", borderRadius: "50%",
-                backgroundColor: "#fdecea", flexShrink: 0,
-                display: "flex", alignItems: "center", justifyContent: "center"
+        <div className="mb-3 p-3 shadow-sm"
+            style={{
+                backgroundColor: "white",
+                borderRadius: "24px",
+                display: "flex",
+                flexDirection: "column", gap: "10px"
             }}>
-                <i className="fas fa-map-marker-alt" style={{ color: "#e74c3c", fontSize: "15px" }}></i>
+
+
+            <div className="d-flex justify-content-between align-items-center">
+                <div style={{ maxWidth: "70%" }}>
+                    <span style={{
+                        fontSize: "9px",
+                        fontWeight: "900",
+                        color: colorVerdeVitta
+                    }}>DESTINO SELECCIONADO</span>
+                    <h6 style={{
+                        fontWeight: "800",
+                        margin: 0, color: "#333",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis"
+                    }}>
+                        {destino.nombre}
+                    </h6>
+                </div>
+
+                <div className="d-flex gap-2">
+
+                    <button
+                        onClick={() => onToggleFavorito(destino)}
+                        style={{
+                            background: "none",
+                            border: "none",
+                            color: esFavorito ? "#ffc107" : "#ccc",
+                            fontSize: "20px",
+                            cursor: 'pointer'
+                        }}>
+                        <i className={`${esFavorito ? "fas" : "far"} fa-star`}></i>
+                    </button>
+
+                    <button onClick={alCerrar} style={{
+                        background: "none",
+                        border: "none",
+                        color: "#ccc",
+                        fontSize: "20px", cursor: 'pointer'
+                    }}>
+                        <i className="fas fa-times-circle"></i>
+                    </button>
+                </div>
             </div>
 
-            
-            <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: "13px", fontWeight: "800", color: "#222", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {destino.nombre}
+
+            <div className="d-flex gap-2" style={{
+                borderTop: "1px solid #f5f5f5",
+                paddingTop: "12px"
+            }}>
+
+                <div className="text-center flex-grow-1">
+                    <i className="fas fa-route mb-1" style={{ color: colorVerdeVitta }}></i>
+                    <div style={{
+                        fontSize: "13px",
+                        fontWeight: "800",
+                        color: "#333"
+                    }}>{datosReales.km} km</div>
+                    <div style={{
+                        fontSize: "8px",
+                        color: "#999",
+                        fontWeight: '700'
+                    }}>DISTANCIA</div>
                 </div>
-                <div style={{ display: "flex", gap: "6px", marginTop: "4px", flexWrap: "wrap" }}>
-                    <span style={{
-                        fontSize: "10px", fontWeight: "700", color: colorVerdeVitta,
-                        backgroundColor: "#f0f4ec", borderRadius: "20px", padding: "2px 8px"
-                    }}>
-                        <i className="fas fa-route me-1"></i>{datosReales.km} km
-                    </span>
-                    <span style={{
-                        fontSize: "10px", fontWeight: "700", color: "#3498db",
-                        backgroundColor: "#eaf4fb", borderRadius: "20px", padding: "2px 8px"
-                    }}>
-                        <i className="fas fa-shoe-prints me-1"></i>{datosReales.pasos} pasos
-                    </span>
+
+                <div className="text-center flex-grow-1"
+                    style={{ borderLeft: "1px solid #eee", borderRight: "1px solid #eee" }}>
+                    <i className="fas fa-shoe-prints mb-1" style={{ color: "#3498db" }}></i>
+                    <div style={{
+                        fontSize: "13px",
+                        fontWeight: "800",
+                        color: "#333"
+                    }}>{datosReales.pasos}</div>
+                    <div style={{
+                        fontSize: "8px",
+                        color: "#999",
+                        fontWeight: '700'
+                    }}>PASOS ESTIMADOS</div>
                 </div>
-            </div>
 
-           
-            <div style={{ display: "flex", gap: "6px", alignItems: "center", flexShrink: 0 }}>
-                <button onClick={() => onToggleFavorito(destino)} style={{
-                    background: "none", border: "none",
-                    color: esFavorito ? "#ffc107" : "#ccc",
-                    fontSize: "18px", cursor: "pointer", padding: 0
-                }}>
-                    <i className={`${esFavorito ? "fas" : "far"} fa-star`}></i>
-                </button>
+                <div className="text-center flex-grow-1">
+                    <a href={`https://www.google.com/maps/dir/?api=1&destination=${destino.lat},${destino.lon}`} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
+                        <div style={{
+                            width: "32px",
+                            height: "32px",
+                            backgroundColor: colorVerdeVitta,
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            margin: "0 auto"
+                        }}>
+                            <i className="fas fa-directions"
+                                style={{ color: "white", fontSize: "12px" }}></i>
+                        </div>
+                        <div style={{
+                            fontSize: "8px",
+                            color: colorVerdeVitta,
+                            fontWeight: "900",
+                            marginTop: "4px"
+                        }}>IR AHORA</div>
+                    </a>
+                </div>
 
-                <a href={`https://www.google.com/maps/dir/?api=1&destination=${destino.lat},${destino.lon}`}
-                    target="_blank" rel="noreferrer"
-                    style={{
-                        backgroundColor: colorVerdeVitta, color: "white",
-                        borderRadius: "20px", padding: "6px 12px",
-                        fontSize: "11px", fontWeight: "800",
-                        textDecoration: "none", display: "flex",
-                        alignItems: "center", gap: "5px"
-                    }}>
-                    <i className="fas fa-directions"></i> Ir
-                </a>
-
-                <button onClick={alCerrar} style={{
-                    background: "none", border: "none",
-                    color: "#ccc", fontSize: "18px",
-                    cursor: "pointer", padding: 0
-                }}>
-                    <i className="fas fa-times"></i>
-                </button>
             </div>
         </div>
     );

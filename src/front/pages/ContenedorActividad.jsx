@@ -73,8 +73,29 @@ export const ContenedorActividad = () => {
                             textTransform: 'uppercase',
                             letterSpacing: '0.5px'
                         }}>
+<<<<<<< HEAD
+
+                        <i className="ai-icon" style={{ display: "flex", alignItems: "center" }}>
+                            <img
+                                src="/icono-ia-perfecto.png"
+                                alt="AI Vitta"
+                                style={{
+                                    width: "60px",
+                                    height: "60px",
+                                    borderRadius: "50%",
+                                    background: "white",
+                                    padding: "4px",
+                                    objectFit: "cover",
+                                    objectPosition: "center",
+                                    transform: "scale(1.12)",
+                                    boxShadow: "0 0 8px rgba(255,255,255,0.4)"
+                                }} />
+                        </i>
+
+=======
                         <i className="fas fa-robot"
                             style={{ color: "white", fontSize: '18px' }}></i>
+>>>>>>> origin/main
                         GENERAR MI RUTINA PERSONALIZADA
                     </button>
                 </div>
@@ -94,10 +115,17 @@ export const ContenedorActividad = () => {
                         onCambioActividad={manejarCambioActividad} />
                 </div>
 
+<<<<<<< HEAD
+                {verRutina && (
+                    <RutinaIA
+                        alCerrar={() => setVerRutina(false)} />
+                )}
+=======
 
                 {verRutina && (
                     <RutinaIA
                         alCerrar={() => setVerRutina(false)} />)}
+>>>>>>> origin/main
 
             </div>
         </div>

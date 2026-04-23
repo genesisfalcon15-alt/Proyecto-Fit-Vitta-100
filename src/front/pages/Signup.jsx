@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import CloudinaryUpload from "../components/CloudinaryUpload.jsx";
+import { Landing } from "./Landing.jsx";
 
 const Signup = () => {
   const [form, setForm] = useState({
@@ -28,10 +29,10 @@ const Signup = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
     try {
-      
+
       const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -54,7 +55,6 @@ const Signup = () => {
         return;
       }
 
-      
       const loginResponse = await fetch(import.meta.env.VITE_BACKEND_URL + "/api/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -67,7 +67,6 @@ const Signup = () => {
       const loginData = await loginResponse.json();
 
       if (loginResponse.ok) {
-        
         sessionStorage.setItem("token", loginData.token);
         sessionStorage.setItem("user", JSON.stringify(loginData.user));
         alert("Usuario creado correctamente");
