@@ -8,7 +8,6 @@ const RetoDiario = ({ cardGlassStyle, colorVerdeVitta }) => {
         { titulo: "Hidratación", desc: "Cambia hoy tu bebida azucarada por agua con limón.", icon: "fa-tint" },
         { titulo: "Fibra Vitta", desc: "Prueba a incluir una pieza de fruta entera en tu desayuno.", icon: "fa-apple-alt" },
         { titulo: "Paseo Activo", desc: "No te olvides de andar e intenta llegar a los 10mil pasos", icon: "fa-walking" },
-        { titulo: "Etiqueta Real", desc: "Lee los ingredientes de los productos que compres.", icon: "fa-search" },
         { titulo: "Cena Ligera", desc: "Intenta que tu cena sea 50% verduras u hortalizas.", icon: "fa-leaf" },
         { titulo: "Snack Sabio", desc: "Sustituye los ultraprocesados por un puñado de frutos secos.", icon: "fa-seedling" },
         { titulo: "Menos Sal", desc: "Usa especias en lugar de sal para dar sabor a tus platos hoy.", icon: "fa-mortar-pestle" }

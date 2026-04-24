@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from api.models import db, User, UserStats, HistorialPeso
+from api.models import db, User, UserStats, Product,HistorialPeso
 from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 import bcrypt
@@ -231,6 +231,15 @@ def toggle_product(id):
 
     return jsonify(product.serialize()), 200
 
-    db.session.delete(entrada)
+@api.route('/user/profile', methods=['PUT'])
+@jwt_required()
+def update_user_profile():
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    if not user:
+        return jsonify({"msg": "Usuario no encontrado"}), 404
+    data = request.get_json()
+    if "genero" in data:
+        user.genero = data["genero"]
     db.session.commit()
-    return jsonify({"msg": "Entrada eliminada correctamente"}), 200
+    return jsonify({"msg": "Perfil actualizado correctamente", "user": user.serialize()}), 200

@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { fetchRutinaIA } from '../services/aiService';
 
 export const RutinaIA = ({ alCerrar }) => {
-
-    // estado de carga 
+    // Estado de carga 
     const [cargando, setCargando] = useState(true);
 
-    // aquí se guarda el plan generado
+    // Aquí se guarda el plan generado
     const [plan, setPlan] = useState(null);
     const [error, setError] = useState(null);
 
@@ -93,6 +92,7 @@ export const RutinaIA = ({ alCerrar }) => {
                 display: 'flex', flexDirection: 'column', overflow: 'hidden',
                 boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
             }}>
+
 
                 <div style={{
                     padding: '15px 20px',
