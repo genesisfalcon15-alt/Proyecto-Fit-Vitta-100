@@ -284,11 +284,25 @@ export const Imc = () => {
                 }
             `}</style>
 
-            <div style={{ padding: "30px 20px 10px 20px" }}>
-                <h2 style={{ fontSize: "28px", fontWeight: "800", color: "white", margin: 0 }}>
+            <div style={{ padding: "16px 20px 16px 20px" }}>
+                <h2 style={{ 
+                    fontSize: "26px", 
+                    fontWeight: "800", 
+                    color: "white", 
+                    margin: "0 0 4px 0",
+                    letterSpacing: "-0.5px",
+                    textShadow: "0 2px 8px rgba(0,0,0,0.2)"
+                }}>
                     Resumen Saludable
                 </h2>
-                <p style={{ color: "rgba(255,255,255,0.7)", fontSize: "14px" }}>
+                <p style={{ 
+                    color: "rgba(255,255,255,0.6)", 
+                    fontSize: "12px",
+                    margin: 0,
+                    fontWeight: "500",
+                    letterSpacing: "1.5px",
+                    textTransform: "uppercase"
+                }}>
                     Datos y Control
                 </p>
             </div>

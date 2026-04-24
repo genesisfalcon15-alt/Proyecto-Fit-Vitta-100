@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Mapa from "./Mapa.jsx";
 import TarjetaDestino from "./TarjetaDestino.jsx";
-import { MisLugaresFavoritos } from "./MisLugaresFavoritos.jsx";
+import { Favoritos } from "./MisLugaresFavoritos.jsx";
 
 
 export const Buscador = () => {
@@ -13,11 +13,9 @@ export const Buscador = () => {
     const [editandoOrigen, setEditandoOrigen] = useState(false);
     const [tiendas, setTiendas] = useState([]);
     const [mostrarFavoritos, setMostrarFavoritos] = useState(false);
-    const [favoritos, setFavoritos] = useState(() => {
-        const guardados = localStorage.getItem("vitta_favoritos");
-        return guardados ? JSON.parse(guardados) : [];
-    });
+    const [favoritos, setFavoritos] = useState([]);
 
+    const token = localStorage.getItem("token");
     const mapRef = useRef();
     const colorVerdeVitta = "#6e8a4f";
 
@@ -41,7 +39,7 @@ export const Buscador = () => {
         const tipoOsm = tipos[categoriaLabel] || "supermarket";
         const lat = parseFloat(origen.lat);
         const lon = parseFloat(origen.lon);
-        const url = `https://overpass-api.de/api/interpreter?data=[out:json];node["shop"="${tipoOsm}"](around:3000,${lat},${lon});out;`;
+        const url = `https://overpass.kumi.systems/api/interpreter?data=[out:json];node["shop"="${tipoOsm}"](around:3000,${lat},${lon});out;`;
         try {
             const response = await fetch(url);
             const data = await response.json();
@@ -97,13 +95,26 @@ export const Buscador = () => {
             });
         }
     };
+    const deleteFavorito = async (id) => {
+        if (!id) return;
+        try {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/favoritos/${id}`, {
+                method: "DELETE",
+                headers: { "Authorization": "Bearer " + token }
+            });
 
+            if (response.ok) {
+                // Esto fuerza a React a redibujar la lista al instante
+                setFavoritos(prev => prev.filter(fav => fav.id !== id && fav.place_id !== id));
+            }
+        } catch (error) {
+            console.error("Error al borrar:", error);
+        }
+    };
+    
     useEffect(() => {
         const fetchSugerencias = async () => {
-            if (query.length < 3 || query === "Mi ubicación actual") {
-                setSugerencias([]);
-                return;
-            }
+            if (query.length < 3) { setSugerencias([]); return; }
             setBuscando(true);
             try {
                 const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5`);
@@ -119,16 +130,61 @@ export const Buscador = () => {
         return () => clearTimeout(timeout);
     }, [query]);
 
-    const toggleFavorito = (sitio) => {
-        setFavoritos(prev => {
-            const existe = prev.find(f => f.nombre === sitio.nombre);
-            let nuevaLista = existe
-                ? prev.filter(f => f.nombre !== sitio.nombre)
-                : [...prev, sitio];
-            localStorage.setItem("vitta_favoritos", JSON.stringify(nuevaLista));
-            return nuevaLista;
-        });
+
+    useEffect(() => {
+        if (!token) return;
+        fetch(import.meta.env.VITE_BACKEND_URL + "/api/user/favoritos", {
+            headers: { Authorization: "Bearer " + token }
+        })
+            .then(res => res.json())
+            .then(data => setFavoritos(data))
+            .catch(() => console.error("Error cargando favoritos"));
+    }, []);
+
+    const toggleFavorito = async (sitio) => {
+        // Si no hay token, ni lo intentamos
+        if (!token) {
+            alert("Debes estar logueado");
+            return;
+        }
+
+        const existe = favoritos.find(f => f.nombre === sitio.nombre);
+
+        try {
+            if (existe) {
+                // ... lógica del DELETE (está bien)
+                const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/favoritos/${existe.id}`, {
+                    method: "DELETE",
+                    headers: { Authorization: "Bearer " + token }
+                });
+                if (res.ok) setFavoritos(prev => prev.filter(f => f.id !== existe.id));
+            } else {
+                // Lógica del POST
+                const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/favoritos`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify({
+                        place_id: String(sitio.id || sitio.nombre),
+                        nombre: sitio.nombre,
+                        direccion: sitio.display_name || sitio.nombre,
+                        lat: sitio.lat,
+                        lng: sitio.lon,
+                    })
+                });
+
+                if (res.ok) {
+                    const nuevo = await res.json();
+                    setFavoritos(prev => [...prev, nuevo]);
+                }
+            }
+        } catch (error) {
+            console.error("Error de conexión:", error);
+        }
     };
+    
 
     return (
         <div style={{
@@ -241,17 +297,37 @@ export const Buscador = () => {
             </div>
 
             {mostrarFavoritos && (
-                <MisLugaresFavoritos
-                    favoritos={favoritos}
-                    colorVerdeVitta={colorVerdeVitta}
-                    alCerrar={() => setMostrarFavoritos(false)}
-                    alEliminar={toggleFavorito}
-                    alSeleccionar={(fav) => {
-                        seleccionarDireccion(fav);
-                        setMostrarFavoritos(false);
-                    }}
-                />
+                <div style={{
+                    position: "fixed", inset: 0, zIndex: 3000,
+                    background: "rgba(0,0,0,0.6)", display: "flex",
+                    flexDirection: "column", justifyContent: "flex-end"
+                }}>
+                    <div style={{ 
+                        background: "#2d4a1e", 
+                        borderRadius: "30px 30px 0 0", 
+                        height: "75vh", // Ocupa el 75% de la pantalla para no tapar el navbar
+                        display: "flex", 
+                        flexDirection: "column",
+                        overflow: "hidden" 
+                    }}>
+                        {/* Cabecera del Modal */}
+                        <div style={{ padding: "20px", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
+                            <span style={{ color: "white", fontWeight: "800", fontSize: "18px" }}>Mis sitios favoritos</span>
+                            <button onClick={() => setMostrarFavoritos(false)}
+                                style={{ background: "rgba(255,255,255,0.1)", border: "none", color: "white", borderRadius: "50%", width: "35px", height: "35px", fontSize: "18px" }}>✕</button>
+                        </div>
+
+                        {/* Contenedor con Scroll que se queda "dentro" */}
+                        <div style={{ flex: 1, overflowY: "auto", scrollbarWidth: "none" }}>
+                            <Favoritos
+                                lista={favoritos}
+                                onDelete={deleteFavorito}
+                                cargando={false} 
+                            />
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );
-};
+}

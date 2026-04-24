@@ -73,8 +73,20 @@ const Layout = () => {
             }}>
 
             <BrowserRouter>
-                <Navbar colorVerdeVitta={colorVerdeVitta} />
-
+                <div style={{
+                    flexShrink: 0,
+                    position: "relative",
+                    zIndex: 50,
+                }}>
+                    <Navbar colorVerdeVitta={colorVerdeVitta} />
+                    <div style={{
+                        backgroundColor: "rgba(45, 70, 30, 0.6)",
+                        backdropFilter: "blur(10px)",
+                        WebkitBackdropFilter: "blur(10px)",
+                    }}>
+                        <Breadcrumbs />
+                    </div>
+                </div>
                 <div
                     id="scroll-container"
                     style={{
@@ -82,28 +94,21 @@ const Layout = () => {
                         overflowY: "scroll",
                         overflowX: "hidden",
                         WebkitOverflowScrolling: "touch",
-                        display: "block",
                         position: "relative",
                         zIndex: 1,
                         width: "100%",
                     }}>
 
-
                     <ScrollToTop />
-
-
-                    <Breadcrumbs />
-
-
                     <AppRoutes
                         cardGlassStyle={cardGlassStyle}
                         colorVerdeVitta={colorVerdeVitta} />
-                    <div style={{ height: "100px", width: "100%" }}></div>
+                    <div style={{ height: "100px" }}></div>
                 </div>
-
 
                 <Footer />
             </BrowserRouter>
+
         </div>
     );
 };

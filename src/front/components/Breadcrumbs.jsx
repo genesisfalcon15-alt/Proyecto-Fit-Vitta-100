@@ -82,7 +82,7 @@ export const Breadcrumbs = () => {
                             <Link
                                 to={rutaCompleta}
                                 style={{
-                                    color: "#666",
+                                    color: "#ffffff",
                                     textDecoration: "none",
                                     fontSize: "11px",
                                     fontWeight: "600",
