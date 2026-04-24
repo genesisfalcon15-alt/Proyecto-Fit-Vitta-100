@@ -6,7 +6,6 @@ import { Footer } from "../components/Footer.jsx";
 import ScrollToTop from "../components/ScrollToTop.jsx";
 import { Breadcrumbs } from "../components/Breadcrumbs.jsx";
 
-
 //componente interno para poder usar useLocation()
 const LayoutContent = ({ colorVerdeVitta, cardGlassStyle }) => {
     const location = useLocation();
@@ -74,11 +73,36 @@ const Layout = () => {
             }}>
 
             <BrowserRouter>
-                <LayoutContent
-                    colorVerdeVitta={colorVerdeVitta}
-                    cardGlassStyle={cardGlassStyle}
-                />
+                <Navbar colorVerdeVitta={colorVerdeVitta} />
 
+                <div
+                    id="scroll-container"
+                    style={{
+                        flex: "1 1 auto",
+                        overflowY: "scroll",
+                        overflowX: "hidden",
+                        WebkitOverflowScrolling: "touch",
+                        display: "block",
+                        position: "relative",
+                        zIndex: 1,
+                        width: "100%",
+                    }}>
+
+
+                    <ScrollToTop />
+
+
+                    <Breadcrumbs />
+
+
+                    <AppRoutes
+                        cardGlassStyle={cardGlassStyle}
+                        colorVerdeVitta={colorVerdeVitta} />
+                    <div style={{ height: "100px", width: "100%" }}></div>
+                </div>
+
+
+                <Footer />
             </BrowserRouter>
         </div>
     );

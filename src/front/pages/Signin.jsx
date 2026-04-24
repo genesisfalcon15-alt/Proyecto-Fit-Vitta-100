@@ -52,7 +52,7 @@ const Login = () => {
     return (
         <div
             className="d-flex justify-content-center align-items-center vh-100"
-            style={{ backgroundColor: "#6e8a4f" }}
+            style={{ backgroundColor: "#6e8b4f" }}
         >
             <div
                 className="card p-4 shadow"

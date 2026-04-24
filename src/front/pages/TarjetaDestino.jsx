@@ -29,7 +29,7 @@ const TarjetaDestino = ({ destino, ubicacionUsuario, alCerrar, colorVerdeVitta, 
             boxShadow: "0 -2px 16px rgba(0,0,0,0.12)",
             fontFamily: "'Poppins', sans-serif"
         }}>
-         
+
             <div style={{
                 width: "36px", height: "36px", borderRadius: "50%",
                 backgroundColor: "#fdecea", flexShrink: 0,
@@ -38,7 +38,7 @@ const TarjetaDestino = ({ destino, ubicacionUsuario, alCerrar, colorVerdeVitta, 
                 <i className="fas fa-map-marker-alt" style={{ color: "#e74c3c", fontSize: "15px" }}></i>
             </div>
 
-            
+
             <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: "13px", fontWeight: "800", color: "#222", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     {destino.nombre}
@@ -59,7 +59,7 @@ const TarjetaDestino = ({ destino, ubicacionUsuario, alCerrar, colorVerdeVitta, 
                 </div>
             </div>
 
-           
+
             <div style={{ display: "flex", gap: "6px", alignItems: "center", flexShrink: 0 }}>
                 <button onClick={() => onToggleFavorito(destino)} style={{
                     background: "none", border: "none",

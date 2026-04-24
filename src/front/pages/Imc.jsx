@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { AnalisisDetallado } from "./AnalisisDetallado";
 import { Link, useNavigate } from "react-router-dom";
+import { fetchNutricionIA } from "../services/aiService";
 
 export const Imc = () => {
     const colorVerdeVitta = "#6e8a4f";
@@ -21,12 +22,14 @@ export const Imc = () => {
     const [datosHistorial, setDatosHistorial] = useState([]);
     const [genero, setGenero] = useState("hombre");
     const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
+    const [nutricion, setNutricion] = useState(null);
+    const [loadingNutri, setLoadingNutri] = useState(false);
 
     useEffect(() => {
-        if (!token) {
-            window.location.href = "/signin";
-            return;
-        }
+        //if (!token) {
+        //    window.location.href = "/signin";
+        //    return;
+        //}
 
         fetch(import.meta.env.VITE_BACKEND_URL + "/api/private", {
             headers: { Authorization: "Bearer " + token }
@@ -35,43 +38,37 @@ export const Imc = () => {
             .then((data) => setGenero(data.user.genero?.toLowerCase() || "hombre"))
             .catch(() => console.error("Error al cargar género"));
 
-        fetch(import.meta.env.VITE_BACKEND_URL + "/api/user/stats", {
+        const statsPromise = fetch(import.meta.env.VITE_BACKEND_URL + "/api/user/stats", {
             headers: { Authorization: "Bearer " + token }
         })
             .then((res) => res.json())
-            .then((data) => {
-                const peso = data.peso ?? parseFloat(localStorage.getItem("vitta_peso")) ?? 100;
-                const altura = data.altura ?? parseFloat(localStorage.getItem("vitta_altura")) ?? 175;
-                setPesoConfirmado(peso);
-                setAlturaConfirmado(altura);
-                setTempPeso(peso);
-                setTempAltura(altura);
-            })
-            .catch(() => console.error("Error al cargar los datos"));
+            .catch(() => null);
 
-        fetch(import.meta.env.VITE_BACKEND_URL + "/api/user/historial", {
+        const historialPromise = fetch(import.meta.env.VITE_BACKEND_URL + "/api/user/historial", {
             headers: { Authorization: "Bearer " + token }
         })
             .then((res) => res.json())
-            .then((data) => {
-                setDatosHistorial(data);
+            .catch(() => null);
 
-                if (data && data.length > 0) {
-                    const ordenado = [...data].sort(
-                        (a, b) => new Date(b.fecha) - new Date(a.fecha)
-                    );
-                    const ultimo = ordenado[0];
-                    if (ultimo.peso) {
-                        setPesoConfirmado(ultimo.peso);
-                        setTempPeso(ultimo.peso);
-                    }
-                    if (ultimo.altura) {
-                        setAlturaConfirmado(ultimo.altura);
-                        setTempAltura(ultimo.altura);
-                    }
-                }
-            })
-            .catch(() => console.error("Error al cargar el historial"));
+        Promise.all([statsPromise, historialPromise]).then(([stats, historial]) => {
+            let peso = stats?.peso ?? parseFloat(localStorage.getItem("vitta_peso")) ?? 100;
+            let altura = stats?.altura ?? parseFloat(localStorage.getItem("vitta_altura")) ?? 175;
+
+            if (historial && historial.length > 0) {
+                setDatosHistorial(historial);
+                const ordenado = [...historial].sort(
+                    (a, b) => new Date(b.fecha) - new Date(a.fecha)
+                );
+                const ultimo = ordenado[0];
+                if (ultimo.peso) peso = ultimo.peso;
+                if (ultimo.altura) altura = ultimo.altura;
+            }
+
+            setPesoConfirmado(peso);
+            setAlturaConfirmado(altura);
+            setTempPeso(peso);
+            setTempAltura(altura);
+        });
     }, []);
 
     const imcCalculado = tempAltura > 0
@@ -133,6 +130,10 @@ export const Imc = () => {
                 setDatosHistorial((prev) => [...prev, data.entrada]);
 
                 const imcReal = (nuevoPeso / ((nuevaAltura / 100) ** 2)).toFixed(1);
+                setLoadingNutri(true);
+                const dataNutri = await fetchNutricionIA(imcReal);
+                setNutricion(dataNutri);
+                setLoadingNutri(false);
                 let estado = "";
                 if (imcReal < 18.5) estado = "Bajo peso";
                 else if (imcReal < 25) estado = "Peso saludable";
@@ -422,6 +423,76 @@ export const Imc = () => {
                     </div>
                 )}
             </div>
+
+            {loadingNutri && (
+                <div
+                    style={{
+                        textAlign: 'center',
+                        marginTop: '20px',
+                        color: colorVerdeVitta
+                    }}>
+                    <i className="fas fa-spinner fa-spin"></i>
+                    <span style={{ fontSize: '12px', fontWeight: '600' }}>
+                        Vitta IA analizando tu nutrición...
+                    </span>
+                </div>
+            )}
+
+            {nutricion && !loadingNutri && (
+                <div className="card-nutri">
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        marginBottom: '10px'
+                    }}>
+                        <span style={{ fontSize: '20px' }}>🥑</span>
+                        <h5 style={{
+                            margin: 0,
+                            fontSize: '14px',
+                            fontWeight: '800',
+                            color: colorVerdeVitta
+                        }}>VITTA NUTRI-BOT</h5>
+                    </div>
+
+                    <p style={{ fontSize: '12px', margin: '5px 0' }}>
+                        <strong>Objetivo:</strong> {nutricion.objetivo}
+                    </p>
+
+                    <p style={{ fontSize: '12px', margin: '5px 0', color: '#555' }}>
+                        "{nutricion.consejo_clave}"
+                    </p>
+
+                    <div style={{
+                        background: 'white',
+                        padding: '10px',
+                        borderRadius: '10px',
+                        marginTop: '10px',
+                        borderLeft: `4px solid ${colorVerdeVitta}`
+                    }}>
+                        <span style={{
+                            fontSize: '10px',
+                            fontWeight: '800',
+                            color: colorVerdeVitta,
+                            display: 'block'
+                        }}>
+                            PLATO RECOMENDADO:
+                        </span>
+                        <span style={{ fontSize: '13px', color: '#333' }}>
+                            {nutricion.ejemplo_plato}
+                        </span>
+                    </div>
+
+                    <p style={{
+                        fontSize: '10px',
+                        marginTop: '10px',
+                        color: '#e74c3c',
+                        fontWeight: '700'
+                    }}>
+                        <i className="fas fa-exclamation-triangle"></i> EVITAR: {nutricion.evitar}
+                    </p>
+                </div>
+            )}
         </div>
     );
 };
