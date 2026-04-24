@@ -60,14 +60,24 @@ const TarjetaDestino = ({ destino, ubicacionUsuario, alCerrar, colorVerdeVitta, 
             </div>
 
 
-            <div style={{ display: "flex", gap: "6px", alignItems: "center", flexShrink: 0 }}>
-                <button onClick={() => onToggleFavorito(destino)} style={{
-                    background: "none", border: "none",
+            <button 
+                onClick={(e) => {
+                    e.preventDefault();
+                    onToggleFavorito(destino);
+                }} 
+                style={{
+                    background: "none", 
+                    border: "none",
                     color: esFavorito ? "#ffc107" : "#ccc",
-                    fontSize: "18px", cursor: "pointer", padding: 0
-                }}>
+                    fontSize: "18px", 
+                    cursor: "pointer", 
+                    padding: "8px", // Aumentamos un poco el área de clic
+                    position: "relative",
+                    zIndex: 10 // Aseguramos que esté por encima de todo
+                }}
+            >
                     <i className={`${esFavorito ? "fas" : "far"} fa-star`}></i>
-                </button>
+            </button>
 
                 <a href={`https://www.google.com/maps/dir/?api=1&destination=${destino.lat},${destino.lon}`}
                     target="_blank" rel="noreferrer"
@@ -89,7 +99,6 @@ const TarjetaDestino = ({ destino, ubicacionUsuario, alCerrar, colorVerdeVitta, 
                     <i className="fas fa-times"></i>
                 </button>
             </div>
-        </div>
     );
 };
 

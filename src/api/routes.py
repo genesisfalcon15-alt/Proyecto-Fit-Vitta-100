@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from api.models import db, User, UserStats, Product,HistorialPeso
+from api.models import db, User, UserStats, Product,HistorialPeso,FavoritoSupermercado
 from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 import bcrypt
@@ -243,3 +243,45 @@ def update_user_profile():
         user.genero = data["genero"]
     db.session.commit()
     return jsonify({"msg": "Perfil actualizado correctamente", "user": user.serialize()}), 200
+
+
+@api.route("/user/favoritos", methods=["GET"])
+@jwt_required()
+def get_favoritos():
+    user_id = get_jwt_identity()
+    favoritos = FavoritoSupermercado.query.filter_by(user_id=user_id).all()
+    return jsonify([f.serialize() for f in favoritos]), 200
+
+
+@api.route('/user/favoritos', methods=['POST'])
+@jwt_required()
+def add_favorito():
+    data = request.json
+    user_id = get_jwt_identity()
+
+    nuevo = FavoritoSupermercado(
+        user_id=user_id,
+        place_id=data.get("place_id"),
+        nombre=data.get("nombre"),
+        direccion=data.get("direccion"),
+        lat=data.get("lat"),
+        lng=data.get("lng")
+    )
+
+    db.session.add(nuevo)
+    db.session.commit()
+
+    return jsonify(nuevo.serialize()), 200  # 🔥 CLAVE
+
+
+
+@api.route("/user/favoritos/<int:favorito_id>", methods=["DELETE"])
+@jwt_required()
+def delete_favorito(favorito_id):
+    user_id = get_jwt_identity()
+    favorito = FavoritoSupermercado.query.filter_by(id=favorito_id, user_id=user_id).first()
+    if not favorito:
+        return jsonify({"msg": "No encontrado"}), 404
+    db.session.delete(favorito)
+    db.session.commit()
+    return jsonify({"msg": "Eliminado"}), 200

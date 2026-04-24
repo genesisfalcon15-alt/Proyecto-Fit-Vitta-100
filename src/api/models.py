@@ -14,7 +14,8 @@ class User(db.Model):
     password: Mapped[str] = mapped_column(nullable=False)
     genero: Mapped[str] = mapped_column(String(20), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False, default=True)
-
+    favoritos: Mapped[list["FavoritoSupermercado"]] = relationship("FavoritoSupermercado", back_populates="user")
+    
     stats: Mapped["UserStats"] = relationship("UserStats", back_populates="user", uselist=False)
     historial_peso: Mapped[list["HistorialPeso"]] = relationship("HistorialPeso", back_populates="user")
 
@@ -82,4 +83,27 @@ class Product(db.Model):
             "category": self.category,
             "image": self.image,
             "added": self.added
+        }
+
+class FavoritoSupermercado(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
+    place_id: Mapped[str] = mapped_column(String(200), nullable=False)
+    nombre: Mapped[str] = mapped_column(String(200), nullable=False)
+    direccion: Mapped[str] = mapped_column(String(300), nullable=True)
+    lat: Mapped[float] = mapped_column(Float, nullable=True)
+    lng: Mapped[float] = mapped_column(Float, nullable=True)
+    fecha: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+    user: Mapped["User"] = relationship("User", back_populates="favoritos")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "place_id": self.place_id,
+            "nombre": self.nombre,
+            "direccion": self.direccion,
+            "lat": self.lat,
+            "lng": self.lng,
+            "fecha": self.fecha.isoformat()
         }

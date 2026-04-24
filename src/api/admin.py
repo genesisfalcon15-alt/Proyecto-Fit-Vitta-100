@@ -1,6 +1,6 @@
 import os
 from flask_admin import Admin
-from .models import db, User, UserStats, HistorialPeso, Product
+from .models import db, User, UserStats, HistorialPeso, Product, FavoritoSupermercado
 from flask_admin.contrib.sqla import ModelView
 
 
@@ -26,6 +26,11 @@ class ProductAdmin(ModelView):
     column_list = ['id', 'name', 'store', 'price', 'category', 'image', 'added']
     column_searchable_list = ['name', 'store', 'category']
 
+class FavoritoSupermercadoAdmin(ModelView): 
+    column_list = ['id', 'user_id', 'place_id', 'nombre', 'direccion', 'lat', 'lng', 'fecha']
+    column_searchable_list = ['nombre', 'direccion', 'place_id']
+    column_default_sort = ('fecha', True)
+
 
 def setup_admin(app):
     app.secret_key = os.environ.get('FLASK_APP_KEY', 'sample key')
@@ -35,3 +40,4 @@ def setup_admin(app):
     admin.add_view(UserStatsAdmin(UserStats, db.session))
     admin.add_view(HistorialPesoAdmin(HistorialPeso, db.session))
     admin.add_view(ProductsAdmin(Product, db.session))
+    admin.add_view(FavoritoSupermercadoAdmin(FavoritoSupermercado, db.session))
