@@ -1,14 +1,8 @@
 import os
 from flask_admin import Admin
-<<<<<<< HEAD
-from .models import db, User, UserStats, HistorialPeso
-from flask_admin.contrib.sqla import ModelView
-
-=======
 from .models import db, User, UserStats, HistorialPeso, Product
 from flask_admin.contrib.sqla import ModelView
-from flask_admin.theme import Bootstrap4Theme
->>>>>>> origin/main
+
 
 
 class UserAdmin(ModelView):

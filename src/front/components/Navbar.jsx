@@ -1,10 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/main
 export const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -290,7 +286,6 @@ export const Navbar = () => {
                                 Mi Salud e IMC
                             </Link>
                         </li>
-<<<<<<< HEAD
                         <li className="mb-4">
                             <Link
                                 to="/welcome"
@@ -305,8 +300,6 @@ export const Navbar = () => {
                                 Página de Bienvenida
                             </Link>
                         </li>
-=======
->>>>>>> origin/main
                     </ul>
                 </div>
             </div>
