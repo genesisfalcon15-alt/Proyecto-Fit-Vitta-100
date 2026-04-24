@@ -20,6 +20,7 @@ def generar_rutina():
 
     # aqui se extrae el imc, si no viene se usa 22 como valor por defecto
     imc = data.get('imc', '22')
+    dias = data.get('dias', 3)
     
     try:
         completion = client.chat.completions.create(
@@ -29,7 +30,7 @@ def generar_rutina():
                 {"role": "system", "content": FITNESS_SYSTEM_PROMPT},
 
                 # mensaje del usuario con el dato dinámico imc
-                {"role": "user", "content": f"Mi IMC es {imc}. Dame mi rutina en JSON."}
+                {"role": "user", "content": f"Mi IMC es {imc} y entreno {dias} días por semana. Dame mi rutina en JSON."}
             ],
             # la respuesta se pide en json
             response_format={"type": "json_object"}

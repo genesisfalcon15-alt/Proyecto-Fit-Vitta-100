@@ -1,7 +1,7 @@
 // función para obetener recomendaciones segun el imc
 console.log("BACKEND URL:", import.meta.env.VITE_BACKEND_URL);
 
-export const fetchRutinaIA = async (imc) => {
+export const fetchRutinaIA = async (imc, dias) => {
     const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/api/rutina-ia`;
 
     try {
@@ -12,7 +12,8 @@ export const fetchRutinaIA = async (imc) => {
                 'Content-Type': 'application/json' //envio json
             },
             body: JSON.stringify({
-                imc: imc  // aqui ya se envia el imc dentro del body
+                imc: imc,  // aqui ya se envia el imc dentro del body
+                dias: dias
             }),
         });
         // viene el error en caso de que la respuesta no sea ok

@@ -9,11 +9,12 @@ export const ContenedorActividad = () => {
 
     const [verRutina, setVerRutina] = useState(false);
 
+    const [diasEntreno, setDiasEntreno] = useState(3);
+
     // Recibe los datos del planificador
     const manejarCambioActividad = (mins, diasActivos) => {
-        console.log("Sesión:", mins, "Días:", diasActivos);
+        setDiasEntreno(diasActivos);
     };
-
     return (
         <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
             <div style={{
@@ -111,6 +112,7 @@ export const ContenedorActividad = () => {
 
                 {verRutina && (
                     <RutinaIA
+                        dias={diasEntreno}
                         alCerrar={() => setVerRutina(false)} />)}
 
             </div>

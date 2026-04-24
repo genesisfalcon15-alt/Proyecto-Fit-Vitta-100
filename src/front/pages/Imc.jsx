@@ -24,6 +24,11 @@ export const Imc = () => {
     const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
     const [nutricion, setNutricion] = useState(null);
     const [loadingNutri, setLoadingNutri] = useState(false);
+    const [diasEntreno, setDiasEntreno] = useState(3);
+
+    const handleActividad = (min, dias) => {
+        setDiasEntreno(dias);
+    };
 
     useEffect(() => {
         //if (!token) {
@@ -39,7 +44,7 @@ export const Imc = () => {
             .catch(() => console.error("Error al cargar género"));
 
         const statsPromise = fetch(import.meta.env.VITE_BACKEND_URL + "/api/user/stats", {
-            headers: { Authorization: "Bearer " + token }
+            headers: token ? { Authorization: "Bearer " + token } : {}
         })
             .then((res) => res.json())
             .catch(() => null);
