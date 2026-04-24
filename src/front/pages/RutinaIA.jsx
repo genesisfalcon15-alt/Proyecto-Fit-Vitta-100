@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchRutinaIA } from '../services/aiService';
 
-export const RutinaIA = ({ alCerrar }) => {
+export const RutinaIA = ({ dias, alCerrar }) => {
     // Estado de carga 
     const [cargando, setCargando] = useState(true);
 
@@ -11,12 +11,13 @@ export const RutinaIA = ({ alCerrar }) => {
 
     useEffect(() => {
         const obtenerRutinaReal = async () => {
+            console.log("Dias enviados a IA:", dias);
             try {
                 const datoGuardado = localStorage.getItem("vitta_valor_imc");
                 const valorParaCalcular = datoGuardado ? parseFloat(datoGuardado) : 22;
 
                 // ahora genera el plan según el imc del Us y se llama a la ia 
-                const rutinaIA = await fetchRutinaIA(valorParaCalcular);
+                const rutinaIA = await fetchRutinaIA(valorParaCalcular, dias);
 
                 //  se guarda el plan en el estado
                 setPlan(rutinaIA);
@@ -31,7 +32,7 @@ export const RutinaIA = ({ alCerrar }) => {
         };
 
         obtenerRutinaReal();
-    }, []);
+    }, [dias]);
 
     if (error) {
         return (
