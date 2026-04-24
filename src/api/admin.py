@@ -22,6 +22,11 @@ class ProductsAdmin(ModelView):
     column_list = ['id', 'name', 'store', 'price']
 
 
+class ProductAdmin(ModelView):
+    column_list = ['id', 'name', 'store', 'price', 'category', 'image', 'added']
+    column_searchable_list = ['name', 'store', 'category']
+
+
 def setup_admin(app):
     app.secret_key = os.environ.get('FLASK_APP_KEY', 'sample key')
     admin = Admin(app, name='4Geeks Admin')
