@@ -428,11 +428,16 @@ export const Imc = () => {
                                 <span style={{ fontWeight: "700", color: colorVerdeVitta }}>
                                     {entrada.peso} kg
                                 </span>
+                                
                                 <button
-                                    onClick={() => handleEliminarEntrada(entrada.id)}
+                                    onClick={() => (console.log("ID:", entrada.id), handleEliminarEntrada(entrada.id))}
                                     style={{
-                                        background: "none", border: "none",
-                                        color: "#e74c3c", cursor: "pointer", fontSize: "14px"
+                                        padding: "10px",
+                                        background: "none",
+                                        border: "none",
+                                        color: "#e74c3c",
+                                        cursor: "pointer",
+                                        fontSize: "16px"
                                     }}
                                 >
                                     <i className="fas fa-trash"></i>
@@ -441,77 +446,93 @@ export const Imc = () => {
                         ))}
                     </div>
                 )}
-            </div>
 
             {loadingNutri && (
-                <div
-                    style={{
-                        textAlign: 'center',
-                        marginTop: '20px',
-                        color: colorVerdeVitta
-                    }}>
-                    <i className="fas fa-spinner fa-spin"></i>
-                    <span style={{ fontSize: '12px', fontWeight: '600' }}>
-                        Vitta IA analizando tu nutrición...
-                    </span>
-                </div>
-            )}
-
-            {nutricion && !loadingNutri && (
-                <div className="card-nutri">
-                    <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '10px',
-                        marginBottom: '10px'
-                    }}>
-                        <span style={{ fontSize: '20px' }}>🥑</span>
-                        <h5 style={{
-                            margin: 0,
-                            fontSize: '14px',
-                            fontWeight: '800',
+                    <div
+                        style={{
+                            textAlign: 'center',
+                            marginTop: '20px',
                             color: colorVerdeVitta
-                        }}>VITTA NUTRI-BOT</h5>
-                    </div>
-
-                    <p style={{ fontSize: '12px', margin: '5px 0' }}>
-                        <strong>Objetivo:</strong> {nutricion.objetivo}
-                    </p>
-
-                    <p style={{ fontSize: '12px', margin: '5px 0', color: '#555' }}>
-                        "{nutricion.consejo_clave}"
-                    </p>
-
-                    <div style={{
-                        background: 'white',
-                        padding: '10px',
-                        borderRadius: '10px',
-                        marginTop: '10px',
-                        borderLeft: `4px solid ${colorVerdeVitta}`
-                    }}>
-                        <span style={{
-                            fontSize: '10px',
-                            fontWeight: '800',
-                            color: colorVerdeVitta,
-                            display: 'block'
                         }}>
-                            PLATO RECOMENDADO:
-                        </span>
-                        <span style={{ fontSize: '13px', color: '#333' }}>
-                            {nutricion.ejemplo_plato}
+                        <i className="fas fa-spinner fa-spin"></i>
+                        <span style={{ fontSize: '12px', fontWeight: '600' }}>
+                            Vitta IA analizando tu nutrición...
                         </span>
                     </div>
+                )}
 
-                    <p style={{
-                        fontSize: '10px',
-                        marginTop: '10px',
-                        color: '#e74c3c',
-                        fontWeight: '700'
-                    }}>
-                        <i className="fas fa-exclamation-triangle"></i> EVITAR: {nutricion.evitar}
-                    </p>
-                </div>
-            )}
+                {nutricion && !loadingNutri && (
+                    <div className="card-nutri">
+
+                        <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            marginBottom: '10px'
+                        }}>
+                            <span style={{ fontSize: '20px' }}>🥑</span>
+                            <h5 style={{
+                                margin: 0,
+                                fontSize: '14px',
+                                fontWeight: '800',
+                                color: "white"
+                            }}>VITTA NUTRI-BOT</h5>
+                        </div>
+
+                        <div style={{
+                            background: 'white',
+                            padding: '10px',
+                            borderRadius: '10px',
+                            marginTop: '10px'
+                        }}>
+
+                            <span style={{
+                                fontSize: '10px',
+                                fontWeight: '800',
+                                color: colorVerdeVitta,
+                                display: 'block'
+                            }}>
+                                OBJETIVO:
+                            </span>
+
+                            <span style={{
+                                fontSize: '13px',
+                                color: '#333',
+                                display: 'block',
+                                marginBottom: '10px'
+                            }}>
+                                {nutricion.objetivo}
+                            </span>
+
+                            <span style={{
+                                fontSize: '10px',
+                                fontWeight: '800',
+                                color: colorVerdeVitta,
+                                display: 'block'
+                            }}>
+                                PLATO RECOMENDADO:
+                            </span>
+
+                            <span style={{
+                                fontSize: '13px',
+                                color: '#333'
+                            }}>
+                                {nutricion.ejemplo_plato}
+                            </span>
+
+                        </div>
+
+                        <p style={{
+                            fontSize: '10px',
+                            marginTop: '10px',
+                            color: '#e74c3c',
+                            fontWeight: '700'
+                        }}>
+                            <i className="fas fa-exclamation-triangle"></i> EVITAR: {nutricion.evitar}
+                        </p>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
