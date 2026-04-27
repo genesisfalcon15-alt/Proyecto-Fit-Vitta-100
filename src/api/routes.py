@@ -3,8 +3,11 @@ from api.models import db, User, UserStats, Product,HistorialPeso,FavoritoSuperm
 from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 import bcrypt
+from flask_cors import CORS
 
 api = Blueprint('api', __name__)
+# Allow CORS requests to this API
+CORS(api)
 
 
 @api.route('/signup', methods=['POST'])
@@ -188,16 +191,18 @@ def get_products():
 
 
 @api.route("/products", methods=["POST"])
+@jwt_required()
 def create_product():
     data = request.json
-
+    current_user_id = get_jwt_identity()
     new_product = Product(
         name=data["name"],
         store=data["store"],
         price=data["price"],
         category=data["category"],
         image=data["image"],
-        added=False
+        added=False,
+        user_id=current_user_id
     )
 
     db.session.add(new_product)
