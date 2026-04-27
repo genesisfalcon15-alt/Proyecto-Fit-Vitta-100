@@ -8,14 +8,22 @@ function Lista() {
   const [price, setPrice] = useState("");
   const [store, setStore] = useState("");
   const [category, setCategory] = useState("");
+  const [showBasket, setShowBasket] = useState(false);
+
 
   const API = import.meta.env.VITE_BACKEND_URL;
+  const token = localStorage.getItem("token");
+
+  const authHeaders = token
+    ? { Authorization: "Bearer " + token }
+    : {};
+  
 
   const categoryImages = {
-    lacteos: "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=100&h=100&fit=crop",
+    lacteos: "https://images.unsplash.com/photo-1563636619-e9143da7973b",
     frutas_verduras: "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=100&h=100&fit=crop",
     carnes_aves: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=100&h=100&fit=crop",
-    pescados_mariscos: "https://images.unsplash.com/photo-1544943910-4c1dc44aab44?w=100&h=100&fit=crop",
+    pescados_mariscos: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2",
     panaderia: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=100&h=100&fit=crop",
 
   };
@@ -23,10 +31,26 @@ function Lista() {
 
 
   useEffect(() => {
-    fetch(`${API}/api/products`)
-      .then((res) => res.json())
+    fetch(`${API}/api/products`, {
+      "headers": authHeaders,
+    })
+      .then((res) => {
+        console.log(res)
+        return res.json()})
       .then((data) => setProducts(Array.isArray(data) ? data : []))
       .catch(() => setProducts([]));
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!e.target.closest(".basket-wrapper")) {
+        setShowBasket(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () =>
+      document.removeEventListener("click", handleClickOutside);
   }, []);
 
 
@@ -38,6 +62,7 @@ function Lista() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...authHeaders,
 
         },
         body: JSON.stringify({
@@ -68,6 +93,7 @@ function Lista() {
     try {
       await fetch(`${API}/api/products/${id}`, {
         method: "DELETE",
+        headers: authHeaders,
       });
 
       setProducts((prev) => prev.filter((p) => p.id !== id));
@@ -79,8 +105,15 @@ function Lista() {
 
   const toggleProduct = async (id) => {
     try {
+      const product = products.find((p) => p.id === id);
+
       const res = await fetch(`${API}/api/products/${id}`, {
         method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...authHeaders,
+        },
+        body: JSON.stringify({ added: !product.added }) 
       });
 
       const updated = await res.json();
@@ -105,23 +138,29 @@ function Lista() {
     ? products.filter((p) => p.added).length
     : 0;
 
+  const addedProducts = products.filter((p) => p.added);
+
   return (
     <div
       id="app-container"
       style={{
         minHeight: "100vh",
         background: "linear-gradient(145deg, #556B2F, #3E4E22)",
-       
+
       }}
     >
-     
+
 
 
       <nav className="navbar">
         <h1 className="vitta-title" style={{ color: "white" }}>VITTA</h1>
-        <div style={{ position: "relative", cursor: "pointer" }}>
 
+        <div
+          className="basket-wrapper"
+          style={{ position: "relative", cursor: "pointer" }}
+          onClick={() => setShowBasket((prev) => !prev)}
 
+        >
           <i
             className="fas fa-shopping-basket"
             style={{ fontSize: "24px", color: "white" }}
@@ -147,6 +186,52 @@ function Lista() {
             </span>
           )}
 
+          {showBasket && (
+            <div
+              style={{
+                position: "absolute",
+                top: "35px",
+                right: "0",
+                background: "white",
+                width: "260px",
+                borderRadius: "10px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                padding: "10px",
+                zIndex: 999,
+              }}
+            >
+              <h6 style={{ marginBottom: "10px" }}>Cesta</h6>
+
+              {addedProducts.length === 0 ? (
+                <p style={{ fontSize: "13px", color: "#777" }}>
+                  No hay productos seleccionados
+                </p>
+              ) : (
+                addedProducts.map((p) => (
+                  <div
+                    key={p.id}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    <img
+                      src={p.image}
+                      width="30"
+                      height="30"
+                      style={{ borderRadius: "50%" }}
+                    />
+                    <div style={{ fontSize: "13px" }}>
+                      <div>{p.name}</div>
+                      <small>€{Number(p.price).toFixed(2)}</small>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          )}
         </div>
       </nav>
 
@@ -301,7 +386,7 @@ function Lista() {
         ))}
 
       </div>
-    </div>
+    </div >
   );
 }
 

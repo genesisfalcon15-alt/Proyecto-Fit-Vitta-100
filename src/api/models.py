@@ -18,6 +18,7 @@ class User(db.Model):
     
     stats: Mapped["UserStats"] = relationship("UserStats", back_populates="user", uselist=False)
     historial_peso: Mapped[list["HistorialPeso"]] = relationship("HistorialPeso", back_populates="user")
+    products: Mapped[list["Product"]] = relationship("Product", back_populates="user")
 
     def serialize(self):
         return {
@@ -74,6 +75,9 @@ class Product(db.Model):
     image: Mapped[str] = mapped_column(String(300), nullable=True)
     added: Mapped[bool] = mapped_column(Boolean, default=False)
 
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
+    user: Mapped["User"] = relationship("User", back_populates="products")
+
     def serialize(self):
         return {
             "id": self.id,
@@ -82,7 +86,8 @@ class Product(db.Model):
             "price": self.price,
             "category": self.category,
             "image": self.image,
-            "added": self.added
+            "added": self.added,
+            "user_id": self.user_id
         }
 
 class FavoritoSupermercado(db.Model):
