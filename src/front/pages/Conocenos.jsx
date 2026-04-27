@@ -39,7 +39,7 @@ const Conocenos = ({ cardGlassStyle, colorVerdeVitta }) => {
                         fontSize: "15px"
                     }}
                 >
-                    <strong>VITTA</strong> nació de una necesidad real: hacer que comer sano no sea un lujo ni un rompecabezas. Combinamos la tecnología con la nutrición inteligente para ayudarte a ahorrar tiempo y dinero.
+                    <strong>VITTA</strong> Nació de una necesidad real: hacer que comer sano no sea un lujo ni un rompecabezas. Combinamos la tecnología con la nutrición inteligente para ayudarte a ahorrar tiempo y dinero.
                 </p>
             </div>
 
@@ -158,7 +158,18 @@ const Conocenos = ({ cardGlassStyle, colorVerdeVitta }) => {
                                 margin: 0
                             }}
                         >
-                            habria que rellenarlo con el nombre del equipo.
+                            <p style={{
+                                color: "black",
+                                fontSize: "18px",
+                                fontWeight: "300"
+
+                            }}>
+                                Andy.<br />
+                                Patricia Rincón Carrasco.<br />
+                                Sergio HD.<br />
+                                Génesis Falcón.
+                            </p>
+
                         </p>
 
                         <p
@@ -168,7 +179,7 @@ const Conocenos = ({ cardGlassStyle, colorVerdeVitta }) => {
                                 margin: 0
                             }}
                         >
-                            Proyecto VITTA
+                            Proyecto VITTA 🌱
                         </p>
                     </div>
                 </div>
