@@ -290,18 +290,18 @@ export const Imc = () => {
             `}</style>
 
             <div style={{ padding: "16px 20px 16px 20px" }}>
-                <h2 style={{ 
-                    fontSize: "26px", 
-                    fontWeight: "800", 
-                    color: "white", 
+                <h2 style={{
+                    fontSize: "26px",
+                    fontWeight: "800",
+                    color: "white",
                     margin: "0 0 4px 0",
                     letterSpacing: "-0.5px",
                     textShadow: "0 2px 8px rgba(0,0,0,0.2)"
                 }}>
                     Resumen Saludable
                 </h2>
-                <p style={{ 
-                    color: "rgba(255,255,255,0.6)", 
+                <p style={{
+                    color: "rgba(255,255,255,0.6)",
                     fontSize: "12px",
                     margin: 0,
                     fontWeight: "500",
@@ -458,12 +458,19 @@ export const Imc = () => {
             )}
 
             {nutricion && !loadingNutri && (
-                <div className="card-nutri">
+                <div className="card-nutri" style={{
+                    backgroundColor: '#ffffff',
+                    borderRadius: '20px',
+                    padding: '20px',
+                    margin: '15px',
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+                    border: '1px solid #e0e0e0'
+                }}>
                     <div style={{
                         display: 'flex',
                         alignItems: 'center',
                         gap: '10px',
-                        marginBottom: '10px'
+                        marginBottom: '15px'
                     }}>
                         <span style={{ fontSize: '20px' }}>🥑</span>
                         <h5 style={{
@@ -474,42 +481,48 @@ export const Imc = () => {
                         }}>VITTA NUTRI-BOT</h5>
                     </div>
 
-                    <p style={{ fontSize: '12px', margin: '5px 0' }}>
-                        <strong>Objetivo:</strong> {nutricion.objetivo}
+                    <p style={{ fontSize: '13px', margin: '8px 0', color: '#333' }}>
+                        <strong style={{ fontWeight: '800', color: '#000' }}>Objetivo:</strong> {nutricion.objetivo}
                     </p>
 
-                    <p style={{ fontSize: '12px', margin: '5px 0', color: '#555' }}>
+                    <p style={{
+                        fontSize: '13px',
+                        margin: '12px 0',
+                        color: '#666',
+                        fontStyle: 'italic',
+                        lineHeight: '1.5',
+                        wordBreak: 'break-word'
+                    }}>
                         "{nutricion.consejo_clave}"
                     </p>
 
                     <div style={{
-                        background: 'white',
-                        padding: '10px',
-                        borderRadius: '10px',
-                        marginTop: '10px',
+                        background: '#f9f9f9',
+                        padding: '15px',
+                        borderRadius: '12px',
+                        marginTop: '15px',
                         borderLeft: `4px solid ${colorVerdeVitta}`
                     }}>
                         <span style={{
                             fontSize: '10px',
-                            fontWeight: '800',
+                            fontWeight: '900',
                             color: colorVerdeVitta,
-                            display: 'block'
+                            display: 'block',
+                            marginBottom: '5px'
                         }}>
                             PLATO RECOMENDADO:
                         </span>
-                        <span style={{ fontSize: '13px', color: '#333' }}>
+                        <span style={{ fontSize: '14px', color: '#2c3e50', fontWeight: '500' }}>
                             {nutricion.ejemplo_plato}
                         </span>
                     </div>
 
-                    <p style={{
-                        fontSize: '10px',
-                        marginTop: '10px',
-                        color: '#e74c3c',
-                        fontWeight: '700'
-                    }}>
-                        <i className="fas fa-exclamation-triangle"></i> EVITAR: {nutricion.evitar}
-                    </p>
+                   <div className="card-nutri-evitar">
+    <i className="fas fa-exclamation-triangle" style={{ color: '#e74c3c', marginTop: '2px' }}></i>
+    <span>
+        <span className="etiqueta-evitar">EVITAR:</span> {nutricion.evitar}
+    </span>
+</div>
                 </div>
             )}
         </div>

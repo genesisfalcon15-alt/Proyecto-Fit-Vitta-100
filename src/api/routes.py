@@ -1,13 +1,11 @@
 from flask import Blueprint, request, jsonify
-from api.models import db, User, UserStats, Product,HistorialPeso,FavoritoSupermercado
+from api.models import db, User, UserStats, Product, HistorialPeso, FavoritoSupermercado
 from api.utils import generate_sitemap, APIException
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 import bcrypt
 from flask_cors import CORS
 
 api = Blueprint('api', __name__)
-# Allow CORS requests to this API
-CORS(api)
 
 
 @api.route('/signup', methods=['POST'])
@@ -61,8 +59,11 @@ def signup():
     }), 201
 
 
-@api.route('/signin', methods=['POST'])
+@api.route('/signin', methods=['POST', 'OPTIONS'])
 def signin():
+    if request.method == "OPTIONS":
+        return jsonify({"ok": True}), 200
+
     data = request.get_json()
     if not data.get("email") or not data.get("password"):
         return jsonify({"msg": "Email y contraseña son obligatorios"}), 400
@@ -177,17 +178,25 @@ def get_historial():
 @jwt_required()
 def delete_historial_entrada(entrada_id):
     current_user_id = get_jwt_identity()
-    entrada = HistorialPeso.query.filter_by(id=entrada_id, user_id=current_user_id).first()
+
+    entrada = HistorialPeso.query.filter_by(
+        id=entrada_id,
+        user_id=current_user_id
+    ).first()
+
     if not entrada:
         return jsonify({"msg": "Entrada no encontrada"}), 404
 
+    db.session.delete(entrada)
+    db.session.commit()
+
+    return jsonify({"msg": "Entrada eliminada correctamente"}), 200
 
 
 @api.route("/products", methods=["GET"])
 def get_products():
     products = Product.query.all()
     return jsonify([p.serialize() for p in products]), 200
-
 
 
 @api.route("/products", methods=["POST"])
@@ -211,7 +220,6 @@ def create_product():
     return jsonify(new_product.serialize()), 201
 
 
-
 @api.route("/products/<int:id>", methods=["DELETE"])
 def delete_product(id):
     product = Product.query.get(id)
@@ -224,7 +232,6 @@ def delete_product(id):
     return jsonify({"msg": "deleted"}), 200
 
 
-
 @api.route("/products/<int:id>", methods=["PUT"])
 def toggle_product(id):
     product = Product.query.get(id)
@@ -235,6 +242,7 @@ def toggle_product(id):
     db.session.commit()
 
     return jsonify(product.serialize()), 200
+
 
 @api.route('/user/profile', methods=['PUT'])
 @jwt_required()
@@ -279,12 +287,12 @@ def add_favorito():
     return jsonify(nuevo.serialize()), 200  # 🔥 CLAVE
 
 
-
 @api.route("/user/favoritos/<int:favorito_id>", methods=["DELETE"])
 @jwt_required()
 def delete_favorito(favorito_id):
     user_id = get_jwt_identity()
-    favorito = FavoritoSupermercado.query.filter_by(id=favorito_id, user_id=user_id).first()
+    favorito = FavoritoSupermercado.query.filter_by(
+        id=favorito_id, user_id=user_id).first()
     if not favorito:
         return jsonify({"msg": "No encontrado"}), 404
     db.session.delete(favorito)

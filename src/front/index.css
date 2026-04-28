@@ -195,3 +195,25 @@ label {
 .fa-facebook:hover {
     color: #4267B2;
 }
+
+.card-nutri-evitar {
+    font-size: 12px !important;
+    margin-top: 15px !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    padding: 12px !important;
+    background-color: #fdf2f2 !important;
+    border-radius: 10px !important;
+}
+
+.card-nutri-evitar span,
+.card-nutri-evitar p {
+    color: #2c3e50 !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+}
+
+.card-nutri-evitar .etiqueta-evitar {
+    color: #e74c3c !important;
+}
