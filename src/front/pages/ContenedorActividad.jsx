@@ -8,21 +8,30 @@ export const ContenedorActividad = () => {
     const colorVerdeVitta = "#6e8a4f";
 
     const [verRutina, setVerRutina] = useState(false);
-
     const [diasEntreno, setDiasEntreno] = useState(3);
 
     // Recibe los datos del planificador
     const manejarCambioActividad = (mins, diasActivos) => {
         setDiasEntreno(diasActivos);
     };
+
     return (
-        <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-            <div style={{
-                padding: "15px 20px",
+        <div
+            style={{
+                minHeight: "100vh",
                 display: "flex",
-                alignItems: "center",
-                backgroundColor: "transparent",
-            }}>
+                flexDirection: "column"
+            }}
+        >
+
+            <div
+                style={{
+                    padding: "15px 20px",
+                    display: "flex",
+                    alignItems: "center",
+                    backgroundColor: "transparent",
+                }}
+            >
                 <button
                     onClick={() => navigate("/imc")}
                     style={{
@@ -41,80 +50,117 @@ export const ContenedorActividad = () => {
                     <i className="fas fa-arrow-left"></i>
                 </button>
 
-                <span style={{
-                    marginLeft: "15px",
-                    fontWeight: "800",
-                    fontSize: "14px",
-                    color: "white",
-                    letterSpacing: "0.5px"
-                }}>
+                <span
+                    style={{
+                        marginLeft: "15px",
+                        fontWeight: "800",
+                        fontSize: "14px",
+                        color: "white",
+                        letterSpacing: "0.5px"
+                    }}
+                >
                     MI ACTIVIDAD
                 </span>
             </div>
 
             <div style={{ padding: "10px 20px 20px 20px" }}>
+
                 <div style={{ marginBottom: "30px", marginTop: "10px" }}>
                     <button
                         onClick={() => setVerRutina(true)}
                         style={{
-                            width: '100%',
-                            padding: '22px',
-                            borderRadius: '24px',
-                            background: `linear-gradient(135deg, ${colorVerdeVitta} 0%, #5a7241 100%)`,
-                            color: 'white',
-                            fontWeight: '800',
-                            border: '1px solid rgba(255,255,255,0.2)',
-                            fontSize: '13px',
-                            boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
-                            cursor: 'pointer',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            gap: '12px',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.5px'
-                        }}>
-                        <i className="ai-icon" style={{ display: "flex", alignItems: "center" }}>
+                            width: "100%",
+                            padding: "22px",
+                            borderRadius: "24px",
+                            background: "rgba(173, 202, 130, 0.18)",
+                            backdropFilter: "blur(10px)",
+                            border: "1px solid rgba(255,255,255,0.10)",
+                            boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
+                            color: "white",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "20px",
+                            textAlign: "left",
+                        }}
+                    >
+                        <div
+                            style={{
+                                width: "72px",
+                                height: "72px",
+                                borderRadius: "50%",
+                                background: "rgba(255,255,255,0.10)",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                flexShrink: 0,
+                                boxShadow: "0 0 18px rgba(255,255,255,0.25)",
+                            }}
+                        >
                             <img
                                 src="/icono-ia-perfecto.png"
-                                alt="AI Vitta"
+                                alt="IA Vitta"
                                 style={{
-                                    width: "60px",
-                                    height: "60px",
+                                    width: "62px",
+                                    height: "62px",
                                     borderRadius: "50%",
-                                    background: "white",
-                                    padding: "4px",
                                     objectFit: "cover",
-                                    objectPosition: "center",
-                                    transform: "scale(1.12)",
-                                    boxShadow: "0 0 8px rgba(255,255,255,0.4)"
-                                }} />
-                        </i>
-                        GENERAR MI RUTINA PERSONALIZADA
+                                }}
+                            />
+                        </div>
+
+                        <div>
+                            <div
+                                style={{
+                                    fontSize: "13px",
+                                    fontWeight: "800",
+                                    letterSpacing: "2px",
+                                    textTransform: "uppercase",
+                                    color: "rgba(255,255,255,0.72)",
+                                    marginBottom: "6px",
+                                }}
+                            >
+                                VITTA IA
+                            </div>
+
+                            <div
+                                style={{
+                                    fontSize: "18px",
+                                    fontWeight: "900",
+                                    lineHeight: "1.2",
+                                    color: "white",
+                                }}
+                            >
+                                Generar mi rutina personalizada
+                            </div>
+                        </div>
                     </button>
                 </div>
 
-                <div style={{ textAlign: 'center' }}>
-                    <h4 style={{
-                        color: "white",
-                        marginBottom: "20px",
-                        fontSize: "17px",
-                        fontWeight: '800'
-                    }}>
+                <div style={{ textAlign: "center" }}>
+                    <h4
+                        style={{
+                            color: "white",
+                            marginBottom: "20px",
+                            fontSize: "17px",
+                            fontWeight: "800"
+                        }}
+                    >
                         Ajustes de entrenamiento
                     </h4>
 
                     <PlanificadorSemanal
                         colorVerdeVitta={colorVerdeVitta}
-                        onCambioActividad={manejarCambioActividad} />
+                        onCambioActividad={manejarCambioActividad}
+                    />
                 </div>
-
 
                 {verRutina && (
                     <RutinaIA
                         dias={diasEntreno}
-                        alCerrar={() => setVerRutina(false)} />)}
-
+                        alCerrar={() => setVerRutina(false)}
+                    />
+                )}
             </div>
         </div>
     );
