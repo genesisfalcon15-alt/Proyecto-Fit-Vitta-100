@@ -186,7 +186,7 @@ export const Home = () => {
 			<RetoDiario cardGlassStyle={cardGlassStyle} colorVerdeVitta={colorVerdeVitta} />
 
 
-			<div className="w-100 px-4 mt-auto" style={{ paddingTop: "20px" }}>
+			<div className="w-100 px-4" style={{ paddingTop: "8px", marginTop: "6px" }}>
 				<Link to="/conocenos" style={{ textDecoration: "none" }}>
 					<button
 						className="btn w-100 py-3 shadow-sm"
@@ -207,27 +207,48 @@ export const Home = () => {
 			{mostrarRecetario && (
 				<RecetarioVitta alCerrar={() => setMostrarRecetario(false)} />
 			)}
-			<footer className="pb-3 mt-1" style={{ textAlign: 'center' }}>
-
-				<hr style={{ border: '0', borderTop: '1px solid rgba(255,255,255,0.1)', width: '40%', margin: '0 auto 10px auto' }} />
-
-				<p style={{ color: 'white', opacity: 0.7, fontSize: '12px', marginBottom: '8px' }}>Síguenos</p>
+			<footer
+				className="mt-3"
+				style={{
+					textAlign: "center",
+					padding: "12px 20px 14px",
+					margin: "0 18px 10px",
+					borderRadius: "28px",
+					background: "rgba(255,255,255,0.08)",
+					border: "1px solid rgba(255,255,255,0.16)",
+					backdropFilter: "blur(10px)",
+					WebkitBackdropFilter: "blur(10px)"
+				}}
+			>
+				<p style={{
+					color: "white",
+					opacity: 0.85,
+					fontSize: "13px",
+					marginBottom: "8px",
+					fontWeight: "700"
+				}}>
+					Síguenos
+				</p>
 
 				<div className="d-flex justify-content-center gap-4">
-
 					<a href="https://www.instagram.com/vittasabio/" target="_blank" rel="noopener noreferrer" className="social-icon">
-						<i className="fab fa-instagram fa-lg"></i>
+						<i className="fab fa-instagram" style={{ fontSize: "20px" }}></i>
 					</a>
 
 					<a href="https://facebook.com/vitta" target="_blank" rel="noopener noreferrer" className="social-icon">
-						<i className="fab fa-facebook fa-lg"></i>
+						<i className="fab fa-facebook" style={{ fontSize: "20px" }}></i>
 					</a>
 				</div>
-				<p className="mt-3" style={{ color: 'white', opacity: 0.5, fontSize: '10px' }}>
+
+				<p className="mt-3" style={{
+					color: "white",
+					opacity: 0.55,
+					fontSize: "10px",
+					marginBottom: 0
+				}}>
 					© 2026 VITTA
 				</p>
 			</footer>
-
 		</div>
 	);
 };

@@ -12,24 +12,71 @@
 }
 
 html,
-body {
+body #root {
     margin: 0;
     padding: 0;
     width: 100%;
-    background-color: #f1f1f1;
+    min-height: 100%;
+}
+
+body {
+    background: #f1f1f1;
+    font-family: var(--font-main);
     display: block;
 }
 
-#app-container {
+.app-device-frame {
+    width: 100%;
+    min-height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    background: #f1f1f1;
+}
+
+
+.app-container {
     width: 100%;
     max-width: 450px;
-    margin: 0 auto;
     min-height: 100vh;
-    background-color: var(--vitta-oliva) !important;
+    height: auto;
+    margin: 0 auto;
     position: relative;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
+    background: linear-gradient(180deg, #8ba175 0%, #313b26 100%);
+}
+
+.app-header {
+    flex-shrink: 0;
+    position: relative;
+    z-index: 50;
+}
+
+.breadcrumbs-wrapper {
+    background-color: rgba(45, 70, 30, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+
+.app-scroll {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+
+}
+
+.app-footer {
+    height: 70px;
+    flex-shrink: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
 h1,
@@ -216,4 +263,40 @@ label {
 
 .card-nutri-evitar .etiqueta-evitar {
     color: #e74c3c !important;
+}
+
+@media (min-width: 768px) {
+    .app-device-frame {
+        padding: 32px;
+        align-items: center;
+    }
+
+    .app-container {
+        max-width: 400px;
+        height: min(800px, calc(100dvh - 48px));
+        min-height: auto;
+
+        border: 14px solid #34382c;
+        border-radius: 46px;
+
+        box-shadow:
+            0 24px 80px rgba(0, 0, 0, 0.28),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+    }
+}
+
+@media (max-width: 767px) {
+    .app-device-frame {
+        padding: 0;
+        background: transparent;
+    }
+
+    .app-container {
+        width: 100%;
+        max-width: none;
+
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
 }
