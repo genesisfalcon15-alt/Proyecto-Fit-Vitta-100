@@ -88,7 +88,7 @@ const Signup = () => {
     <div
       className="d-flex justify-content-center align-items-center vh-100"
       style={{
-        background: "linear-gradient(135deg, #6e8a4f, #a3b18a)"
+        background: "linear-gradient(180deg, #8ba175 0%, #313b26 100%)",
       }}
     >
       <div
@@ -242,7 +242,7 @@ const Signup = () => {
             type="submit"
             className="btn w-100"
             style={{
-              background: "#6e8a4f",
+              background: "linear-gradient(180deg, #8ba175 0%, #313b26 100%)",
               color: "white",
               borderRadius: "10px",
               padding: "10px",

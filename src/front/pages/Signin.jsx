@@ -52,7 +52,7 @@ const Login = () => {
     return (
         <div
             className="d-flex justify-content-center align-items-center vh-100"
-            style={{ backgroundColor: "#6e8b4f" }}
+            style={{ background: "linear-gradient(180deg, #8ba175 0%, #313b26 100%)", }}
         >
             <div
                 className="card p-4 shadow"
@@ -87,7 +87,7 @@ const Login = () => {
                     <button
                         type="submit"
                         className="btn w-100"
-                        style={{ backgroundColor: "#6e8b4f", color: "white", borderRadius: "8px" }}
+                        style={{ background: "linear-gradient(180deg, #8ba175 0%, #313b26 100%)",}}
                     >
                         Iniciar sesión
                     </button>
