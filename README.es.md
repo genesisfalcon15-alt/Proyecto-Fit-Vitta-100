@@ -1,17 +1,16 @@
 
+<img width="180" height="150" alt="Imagen 16-5-26 a las 14 21" src="https://github.com/user-attachments/assets/012793dd-82ca-48f6-9fb4-e4b3419dabba" />
+
 <h1>Vitta</h1>
 
-Descripción
+Es una plataforma web, orientada al fitness, bienestar y alimentación inteligente, diseñada para ayudar a las personas a construir hábitos saludables de forma práctica, visual y personalizada.
 
-Vitta es una plataforma diseñada en torno a dos pilares fundamentales: el cuidado personal y la optimización de la compra en supermercados.
+El proyecto combina tecnología, nutrición y experiencia de usuario, para ofrecer un ecosistema donde se pueda gestionar la salud física desde un único entorno digital. La plataforma integra herramientas de cálculo y análisis de IMC, seguimiento de progreso, recomendaciones adaptadas al perfil físico del usuario, planificación nutricional y rutinas enfocadas al bienestar diario.
 
-No es simplemente una aplicación que calcule el IMC o sugiera dietas genéricas. Vitta actúa como un asistente integral que comprende las necesidades del usuario y lo acompaña en su día a día.
-
-La plataforma no solo propone planes de alimentación adaptados a los objetivos y perfil de cada persona, sino que también optimiza el proceso de compra, indicando dónde adquirir cada producto al mejor precio. Para ello, compara supermercados en función de la ubicación y las preferencias del usuario, priorizando el ahorro sin comprometer la calidad ni el bienestar.
+Además, VITTA incorpora funcionalidades orientadas a la optimización de la compra saludable, permitiendo organizar listas, visualizar productos y mejorar la toma de decisiones, desde una perspectiva más consciente y accesible.
 
 En esencia, Vitta conecta el cuidado personal con un consumo inteligente.
 
-⸻
 
 <h2>Funcionalidades principales:</h2>
 <ul>
@@ -22,7 +21,7 @@ En esencia, Vitta conecta el cuidado personal con un consumo inteligente.
 	<li>Seguimiento de objetivos y progreso</li>
 	<li>Sistema de favoritos</li>
 </ul>
-⸻
+
 
 <h3>Estructura de la aplicación</h3>
 <ul>
@@ -37,14 +36,14 @@ En esencia, Vitta conecta el cuidado personal con un consumo inteligente.
 
 <h3>Tecnologías</h3>
 <ul>
-    <li>Geolocalización</li>
 	<li>Front-end</li>
+	<li>JavaScrip</li>
+    <li>React</li>
+	<li>Bootstrap</li>
     <li>Back-end</li>
     <li>Base de Datos</li>
     <li>API</li>
 </ul>
-(Pendiente de completar)
-
 
 <h3>Objetivo del proyecto</h3>
 
@@ -58,3 +57,34 @@ En esencia, Vitta conecta el cuidado personal con un consumo inteligente.
 Estado del proyecto
 
 🚧 En desarrollo
+
+
+ <h1>Home<h1>
+ <img width="300" height="500" alt="Captura de pantalla 2026-05-16 a las 17 50 06" src="https://github.com/user-attachments/assets/569a8fd4-dac5-4be7-a5d8-e39b406ebbfa" />
+
+<h1>Calculo IMC</h1>
+<img width="300" height="500" alt="Captura de pantalla 2026-05-16 a las 17 54 11" src="https://github.com/user-attachments/assets/98ddbc44-5bf3-4c93-ad4e-a849c9565e41" />
+
+<h1>Mapa Inteligente</h1>
+<img width="300" height="500" alt="Captura de pantalla 2026-05-16 a las 17 54 46" src="https://github.com/user-attachments/assets/96e81518-df67-4a0f-b838-dc7ae590a589" />
+
+<h1>Rutina Personalizada</h1>
+<img width="300" height="500" alt="Captura de pantalla 2026-05-16 a las 17 54 28" src="https://github.com/user-attachments/assets/a784a2df-d300-4933-9f65-daf12eb84452" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
